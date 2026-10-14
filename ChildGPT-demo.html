@@ -1,0 +1,720 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="ChildGPT: a teachable AI learner with an inspectable cognitive harness and reproducible synthetic evaluation. GP8001 Group 6 prototype.">
+  <title>ChildGPT · Learning Studio</title>
+  <style>:root{--ink:#192f2b;--muted:#73807a;--green:#285e4b;--green-dark:#163c30;--mint:#e9f2eb;--paper:#f6f7f3;--line:#e5e9e1;--white:#fff;--lavender:#efedf8;--peach:#f8eee2;--radius:18px;--shadow:0 2px 3px #163c3003;--sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}*{box-sizing:border-box}body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);font-size:14px;line-height:1.55}button,input,select,textarea{font:inherit}button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}button{cursor:pointer}button:disabled{opacity:.55;cursor:wait}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #8dbdae;outline-offset:3px}a{color:inherit;text-decoration:none}h1,h2,h3,p{margin-top:0}h1{font-size:clamp(28px,2.6vw,39px);font-weight:640;letter-spacing:-1.35px;line-height:1.18;margin-bottom:13px}h1 em{font-style:normal;color:var(--green)}h2{font-size:16px;font-weight:650;letter-spacing:-.3px;margin-bottom:12px}h3{font-size:14px;letter-spacing:-.15px}p{margin-bottom:12px}small{font-size:11px}button{border:none;background:none;color:inherit}input,textarea,select{width:100%;border:1px solid #dfe5dc;background:#fbfcf9;color:var(--ink);border-radius:9px;padding:10px 12px;outline:none}input::placeholder,textarea::placeholder{color:#9ca69f}textarea{resize:vertical;min-height:68px}label{display:block;font-size:11px;font-weight:550;color:#77837b;letter-spacing:.15px}label input,label select,label textarea{margin-top:6px;font-size:13px;letter-spacing:0}pre{margin:18px 0;background:#f4f6f2;border:1px solid var(--line);border-radius:12px;padding:18px;overflow:auto;font-size:12px;line-height:1.7;color:#315648;white-space:pre-wrap}code{font-family:"SFMono-Regular",Consolas,monospace;font-size:.94em}[hidden]{display:none!important}.shell{min-height:100vh;display:grid;grid-template-columns:212px minmax(0,1fr)}.sidebar{background:#182e28;color:#c8d6ce;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;padding:35px 20px 22px}.brand{display:flex;align-items:center;gap:10px;color:#f8fbf5;font-size:22px;font-weight:650;letter-spacing:-.7px;padding:0 4px}.brand-mark{font-size:41px;font-weight:400;line-height:1.1;color:#bfe7c8}.brand-small{display:block;font-size:8px;letter-spacing:2.1px;font-weight:500;color:#8ba89a;margin-top:3px}.workspace-label{font-size:9px;letter-spacing:1.6px;color:#819a8c;margin:51px 13px 14px}nav{display:flex;flex-direction:column;gap:7px}.nav-link{display:flex;align-items:center;gap:12px;text-align:left;padding:12px 13px;border-radius:10px;font-size:12px;font-weight:500;color:#c0d0c6}.nav-link span{font-size:19px;width:21px;text-align:center;line-height:1}.nav-link:hover{background:#ffffff0d}.nav-link.active{background:#bfe7c819;color:#def9d8}.sidebar-note{margin:52px 9px 0;border-top:1px solid #ffffff16;padding-top:21px;position:relative}.tiny-label{font-size:9px;letter-spacing:1.7px;color:#85a38f}.sidebar-note p{font-size:12px;line-height:1.9;margin-top:11px;color:#8da598}.sidebar-note strong{font-weight:500;color:#c9decc}.sprout{display:block;font-size:41px;color:#729e81;padding:10px 5px;transform:rotate(-12deg)}.sidebar-bottom{margin-top:auto;padding:17px 11px 0;border-top:1px solid #ffffff16;font-size:9px;letter-spacing:.7px}.sidebar-bottom small{display:block;letter-spacing:0;font-size:10px;line-height:1.8;color:#81998b;margin-top:8px}.status-dot,.live-dot{display:inline-block;width:6px;height:6px;background:#aacbad;border-radius:50%;margin-right:7px}.body-wrap{min-width:0}.topbar{height:76px;padding:0 37px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#fbfcf9}.breadcrumb{font-size:11px;color:#929e94}.breadcrumb span{padding:0 12px;color:#b4bdb1}.breadcrumb strong{color:#4d6555;font-weight:500}.header-actions{display:flex;align-items:center;gap:22px}.badge{display:inline-flex;align-items:center;white-space:nowrap;font-size:8px;letter-spacing:1px;font-weight:650;border:1px solid #dce8d8;border-radius:5px;padding:3px 7px;color:#527553;background:#f3f7ef;vertical-align:middle}.badge.soft{background:#eaf1e8;border:0;padding:6px 9px;letter-spacing:.7px}.profile-control{display:flex;align-items:center;gap:9px;font-size:10px}.profile-control select{width:110px;background:transparent;margin:0;padding:6px 4px;border:none;font-size:11px;font-weight:600;color:#49614f}main{max-width:1720px;margin:auto;padding:34px 37px 0}.page{display:none}.page.active{display:block;animation:fade .2s ease-out}@keyframes fade{from{opacity:.3;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}.page-heading{display:flex;align-items:center;justify-content:space-between;gap:24px;margin:0 0 27px}.eyebrow{font-size:9px;letter-spacing:1.7px;font-weight:650;color:#819180;margin-bottom:11px}.page-heading p{color:var(--muted);font-size:12px;margin-bottom:0}.button{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:10px 15px;background:#fff;border:1px solid #dce4d7;border-radius:8px;font-size:11px;font-weight:600;white-space:nowrap;min-height:38px;box-shadow:var(--shadow)}.button:hover{background:#f1f5ee}.button.primary{color:#fff;background:var(--green);border-color:var(--green)}.button.primary:hover{background:var(--green-dark)}.button.primary span{font-size:17px;line-height:1}.button.danger{color:#aa4b42;border-color:#efd9d3}.text-button{font-size:11px;font-weight:550;color:var(--green);padding:5px 0;text-align:left}.text-button:hover{text-decoration:underline}.summary-grid{display:grid;grid-template-columns:1fr 1.1fr 1.05fr;gap:15px;margin-bottom:23px}.summary-card{padding:18px 17px;background:#fff;border:1px solid var(--line);border-radius:13px;display:grid;grid-template-columns:36px 1fr;column-gap:13px}.summary-card strong{display:block;font-weight:600;font-size:20px;line-height:1.1;letter-spacing:-.5px}.summary-card span:not(.metric-icon){font-size:10px;color:#677d6b;display:block;margin-top:4px}.summary-card small{font-size:9px;color:#96a091;grid-column:2;margin-top:7px}.metric-icon{width:34px;height:34px;display:grid;place-items:center;background:var(--mint);color:#648467;border-radius:9px;font-size:21px}.metric-icon.lavender{background:var(--lavender);color:#8b7db8}.metric-icon.peach{background:var(--peach);color:#b99367}.studio-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(280px,1fr);gap:22px;align-items:start}.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:23px}.chat-card{padding:0;overflow:hidden}.chat-header{padding:19px 23px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line)}.chat-header h2{font-size:14px;margin:0 0 4px}.chat-header h2 .badge{margin-left:7px}.chat-header p{color:#8b998b;font-size:10px;margin:0}.live-dot{margin-left:auto;background:#7ca980;box-shadow:0 0 0 4px #edf5e9}.mini-avatar{width:39px;height:39px;border-radius:15px;background:#d7ead7;display:flex;align-items:center;justify-content:center;gap:7px;position:relative;transform:rotate(-4deg)}.mini-avatar i{width:3px;height:6px;background:#3c6342;border-radius:4px}.mini-avatar:after{content:'';width:9px;height:4px;border-bottom:2px solid #638067;position:absolute;top:24px;left:15px;border-radius:50%}.chat-history{height:346px;overflow-y:auto;padding:22px 23px;scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:#d5ddce transparent}.welcome{text-align:center;margin:5px auto 0;max-width:320px}.welcome-avatar{margin:0 auto 18px;width:65px;height:65px;background:#edf4e7;border-radius:25px;display:grid;place-items:center;font-size:40px;color:#72946e;transform:rotate(-6deg)}.welcome h3{font-size:18px;font-weight:550;letter-spacing:-.4px}.welcome p{font-size:12px;color:#81907b;line-height:1.8;margin-bottom:18px}.welcome .example{border:1px dashed #d4dfce;border-radius:10px;padding:12px;color:#687e61;background:#f7faf3;font-size:11px;line-height:1.7}.message{display:flex;flex-direction:column;margin-bottom:18px;max-width:92%}.message.user{margin-left:auto;align-items:flex-end}.message-label{font-size:9px;color:#94a28c;margin-bottom:5px}.bubble{font-size:12px;line-height:1.85;white-space:pre-wrap;padding:13px 16px;background:#f0f5eb;border:1px solid #e6eddf;border-radius:3px 14px 14px 14px;color:#425b3f;overflow-wrap:anywhere}.message.user .bubble{background:#f5f4f0;color:#6e7160;border-color:#efeee7;border-radius:14px 3px 14px 14px}.message .action-tag{font-size:8px;letter-spacing:.7px;color:#91a485;margin-top:6px;text-transform:uppercase}.composer{border-top:1px solid var(--line);padding:17px 23px 13px;background:#fdfefb}.action-tabs{display:flex;gap:5px;margin-bottom:14px}.action-tabs button{font-size:10px;padding:5px 10px;border:1px solid transparent;border-radius:6px;color:#819178}.action-tabs button.selected{background:#e8f0e0;border-color:#dce8d2;color:#4c6d3f;font-weight:600}.field-row{display:grid;grid-template-columns:1.1fr 1fr;gap:11px;margin-bottom:12px}.composer-footer{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-top:13px}.composer-footer .text-button{font-size:10px}.composer-note{font-size:9px;color:#a0aa97;margin:11px 0 0;line-height:1.6}.memory-column{display:flex;flex-direction:column;gap:17px}.card-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.card-heading h2{margin:0}.pill{font-size:9px;border:1px solid #e3e8dc;border-radius:6px;color:#87977b;padding:3px 6px;white-space:nowrap}.subtle{font-size:11px;color:#8b9883;line-height:1.7}.memory-card>.subtle{font-size:10px;margin:0 0 19px}.empty-memory{padding:23px 10px;text-align:center;background:#f9fbf6;border:1px dashed #e3e9da;border-radius:12px}.empty-memory span{font-size:26px;color:#a7b59a}.empty-memory p{font-size:11px;color:#8e9f80;margin:8px 0 0}.memory-item{border:1px solid #e3e9dc;background:#fbfcf8;border-radius:11px;padding:13px;margin-bottom:10px;overflow-wrap:anywhere}.memory-title{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;font-weight:600;margin-bottom:6px}.memory-title small{font-weight:500;font-size:9px;color:#899a79}.memory-item p{font-size:11px;color:#687d57;margin:5px 0 9px;line-height:1.7}.progress-track{height:4px;border-radius:5px;background:#e5ebdb;overflow:hidden}.progress-fill{height:100%;background:#a2be86;border-radius:5px}.memory-provenance{margin-top:8px;font-size:8px;color:#a0ac94;line-height:1.7}.memory-actions{display:flex;gap:13px;margin-top:6px}.memory-actions button{font-size:9px}.decision-card .badge{font-size:7px}.trace-summary{font-size:11px;color:#7a8d69;line-height:1.8;margin-bottom:14px}.trace-action{display:inline-block;font:10px "SFMono-Regular",Consolas,monospace;background:#f0f3e9;color:#66834e;border:1px solid #e0e8d4;border-radius:5px;padding:5px 8px;margin:3px 0 10px}.gentle-note{display:flex;gap:12px;padding:3px 5px}.gentle-note>span{font-size:22px;color:#9aab8c}.gentle-note p{font-size:10px;line-height:1.85;color:#94a286;margin:0}.gentle-note strong{font-weight:550;color:#788d66}.main-footer{display:flex;justify-content:space-between;gap:15px;font-size:9px;color:#9ba58f;padding:32px 0 20px;margin-top:12px}.pipeline{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px;padding:24px}.pipeline>div{flex:1;min-width:0}.pipeline b{font-size:10px;color:#96b080}.pipeline strong{display:block;font-size:13px;margin:6px 0}.pipeline small{display:block;font-size:10px;color:#92a083}.pipeline>span{font-size:19px;color:#b5c0a7}.algorithm-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}.lower-grid{margin-top:22px}.formula{font-family:monospace;background:#eaf2e2;color:#5b754a;border-radius:10px;padding:17px;font-size:13px;line-height:1.9;margin:15px 0}.trace-table{font-size:11px;display:grid;grid-template-columns:130px 1fr;gap:0;margin-top:12px}.trace-table dt,.trace-table dd{border-bottom:1px solid #edf0e7;padding:11px 0;overflow-wrap:anywhere}.trace-table dt{color:#9ba68d}.trace-table dd{margin:0;color:#5d754e}.trace-empty{color:#a0ad91;font-size:12px;padding:30px 10px;text-align:center}.graph-group{background:#f7faf2;padding:13px;border-radius:10px;border:1px solid #e7eddd;margin-bottom:9px}.graph-group strong{font-size:10px;color:#849a6d}.graph-group p{font-size:12px;margin:9px 0 0;color:#637e4d;overflow-wrap:anywhere}.small-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:21px 0}.small-metrics>div{padding:14px;background:#f7f9f2;border:1px solid #e7eddd;border-radius:10px}.small-metrics strong{display:block;font-size:21px;font-weight:600;letter-spacing:-.5px;color:#597743}.small-metrics span{font-size:10px;color:#8b9c77}.small-metrics small{display:block;color:#a6b197;font-size:9px;margin-top:4px}.evidence-banner{padding:13px 17px;background:#efeee5;color:#969272;border:1px solid #e7e5d7;border-radius:11px;display:flex;align-items:center;gap:15px;font-size:11px;margin-bottom:21px}.evidence-banner .badge{background:#f5f3e9;border-color:#dedbc7;color:#99916a}.functional-card,.simulation-card,.monte-card{margin-bottom:22px}.functional-card .card-heading,.simulation-card .card-heading,.monte-card .card-heading{align-items:flex-start}.card-heading .subtle{margin:6px 0 0}.empty-inline{padding:23px 0 5px;color:#9cab8d;font-size:12px}.functional-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}.check-result{padding:15px;background:#f4f8ee;border:1px solid #e2ebd6;border-radius:11px}.check-result strong{display:block;font-size:20px;font-weight:600;color:#678748}.check-result span{font-size:10px;color:#8e9f77}.check-result small{font-size:9px;display:block;color:#a5b494;margin-top:6px}.check-result.fail{background:#fcf1eb;border-color:#f0d8cd}.check-result.fail strong{color:#b97961}.simulation-controls{display:flex;gap:13px;align-items:end;border-bottom:1px solid #eef1e7;padding:6px 0 20px}.simulation-controls label{flex:1;min-width:0}.simulation-controls label:first-child{flex:1.75}.simulation-controls input,.simulation-controls select{font-size:11px}.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:23px;margin-top:28px}.chart-grid h3{margin-bottom:4px;color:#667e52;font-size:12px}.chart-grid .subtle{font-size:9px;min-height:30px}.chart svg{width:100%;display:block;height:auto;background:#fdfefb;border-radius:8px}.chart-footer{border-top:1px solid #eef1e7;margin-top:18px;padding-top:15px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:9px;color:#9caa8b}.chart-footer>div{display:flex;gap:15px}.chart-footer button{font-size:10px}.outcome-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;padding-top:13px}.outcome-grid h3{font-size:12px;margin:12px 0 8px;color:#6d805a}.outcome-grid p{font-size:11px;color:#94a180;line-height:1.8}.check-tag{font-size:8px;letter-spacing:1px;color:#6e8e53}.check-tag.neutral{color:#ad9d74}.form-buttons{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 16px}#connect-form>label{margin-bottom:15px}.callout{background:#f3f6eb;border:1px solid #e6ead9;border-radius:10px;padding:15px;margin-top:20px}.callout strong{font-size:11px;color:#80955f}.callout p{font-size:10px;color:#94a578;line-height:1.8;margin:6px 0 0}.switch-row{display:flex;align-items:start;gap:12px;padding:15px 0;border-bottom:1px solid #eef1e7;letter-spacing:0}.switch-row input{width:16px;margin:3px 0;accent-color:var(--green);flex-shrink:0}.switch-row strong{font-size:11px;font-weight:550;color:#6f8557}.switch-row small{display:block;color:#9fac8f;font-size:10px;font-weight:400;line-height:1.8;margin-top:5px}.card>p:not(.subtle){font-size:12px;color:#8b9b78;line-height:1.85}.invitation-bar{font-size:10px;padding:10px 23px;background:#f8f1df;color:#9a8a5e;border-top:1px solid #ebdfbf}.invitation-bar button{margin-left:12px}.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:20;background:#244a39;color:#edf7e7;border:1px solid #4a7355;padding:13px 20px;border-radius:10px;box-shadow:0 8px 30px #2033262a;font-size:12px;max-width:min(90vw,650px)}.skip-link{position:absolute;top:-60px;left:10px;padding:10px;background:#fff;z-index:100}.skip-link:focus{top:10px}details{margin-top:15px}summary{font-size:10px;color:#8b9f70;cursor:pointer}.test-detail{font-size:10px;padding:5px 0;border-bottom:1px solid #edf1e4;color:#91a17b}.test-detail b{margin-right:8px;color:#73974a}.small-metrics:has(>div:nth-child(5)){grid-template-columns:repeat(5,1fr)}.sweep-wrap{overflow-x:auto}.sweep{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0 14px}.sweep th,.sweep td{text-align:left;padding:9px 10px 9px 0;border-bottom:1px solid #edf0e7;white-space:nowrap}.sweep th{color:#9ba68d;font-weight:500}.sweep td{color:#5d754e}.sweep tr.current td{font-weight:650;color:var(--green)}@media(min-width:1500px){.chat-history{height:395px}main{padding-top:44px}.page-heading{margin-bottom:34px}}@media(max-width:1150px){.shell{grid-template-columns:175px 1fr}.sidebar{padding:30px 12px}.brand{font-size:20px}.brand-mark{font-size:34px}.nav-link{padding:11px 10px;font-size:11px;gap:8px}.topbar{padding:0 25px}main{padding:28px 25px 0}.studio-grid{grid-template-columns:minmax(0,1.4fr) minmax(240px,1fr);gap:16px}.card{padding:19px}.chat-card{padding:0}.summary-card{padding:16px 13px;column-gap:10px}.summary-card small{font-size:8px}.chat-header,.chat-history,.composer{padding-left:19px;padding-right:19px}.summary-card strong{font-size:18px}.simulation-controls{gap:8px}.simulation-controls .button{padding:10px}.algorithm-grid{gap:16px}.badge{font-size:7px}.header-actions{gap:12px}.trace-table{grid-template-columns:105px 1fr}}@media(max-width:950px){.shell{grid-template-columns:72px 1fr}.sidebar{padding:25px 10px}.brand>span:last-child,.workspace-label,.sidebar-note,.sidebar-bottom,.nav-link{font-size:0}.brand{padding:0;justify-content:center}.brand-mark{font-size:34px}.nav-link{justify-content:center;padding:15px 10px}.nav-link span{font-size:23px}nav{margin-top:45px;gap:15px}.sidebar-bottom small{display:none}.summary-card{grid-template-columns:27px 1fr;padding:15px 11px;column-gap:8px}.metric-icon{width:27px;height:27px;font-size:18px}.summary-card span:not(.metric-icon){font-size:9px}.summary-card small{line-height:1.6}.algorithm-grid{grid-template-columns:1fr}.pipeline{gap:9px}.pipeline small{font-size:9px}.chart-grid{gap:15px}.small-metrics,.small-metrics:has(>div:nth-child(5)){grid-template-columns:repeat(2,1fr)}}@media(max-width:740px){.topbar{height:64px;padding:0 19px}.breadcrumb{display:none}.header-actions{width:100%;justify-content:space-between}.badge.soft{font-size:8px}main{padding:24px 18px 0}.page-heading{align-items:flex-start;flex-direction:column;gap:18px;margin-bottom:23px}h1{font-size:29px;letter-spacing:-1px}.summary-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.summary-card{display:block;padding:14px 10px}.metric-icon{display:none}.summary-card strong{font-size:17px}.summary-card small{display:none}.studio-grid{grid-template-columns:1fr}.memory-column{display:grid;grid-template-columns:1fr 1fr;gap:12px}.gentle-note{grid-column:1/-1}.chat-history{height:300px}.pipeline{overflow:auto;padding:18px}.pipeline>div{min-width:90px}.pipeline>span{font-size:16px}.functional-grid{grid-template-columns:repeat(2,1fr)}.simulation-controls{display:grid;grid-template-columns:1fr 1fr}.simulation-controls .button{margin-top:12px}.chart-grid{grid-template-columns:1fr}.chart-grid .subtle{min-height:0}.outcome-grid{grid-template-columns:1fr;gap:12px}.evidence-banner{align-items:flex-start;flex-direction:column;gap:8px;font-size:10px}.functional-card .card-heading,.monte-card .card-heading{flex-direction:column;gap:16px}.card-heading .pill{font-size:8px}.main-footer{flex-direction:column;gap:5px}.chart-footer>div{flex-wrap:wrap}.trace-table{grid-template-columns:100px 1fr}}@media(max-width:460px){.shell{grid-template-columns:1fr}.sidebar{height:auto;position:sticky;top:0;z-index:10;flex-direction:row;align-items:center;padding:9px 15px}.brand-mark{font-size:26px}.sidebar nav{margin:0 0 0 auto;flex-direction:row;gap:12px}.nav-link{padding:8px}.nav-link span{font-size:18px}.sidebar-bottom{display:none}.topbar{height:53px;padding:0 16px}main{padding:22px 15px 0}.memory-column{display:flex}.profile-control{font-size:9px}.profile-control select{font-size:10px;width:92px}.page-heading .button{font-size:10px}h1{font-size:29px}.summary-card strong{font-size:16px}.summary-card span:not(.metric-icon){font-size:8px}.field-row{grid-template-columns:1fr}.topic-field{display:none}.chat-header,.chat-history,.composer{padding-left:17px;padding-right:17px}.card{padding:18px}.chat-card{padding:0}.action-tabs{gap:2px}.action-tabs button{font-size:9px;padding:5px 8px}.composer-footer{gap:9px}.button{font-size:10px}.trace-table{grid-template-columns:95px 1fr}.formula{font-size:11px}.small-metrics strong{font-size:20px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+/* Readability adjustments for live demonstrations. */
+.subtle{color:#718169}.composer-note{color:#7e8d72}.bubble{font-size:13px}.composer input,.composer textarea{font-size:14px}.memory-item p{font-size:12px;color:#526d43}.memory-provenance{color:#80906f}.trace-summary{color:#667f55}.gentle-note p{color:#778968}.empty-inline,.trace-empty{color:#7b9065}.message-label{color:#77896b}.nav-link{font-size:12px}.summary-card small{color:#7e8d70}.card>p:not(.subtle){color:#6f825c}.outcome-grid p{color:#788d64}.small-metrics span{color:#758b60}.composer-footer .text-button{font-size:11px}
+@media(max-width:950px){.nav-link{font-size:0}}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="#studio" aria-label="ChildGPT home"><span class="brand-mark">✳</span><span>ChildGPT<span class="brand-small">A LITTLE CURIOUS</span></span></a>
+    <div class="workspace-label">THE WORKSPACE</div>
+    <nav aria-label="Main navigation">
+      <button class="nav-link active" data-page="studio"><span>◉</span> Learning studio</button>
+      <button class="nav-link" data-page="algorithms"><span>⌘</span> Algorithm trace</button>
+      <button class="nav-link" data-page="evaluation"><span>▥</span> Evaluation lab</button>
+      <button class="nav-link" data-page="settings"><span>⚙</span> Connect & privacy</button>
+    </nav>
+    <div class="sidebar-note"><span class="tiny-label">THE IDEA</span><p>Not an assistant with every answer.<br><strong>A learner with a reason to ask.</strong></p><span class="sprout">↗</span></div>
+    <div class="sidebar-bottom"><span class="status-dot"></span> GP8001 · GROUP 06<small>Research prototype · v1.1<br>Public-demo ready · no clinical claims</small></div>
+  </aside>
+  <div class="body-wrap">
+    <header class="topbar"><div class="breadcrumb">Workspace <span>/</span> <strong id="page-label">Learning studio</strong></div><div class="header-actions"><span id="mode-badge" class="badge soft">● KEY-FREE DEMO</span><label class="profile-control">Profile <select id="profile-select" aria-label="Active synthetic learner"><option value="learner-a">Learner A</option><option value="learner-b">Learner B</option></select></label></div></header>
+    <main id="main">
+      <section id="page-studio" class="page active" aria-label="Learning studio">
+        <div class="page-heading"><div><div class="eyebrow">A TEACHABLE AI CHILD</div><h1>A little curious.<br><em>A lot to learn from you.</em></h1><p>Your stories become its memory. You decide what to share.</p></div><button id="guided-demo" class="button primary"><span>▷</span> Run guided demo</button></div>
+        <div class="summary-grid"><div class="summary-card"><span class="metric-icon">▤</span><div><strong id="memory-count">0</strong><span>Memories learned</span></div><small>Only what you teach</small></div><div class="summary-card"><span class="metric-icon lavender">↗</span><div><strong id="mastery-value">—</strong><span>Average mastery</span></div><small>A controller score, not LLM confidence</small></div><div class="summary-card"><span class="metric-icon peach">◇</span><div><strong>Isolated</strong><span>Per-profile knowledge</span></div><small>Synthetic profiles, no shared facts</small></div></div>
+        <div class="studio-grid">
+          <div class="chat-card card">
+            <div class="chat-header"><div class="mini-avatar"><i></i><i></i></div><div><h2>Milo <span class="badge">AI LEARNER</span></h2><p>Curious, transparent, and still learning.</p></div><span class="live-dot"></span></div>
+            <div class="chat-history" id="chat-history" role="log" aria-live="polite" aria-label="Conversation"></div>
+            <div class="invitation-bar" id="invitation-bar" hidden>A teaching invitation is waiting. It is always okay to skip. <button id="skip-invitation" class="text-button">Skip</button></div>
+            <form id="conversation-form" class="composer">
+              <div class="action-tabs" role="group" aria-label="Conversation action"><button type="button" data-action="teach" class="selected">Teach</button><button type="button" data-action="ask">Ask</button><button type="button" data-action="recall">Recall</button><button type="button" data-action="correct">Correct</button><button type="button" data-action="chat">Free text</button></div>
+              <div id="structured-fields"><div class="field-row"><label>Concept<input id="concept-input" maxlength="120" placeholder="e.g. tavi (an invented word)" autocomplete="off"></label><label class="topic-field">Teaching domain<select id="topic-input"><option>Dialect & expressions</option><option>Family traditions</option><option>Local stories</option></select></label></div><label id="content-field">What would you like to teach?<textarea id="content-input" rows="2" maxlength="3000" placeholder="A happy moment shared over tea"></textarea></label></div>
+              <label id="free-text-field" hidden>Your message<textarea id="text-input" rows="3" maxlength="3000" placeholder="Teach: tavi = a happy moment shared over tea"></textarea></label>
+              <div class="composer-footer"><button type="button" id="next-question" class="text-button">↗ Ask me a question</button><button type="submit" id="send-button" class="button primary">Teach Milo <span>↗</span></button></div>
+              <p class="composer-note" id="composer-note">No built-in factual answers. Memory starts empty. Synthetic examples only.</p>
+            </form>
+          </div>
+          <aside class="memory-column">
+            <div class="card memory-card"><div class="card-heading"><h2>Growing memory</h2><span class="pill" id="memory-pill">0 items</span></div><p class="subtle">What this learner knows, and where it came from.</p><div id="memory-list"></div></div>
+            <div class="card decision-card"><div class="card-heading"><h2>Behind the reply</h2><span class="badge soft">CONTROLLER</span></div><div id="trace-summary" class="trace-summary"></div><button class="text-button" data-page="algorithms">Inspect the algorithm <span>→</span></button></div>
+            <div class="gentle-note"><span>♡</span><p><strong>Care is always optional.</strong><br>This is an AI, not a real child. No guilt, penalties, or escalating reminders. Recall errors follow a fixed, inspectable rule and never invent facts.</p></div>
+          </aside>
+        </div>
+      </section>
+      <section id="page-algorithms" class="page" aria-label="Algorithm trace">
+        <div class="page-heading"><div><div class="eyebrow">PRESENTATION REQUIREMENT 03</div><h1>Decisions you can inspect.</h1><p>The controller owns the knowledge. The language model never gets the final say.</p></div><button id="export-trace" class="button">Export trace JSON ↓</button></div>
+        <div class="pipeline card"><div><b>01</b><strong>Parse</strong><small>Structured input or grounded spans</small></div><span>→</span><div><b>02</b><strong>Validate & update</strong><small>Deterministic memory transaction</small></div><span>→</span><div><b>03</b><strong>Retrieve & choose</strong><small>This profile only; explicit rules</small></div><span>→</span><div><b>04</b><strong>Realize</strong><small>Approved wording + exact facts</small></div><span>→</span><div><b>05</b><strong>Log & persist</strong><small>Trace, history and metadata</small></div></div>
+        <div class="algorithm-grid"><div class="card"><div class="card-heading"><h2>Live decision trace</h2><span class="pill">Same engine as the chat</span></div><div id="live-trace"></div></div><div class="card"><h2>How the policy works</h2><div class="formula">priority = 0.5(1 − mastery)<br>+ 0.3(staleness) + 0.2(relevance)</div><p class="subtle">Staleness is normalized turns since practice, not a timestamp. Every fifth question-selection turn explores a new concept. The draw u is a hash, so every decision can be replayed. Bands: low &lt; 0.30 ≤ medium &lt; 0.70 ≤ high.</p><pre><code>if a memory has a pending conflict:
+    clarify()
+elif exploration turn (every 5th):
+    ask_to_learn(quoted mention or new concept)
+else:
+    item = highest priority
+    u = hash(profile, item, turn)
+    low:    ask_to_learn()
+    medium: 40% recall, 30% unsure,
+            30% controlled error
+    high:   90% follow_up, 5% unsure,
+            5% controlled error
+
+# Operators use taught content only:
+# omit_step, swap_steps,
+# confuse_related, approximate
+# Never invent a replacement fact.</code></pre><p class="subtle">Teaching starts at 0.35. Repetition adds 0.10; confirmation adds 0.15; explicit correction adds 0.20. These are illustrative design parameters, not learned or validated estimates.</p></div></div>
+        <div class="algorithm-grid lower-grid"><div class="card"><h2>Topic / keyword graph</h2><p class="subtle">Edges link concepts in the same domain that share a keyword or mention each other. Quoted terms (e.g. “kopi”) become curiosity questions.</p><div id="topic-graph"></div></div><div class="card"><h2>Content-free interaction log</h2><p class="subtle">Metadata is separate from conversation content. No diagnosis is inferred.</p><div id="metadata-summary"></div><button id="export-metadata" class="text-button">Export metadata only ↓</button></div></div>
+      </section>
+      <section id="page-evaluation" class="page" aria-label="Evaluation lab">
+        <div class="page-heading"><div><div class="eyebrow">PRESENTATION REQUIREMENT 04</div><h1>Evidence, not promises.</h1><p>Run the actual controller tests and reproducible synthetic behavioural experiments.</p></div><button id="export-results" class="button">Export evaluation JSON ↓</button></div>
+        <div class="evidence-banner"><span class="badge">SYNTHETIC DATA ONLY</span> No older adults were recruited. These results do not establish wellbeing benefits or clinical validity.</div>
+        <div class="card functional-card"><div class="card-heading"><div><h2>01 · Functional evaluation</h2><p class="subtle"><span id="check-count">96</span> scripted controller checks, executed in this browser. No live-provider tests.</p></div><button id="run-tests" class="button primary">Run all checks</button></div><div id="functional-results" class="empty-inline">Run the suite to inspect measured pass counts. No assumed 100% scores.</div></div>
+        <div class="card simulation-card"><div class="card-heading"><div><h2>02 · Personal-baseline change detection</h2><p class="subtle">First 20 days calibrate the baseline. Monitoring begins on day 21; a scripted change starts on day 31.</p></div><span class="badge soft">ONE-SIDED CUSUM</span></div><div class="simulation-controls"><label>Scenario<select id="scenario-select"><option value="sustained">Sustained change</option><option value="stable">Stable behaviour</option><option value="temporary">3-day temporary change</option></select></label><label>Random seed<input id="seed-input" type="number" value="42" min="0" max="999999"></label><label>Reference k<input id="k-input" type="number" value="0.5" min="0" max="5" step="0.1"></label><label>Threshold h<input id="h-input" type="number" value="5" min="0.5" max="30" step="0.5"></label><button id="run-simulation" class="button primary">Run simulation</button></div><div id="simulation-metrics" class="small-metrics"></div><div class="chart-grid"><div><h3>Standardized change score</h3><p class="subtle">Lower response rate, longer delay, shorter replies, fewer self-started turns and corrections → higher score.</p><div id="score-chart" class="chart"></div></div><div><h3>Cumulative deviation</h3><p class="subtle">Sₜ = max(0, Sₜ₋₁ + zₜ − k); signal when Sₜ &gt; h.</p><div id="cusum-chart" class="chart"></div></div></div><div class="chart-footer"><span>▧ Baseline &nbsp; ┆ Injected change &nbsp; ● First signal</span><div><button id="export-csv" class="text-button">Download trace CSV ↓</button><button id="export-svg" class="text-button">Download chart SVG ↓</button></div></div></div>
+        <div class="card monte-card"><div class="card-heading"><div><h2>03 · Repeated-run robustness</h2><p class="subtle">200 stable + 200 sustained-change + 200 three-day-dip sequences, plus a threshold sweep. The default h was fixed in advance.</p></div><button id="run-monte" class="button">Run simulations</button></div><div id="monte-results" class="empty-inline">A single attractive trace is not an evaluation. Run repeated simulations to expose false alarms and misses.</div></div>
+        <div class="card outcomes"><h2>What these results do — and do not — show</h2><div class="outcome-grid"><div><span class="check-tag">IMPLEMENTATION EVIDENCE</span><h3>A credible teaching loop</h3><p>Boundary tests, recall, corrections and profile isolation show whether the implemented controller behaves as specified.</p></div><div><span class="check-tag">SIMULATION EVIDENCE</span><h3>A visible change signal</h3><p>False alarms and detection delay quantify the detector on our declared synthetic generator, not on elderly users.</p></div><div><span class="check-tag neutral">STILL A HYPOTHESIS</span><h3>Meaningful human benefit</h3><p>Engagement, loneliness, authenticity and safety need consented user research. They cannot be concluded from this demo.</p></div></div></div>
+      </section>
+      <section id="page-settings" class="page" aria-label="Connect and privacy">
+        <div class="page-heading"><div><div class="eyebrow">OPTIONAL BY DESIGN</div><h1>Connect when you're ready.</h1><p>The public demo works without an API key. Provider credentials stay on your server.</p></div></div>
+        <div class="algorithm-grid"><div class="card"><h2>Connect the backend</h2><p class="subtle">Enter your ChildGPT backend, not a model-provider endpoint. GitHub Pages hosts only the static frontend.</p><form id="connect-form"><label>Backend URL<input id="backend-url" type="url" placeholder="https://your-childgpt-backend.example" autocomplete="off"></label><label>Application access token<input id="backend-token" type="password" placeholder="Separate app token — NOT the provider API key" autocomplete="off"></label><div class="form-buttons"><button class="button primary" type="submit">Connect backend</button><button class="button" type="button" id="disconnect">Use local demo</button></div></form><p id="connection-status" class="subtle" role="status">Not connected. API configuration is intentionally empty.</p><div class="callout"><strong>Constrained API mode</strong><p>The model extracts verbatim spans from your message and selects approved conversational wording. The controller validates both. It cannot inject its pretrained factual answers into the teaching domain.</p></div></div><div class="card"><h2>Server-only configuration</h2><p class="subtle">Copy <code>.env.example</code> to <code>.env</code> in the source project. All provider fields are shipped empty.</p><pre><code>LLM_BASE_URL=
+LLM_API_KEY=
+LLM_MODEL=
+APP_ACCESS_TOKEN=
+ALLOWED_ORIGINS=</code></pre><p class="subtle">Restart the Node server after editing. A configured provider requires a separate application token (24+ characters). Never put the provider key in a frontend file, Pages secret injection, URL or public repository.</p><p class="subtle">Requests require the Chat Completions-compatible endpoint and JSON output support. API errors fall back to deterministic replies, with the fallback reported in the trace.</p></div></div>
+        <div class="algorithm-grid lower-grid"><div class="card"><h2>Your demo data</h2><label class="switch-row"><input id="remember-toggle" type="checkbox"><span><strong>Remember the local demo on this browser</strong><small>Off by default. Shared-device users should leave this off.</small></span></label><label class="switch-row"><input id="metadata-toggle" type="checkbox" checked><span><strong>Record content-free interaction metadata</strong><small>Response timing, length, correction count and initiation only.</small></span></label><label class="switch-row"><input id="invitation-toggle" type="checkbox"><span><strong>Allow gentle teaching invitations</strong><small>At most one outstanding invitation. No escalation.</small></span></label><div class="form-buttons"><button id="invite-button" class="button">Try one invitation</button><button id="export-memory" class="button">Export profile JSON ↓</button><button id="delete-profile" class="button danger">Delete current profile</button></div><p class="subtle">Local profiles are logical demo partitions, not authenticated identities. Backend sessions add separate bearer-token access; production accounts are out of scope.</p></div><div class="card"><h2>Scope and limitations</h2><p>This is a software prototype for GP8001 Group 6, not a care service. Use invented examples, not personal, medical or identifying information.</p><p>Memory is deliberately explicit; exact concept matching and approved reply templates trade language flexibility for inspectability. Controlled omissions are presenter-triggered, not spontaneous child cognition.</p><p>Optional invitations work only while this page is open. The backend has a seven-day session lifetime. Consent, age-appropriate field research, clinical validation and production security require separate work.</p><p class="subtle">No analytics, third-party fonts or external scripts are embedded in this app. Public hosting has its own server logs.</p></div></div>
+      </section>
+      <footer class="main-footer"><span>ChildGPT · GP8001 Group 6</span><span>Designed to learn from you. Never to replace someone.</span></footer>
+    </main>
+  </div>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script>/* ChildGPT canonical controller. Shared, unchanged, by browser and Node.
+ * No external services, pretrained answers, clinical inference or random hidden state.
+ */
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  else root.ChildGPT = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  'use strict';
+  const VERSION = '1.1.0';
+  const TOPICS = ['Dialect & expressions', 'Family traditions', 'Local stories'];
+  const clone = value => JSON.parse(JSON.stringify(value));
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const key = text => String(text || '').normalize('NFKC').trim().toLowerCase().replace(/[?.!。？！]+$/u, '');
+  const mean = xs => xs.reduce((a, b) => a + b, 0) / xs.length;
+  const sd = xs => xs.length < 2 ? 0 : Math.sqrt(xs.reduce((a, x) => a + (x - mean(xs)) ** 2, 0) / (xs.length - 1));
+  const round = (x, n = 4) => Math.round(x * 10 ** n) / 10 ** n;
+  const nowISO = () => new Date().toISOString();
+  const WORDING = {
+    teach: ['Thank you for teaching me.', 'I learned something from you today.', 'I will keep your explanation in my memory.'],
+    correct: ['Thank you for correcting me.', 'That helps me understand it better.', 'I have updated what you taught me.'],
+    recall: ['You taught me:', 'From our learning together:', 'Here is what I have in my memory:'],
+    ask_to_learn: ['I have not learned this from you yet.', 'This is new to my memory.', 'You have not taught me this yet.'],
+    uncertain_recall: ['I am still learning this.', 'Could you check what I remember?', 'I am not quite sure I have this right.'],
+    controlled_recall: ['I may be missing a part. Could you help me?', 'Could you check this incomplete memory?', 'I am practising, and this may be incomplete.'],
+    follow_up: ['May I ask one more thing?', 'I would enjoy hearing more.', 'Could we explore this a little further?'],
+    conflict: ['I heard something different this time.', 'This differs from what is in my memory.', 'Could you confirm this change?'],
+    clarify: ['I am a little confused.', 'Could you help me sort this out?', 'I want to make sure I remember this correctly.']
+  };
+  // Recall plan by mastery band: probabilities of correct, uncertain and corrupted recall. The remainder is corruption.
+  const RECALL_PLAN = { medium: { correct: 0.4, uncertain: 0.3 }, high: { correct: 0.9, uncertain: 0.05 } };
+  const STOPWORDS = new Set('that this with from have when what your about there their them they then than were will would could should into over also only very much some such like just been being after before while where which other these those because always often usually something someone people thing things time make made take used uses using says said family'.split(' '));
+  function emptyProfile(id) {
+    return { id, label: id === 'learner-a' ? 'Learner A' : 'Learner B', memories: [], history: [], metadata: [], lastTrace: null, pendingInvitation: null, lastInvitationAt: 0, invitationsEnabled: false, metadataEnabled: true, turn: 0, asked: [] };
+  }
+  function newState() {
+    return { version: VERSION, activeProfile: 'learner-a', profiles: { 'learner-a': emptyProfile('learner-a'), 'learner-b': emptyProfile('learner-b') } };
+  }
+  function assertInput(input) {
+    if (!input || typeof input !== 'object' || Array.isArray(input)) throw new Error('A structured input is required.');
+    if (!['chat', 'teach', 'correct', 'ask', 'recall', 'next', 'confirm', 'invite', 'skip', 'settings'].includes(input.mode)) throw new Error('Unknown action.');
+    if (input.forceError != null && typeof input.forceError !== 'boolean') throw new Error('forceError must be boolean.');
+    for (const f of ['concept', 'content', 'text']) if (input[f] != null && (typeof input[f] !== 'string' || input[f].length > (f === 'concept' ? 120 : 3000))) throw new Error(`Invalid ${f}.`);
+    if (input.topic && !TOPICS.includes(input.topic)) throw new Error('Unknown teaching domain.');
+  }
+  function parseMessage(text) {
+    text = String(text || '').trim();
+    // Explicit grammar is intentionally small. An optional LLM adapter can extract grounded spans.
+    const teaching = text.match(/^(teach|correct|教|纠正)\s*[:：]\s*(.{1,120}?)\s*[=＝]\s*([\s\S]+)$/iu);
+    if (teaching) return { mode: /^(correct|纠正)$/iu.test(teaching[1]) ? 'correct' : 'teach', concept: teaching[2].trim(), content: teaching[3].trim(), text };
+    const question = text.match(/^(?:what does|what is|do you remember)\s+(.+?)(?:\s+mean)?[?.!]*$/iu);
+    if (question) return { mode: 'ask', concept: question[1].trim(), text };
+    const zh = text.match(/^(.+?)(?:是什么意思|是什么)[？?。]*$/u);
+    if (zh) return { mode: 'ask', concept: zh[1], text };
+    if (/^(next|ask me|ask me a question|下一个|问我)[.!?。？]*$/iu.test(text)) return { mode: 'next', text };
+    return { mode: 'chat', text };
+  }
+  function policyScore(item, topic, turn) {
+    // Recency is staleness, not a timestamp: higher means longer since last practice.
+    const staleness = clamp((turn - item.lastReviewedTurn) / 10, 0, 1);
+    return round(0.5 * (1 - item.mastery) + 0.3 * staleness + 0.2 * (item.topic === topic ? 1 : 0));
+  }
+  function policyAction(mastery) {
+    return mastery < 0.3 ? 'ask_to_learn' : mastery < 0.7 ? 'uncertain_recall' : 'follow_up';
+  }
+  function safeCorruption(item) {
+    // Omission only, in low-stakes designated teaching material. No fabricated medical/recipe steps.
+    const chunks = item.content.split(/\s*;\s*/u).filter(Boolean);
+    if (chunks.length >= 2) return { text: chunks.slice(0, -1).join('; '), operator: 'omit_last_segment', omitted: chunks[chunks.length - 1], detail: `omitted the last step: “${chunks[chunks.length - 1]}”` };
+    const words = item.content.trim().split(/\s+/u);
+    if (words.length >= 4) return { text: words.slice(0, -2).join(' '), operator: 'omit_last_two_words', omitted: words.slice(-2).join(' '), detail: `omitted the last two words: “${words.slice(-2).join(' ')}”` };
+    return { text: item.content, operator: 'uncertainty_only', omitted: null, detail: 'content too short to corrupt; flagged as uncertain' };
+  }
+  function quotedTerms(text) {
+    // Curiosity targets are terms the teacher marked with quotes, e.g. served with “kopi”. Straight single quotes are skipped (apostrophes).
+    return [...new Set([...String(text).matchAll(/["“「『‘]([^"”」』’\n]{1,40})["”」』’]/gu)].map(m => m[1].trim()).filter(Boolean))].slice(0, 5);
+  }
+  function draw(...parts) {
+    // Deterministic uniform draw (FNV-1a) so every "random" recall decision is replayable from the trace.
+    let h = 0x811c9dc5;
+    for (const ch of parts.join('|')) { h ^= ch.codePointAt(0); h = Math.imul(h, 0x01000193) >>> 0; }
+    // murmur3 finalizer spreads similar inputs (consecutive turns) evenly across [0, 1).
+    h ^= h >>> 16; h = Math.imul(h, 0x85ebca6b); h ^= h >>> 13; h = Math.imul(h, 0xc2b2ae35); h ^= h >>> 16;
+    return (h >>> 0) / 4294967296;
+  }
+  function band(mastery) { return mastery < 0.3 ? 'low' : mastery < 0.7 ? 'medium' : 'high'; }
+  function recallOutcome(mastery, u) {
+    const plan = RECALL_PLAN[band(mastery)];
+    if (!plan) return 'ask';
+    return u < plan.correct ? 'correct' : u < plan.correct + plan.uncertain ? 'uncertain' : 'corrupt';
+  }
+  function segments(content) { return content.split(/\s*(?:;|\n)\s*/u).filter(Boolean); }
+  function corrupt(item, memories, u) {
+    // Each operator only rearranges or drops what this user taught; nothing is invented.
+    const parts = segments(item.content), words = item.content.trim().split(/\s+/u);
+    const neighbour = memories.find(m => m.id !== item.id && item.related.includes(m.id) && !safetySensitive(m));
+    const ops = [];
+    if (parts.length >= 2) {
+      const i = Math.floor(u * parts.length) % parts.length;
+      ops.push({ operator: 'omit_step', text: parts.filter((_, j) => j !== i).join('; '), omitted: parts[i], detail: `omitted step ${i + 1}: “${parts[i]}”` });
+      const s = Math.floor(u * (parts.length - 1)) % (parts.length - 1), swapped = [...parts];
+      [swapped[s], swapped[s + 1]] = [swapped[s + 1], swapped[s]];
+      ops.push({ operator: 'swap_steps', text: swapped.join('; '), omitted: null, detail: `swapped steps ${s + 1} and ${s + 2}` });
+    }
+    if (neighbour) ops.push({ operator: 'confuse_related', text: neighbour.content, omitted: null, detail: `used the meaning of related concept “${neighbour.concept}”` });
+    if (words.length >= 4) {
+      const keep = Math.max(2, Math.ceil(words.length * 0.6));
+      ops.push({ operator: 'approximate', text: `${words.slice(0, keep).join(' ')}…`, omitted: words.slice(keep).join(' '), detail: `only the first ${keep} of ${words.length} words` });
+    }
+    if (!ops.length) return { operator: 'uncertainty_only', text: item.content, omitted: null, detail: 'content too short to corrupt; flagged as uncertain' };
+    return ops[Math.floor(draw(item.id, u) * ops.length)];
+  }
+  function keywords(text) {
+    return [...new Set((String(text).toLowerCase().match(/\p{L}[\p{L}'-]{3,}/gu) || []).filter(w => !STOPWORDS.has(w)))];
+  }
+  function linkRelated(item, memories) {
+    // Keyword graph: same teaching domain AND a shared keyword, or one concept is mentioned in the other's content.
+    const mine = new Set(keywords(`${item.concept} ${item.content}`));
+    for (const other of memories) {
+      if (other.id === item.id || other.topic !== item.topic || item.related.includes(other.id)) continue;
+      const shared = keywords(`${other.concept} ${other.content}`).some(w => mine.has(w));
+      const words = text => ` ${key(text).replace(/[^\p{L}\p{N}]+/gu, ' ')} `;
+      const mentioned = words(item.content).includes(words(other.concept)) || words(other.content).includes(words(item.concept));
+      if (shared || mentioned) { item.related.push(other.id); other.related.push(item.id); }
+    }
+  }
+  function curiosity(p) {
+    // Concepts the user mentioned while teaching but has not taught yet, newest first.
+    const known = new Set(p.memories.map(m => key(m.concept)));
+    for (const m of [...p.memories].reverse()) for (const word of m.mentions || []) if (!known.has(key(word)) && !p.asked.includes(key(word))) return { word, from: m };
+    return null;
+  }
+  function safetySensitive(item) {
+    return /\b(medicine|medication|dosage|dose|allerg|poison|emergency|suicide|insulin|bleach|raw chicken)\b|药|剂量|过敏|自杀|急救|中毒/iu.test(`${item.concept} ${item.content}`);
+  }
+  function historyText(input) {
+    if (input.text) return input.text;
+    if (input.mode === 'teach') return `Teach: ${input.concept} = ${input.content}`;
+    if (input.mode === 'correct') return `Correct: ${input.concept} = ${input.content}`;
+    if (input.mode === 'ask') return `What does ${input.concept} mean?`;
+    if (input.mode === 'recall') return `Recall: ${input.concept || 'a memory'}`;
+    return { next: 'Ask me a question.', confirm: `Yes, that is correct: ${input.concept || ''}`, invite: 'Invite me to teach.', skip: 'Skip this invitation.' }[input.mode] || '';
+  }
+  class Engine {
+    constructor(state) {
+      this.state = state ? clone(state) : newState();
+      if (this.state.version !== VERSION || !this.state.profiles?.['learner-a'] || !this.state.profiles?.['learner-b']) this.state = newState();
+    }
+    profile(id = this.state.activeProfile) {
+      if (!Object.hasOwn(this.state.profiles, id)) throw new Error('Unknown profile.');
+      return this.state.profiles[id];
+    }
+    switchProfile(id) { this.profile(id); this.state.activeProfile = id; return clone(this.state); }
+    export() { return clone(this.state); }
+    resetProfile(id = this.state.activeProfile) { this.profile(id); this.state.profiles[id] = emptyProfile(id); }
+    transact(raw, clock = Date.now()) {
+      assertInput(raw);
+      let input = { ...raw };
+      if (input.mode === 'chat') input = { ...input, ...parseMessage(input.text) };
+      const p = this.profile();
+      if (input.mode === 'settings') {
+        for (const f of ['invitationsEnabled', 'metadataEnabled']) if (typeof input[f] === 'boolean') p[f] = input[f];
+        return { state: this.export(), trace: p.lastTrace, message: '' };
+      }
+      if (input.mode === 'invite' && (!p.invitationsEnabled || p.pendingInvitation || clock - p.lastInvitationAt < 60000)) return { state: this.export(), message: '', skipped: true };
+      if (input.mode === 'skip') {
+        if (p.pendingInvitation && p.metadataEnabled) p.metadata.push({ at: new Date(clock).toISOString(), kind: 'invitation_skipped', responseDelayMs: null, explanationCharacters: 0, correction: false, selfInitiated: false });
+        p.pendingInvitation = null;
+        return { state: this.export(), message: 'No problem. You can return whenever you choose.', skipped: true };
+      }
+      const concept = String(input.concept || '').trim();
+      const content = String(input.content || '').trim();
+      if (['teach', 'correct', 'ask'].includes(input.mode) && !concept) throw new Error('Please name the concept.');
+      if (['teach', 'correct'].includes(input.mode) && !content) throw new Error('Please enter what you want to teach.');
+      if (p.memories.length >= 200 && input.mode === 'teach' && !p.memories.some(m => key(m.concept) === key(concept))) throw new Error('Demo limit: 200 memories per learner. Delete a profile to start over.');
+      p.turn += 1;
+      const interactionId = `${p.id}-turn-${p.turn}`;
+      let item = p.memories.find(m => key(m.concept) === key(concept));
+      let before = item ? item.mastery : null;
+      let action = input.mode, reason = '', permitted = '', corruption = null, askAbout = null, recall = null;
+      let memoryId = item?.id || null;
+      const topic = input.topic || item?.topic || TOPICS[0];
+      const candidates = p.memories.map(m => ({ concept: m.concept, score: policyScore(m, topic, p.turn), mastery: m.mastery })).sort((a, b) => b.score - a.score);
+      if (input.mode === 'teach' || input.mode === 'correct') {
+        if (!item) {
+          item = { id: `${p.id}-m${p.turn}`, concept, content, topic, related: [], mentions: quotedTerms(content).filter(w => key(w) !== key(concept)), mastery: 0.35, learnedAt: new Date(clock).toISOString(), lastReviewedTurn: p.turn, sourceInteraction: interactionId, correctionHistory: [], pendingContent: null };
+          // Keyword graph: bidirectional links only within this profile.
+          linkRelated(item, p.memories);
+          p.memories.push(item); action = 'teach'; reason = 'New user-provided fact. Stored with provenance; initial mastery is 0.35.';
+        } else if (input.mode === 'correct') {
+          item.correctionHistory.push({ previous: item.content, updated: content, interactionId, at: new Date(clock).toISOString() });
+          item.correctionHistory = item.correctionHistory.slice(-30);
+          item.content = content; item.pendingContent = null; item.mastery = clamp(item.mastery + 0.2, 0, 1); item.sourceInteraction = interactionId; item.lastReviewedTurn = p.turn;
+          item.mentions = quotedTerms(content).filter(w => key(w) !== key(item.concept)); linkRelated(item, p.memories);
+          reason = 'Explicit correction. Preserve revision history, replace fact, raise mastery by 0.20.';
+        } else if (item.content !== content) {
+          item.pendingContent = content; action = 'conflict'; reason = 'Conflicting teaching is pending. An explicit correction is required before replacing existing memory.';
+        } else {
+          item.mastery = clamp(item.mastery + 0.1, 0, 1); item.lastReviewedTurn = p.turn;
+          reason = 'Repeated teaching. Same content, mastery increased by 0.10.';
+        }
+        memoryId = item.id; permitted = item.content;
+      } else if (input.mode === 'confirm') {
+        if (!item) { action = 'ask_to_learn'; reason = 'No matching memory exists to confirm.'; }
+        else {
+          const kept = item.pendingContent != null; item.pendingContent = null;
+          item.mastery = clamp(item.mastery + 0.15, 0, 1); item.lastReviewedTurn = p.turn; permitted = item.content; action = 'recall';
+          reason = `Explicit confirmation raises mastery by 0.15. Recall alone never raises mastery.${kept ? ' The pending conflicting version was discarded.' : ''}`;
+        }
+      } else if (input.mode === 'ask' || input.mode === 'recall') {
+        if (!item && input.mode === 'recall' && !concept) { item = p.memories[0]; before = item?.mastery ?? null; }
+        if (!item) { action = 'ask_to_learn'; reason = 'Knowledge boundary: exact concept not found in this learner’s memory. Base-model facts are not permitted.'; }
+        else {
+          memoryId = item.id; permitted = item.content; action = 'recall'; item.lastReviewedTurn = p.turn;
+          reason = 'Retrieve the exact stored fact. Do not add pretrained knowledge.';
+          if (input.forceError && !safetySensitive(item) && item.mastery >= 0.3 && item.mastery < 0.7) {
+            corruption = safeCorruption(item); permitted = corruption.text; action = corruption.operator === 'uncertainty_only' ? 'uncertain_recall' : 'controlled_recall';
+            reason = 'Presenter-triggered controlled omission at medium mastery; original memory is unchanged.';
+          } else if (input.forceError) reason += ' Controlled omission disabled at this mastery or for safety-sensitive content.';
+        }
+      } else if (input.mode === 'next' || input.mode === 'invite') {
+        // A deterministic exploration turn makes the policy replayable without hidden randomness.
+        const explore = !p.memories.length || p.turn % 5 === 0;
+        const conflicted = p.memories.find(m => m.pendingContent != null);
+        if (conflicted) {
+          item = conflicted; before = item.mastery; memoryId = item.id; action = 'clarify'; permitted = item.content;
+          reason = 'Clarification first: this memory has an unresolved conflicting version, so ask which is right instead of overwriting.';
+        } else if (explore) {
+          const wonder = curiosity(p);
+          item = null; memoryId = null; action = 'ask_to_learn';
+          if (wonder) { askAbout = wonder.word; p.asked.push(key(wonder.word)); p.asked = p.asked.slice(-200); reason = `Exploration turn: “${wonder.word}” was mentioned while teaching “${wonder.from.concept}” but has not been taught yet.`; }
+          else reason = 'Exploration turn: ask the user for a new concept. No invented topic knowledge.';
+        } else {
+          item = p.memories.find(m => m.concept === candidates[0].concept); before = item.mastery; memoryId = item.id; permitted = item.content; item.lastReviewedTurn = p.turn;
+          const u =round(draw(p.id, item.id, p.turn)), outcome = recallOutcome(item.mastery, u);
+          recall = { band: band(item.mastery), draw: u, outcome };
+          reason = `Highest priority = 0.5 × (1 − mastery) + 0.3 × staleness + 0.2 × topic relevance; score ${candidates[0].score}. ${band(item.mastery)} mastery → ${outcome} (draw ${u}).`;
+          if (outcome === 'ask') action = 'ask_to_learn';
+          else if (outcome === 'correct') action = item.mastery >= 0.7 ? 'follow_up' : 'recall';
+          else if (outcome === 'uncertain' || safetySensitive(item)) { action = 'uncertain_recall'; if (outcome === 'corrupt') reason += ' Corruption skipped for safety-sensitive content.'; }
+          else { corruption = corrupt(item, p.memories, u); permitted = corruption.text; action = corruption.operator === 'uncertainty_only' ? 'uncertain_recall' : 'controlled_recall'; reason += ` Operator: ${corruption.operator}; stored memory is unchanged.`; }
+        }
+      } else {
+        action = 'help'; reason = 'Offline parser needs a structured teaching input. No unrestricted model answer is used.';
+      }
+      const trace = {
+        interactionId, inputMode: input.mode, action, concept: item?.concept || askAbout || concept || 'a new expression', topic,
+        memoryId, sourceInteraction: item?.sourceInteraction || null, masteryBefore: before,
+        masteryAfter: item ? round(item.mastery) : null, allowedKnowledge: permitted ? [permitted] : [],
+        knowledgeBoundary: 'per-user external memory only', reason, candidates: candidates.slice(0, 5), recall,
+        relatedConcept: item ? p.memories.find(m => item.related.includes(m.id))?.concept || null : null,
+        corruption, pendingContent: item?.pendingContent || null, generatedAt: new Date(clock).toISOString(), realization: 'deterministic-template'
+      };
+      const message = renderMessage(trace);
+      if (input.mode === 'invite') {
+        p.pendingInvitation = { at: clock, id: interactionId }; p.lastInvitationAt = clock;
+        if (p.metadataEnabled) p.metadata.push({ at: new Date(clock).toISOString(), kind: 'invitation', responseDelayMs: null, explanationCharacters: 0, correction: false, selfInitiated: false });
+      } else {
+        const pending = p.pendingInvitation;
+        if (p.metadataEnabled) p.metadata.push({ at: new Date(clock).toISOString(), kind: 'response', responseDelayMs: pending ? Math.max(0, clock - pending.at) : null, explanationCharacters: Array.from(content || input.text || historyText(input)).length, correction: input.mode === 'correct', selfInitiated: !pending });
+        p.pendingInvitation = null;
+        p.history.push({ role: 'user', text: historyText(input), at: new Date(clock).toISOString() });
+      }
+      p.history.push({ role: 'assistant', text: message, at: new Date(clock).toISOString(), action, traceId: interactionId });
+      p.history = p.history.slice(-120); p.metadata = p.metadata.slice(-1000); p.lastTrace = trace;
+      return { state: this.export(), trace: clone(trace), message };
+    }
+    applyWording(index) {
+      const p = this.profile(), trace = p.lastTrace;
+      if (!trace || !Number.isInteger(index) || !WORDING[trace.action]?.[index]) return false;
+      trace.realization = 'api-selected-approved-wording';
+      p.history[p.history.length - 1].text = renderMessage(trace, index);
+      return true;
+    }
+  }
+  function renderMessage(trace, variant = 0) {
+    const intro = WORDING[trace.action]?.[variant] || WORDING[trace.action]?.[0] || '';
+    const fact = trace.allowedKnowledge[0] || '';
+    const name = trace.concept;
+    switch (trace.action) {
+      case 'teach': return `${intro}\n“${name}” → ${fact}\nIs there a story behind it?`;
+      case 'correct': return `${intro}\n“${name}” now means: ${fact}`;
+      case 'recall': return `${intro}\n“${name}” → ${fact}\nDid I remember it correctly?`;
+      case 'ask_to_learn': return `${intro}\nWould you like to teach me about ${name}? You can also skip this.`;
+      case 'uncertain_recall': return `${intro}\nFor “${name}”, I have: ${fact}\nCould you explain it once more?`;
+      case 'controlled_recall': return `${intro}\n“${name}” → ${fact}\n${{ swap_steps: 'Did I get the order right?', confuse_related: 'Or am I mixing it up with something else you taught me?' }[trace.corruption?.operator] || 'What did I leave out?'}`;
+      case 'follow_up': return `${intro}\nYou taught me “${name}”: ${fact}\n${trace.relatedConcept ? `How is it connected to “${trace.relatedConcept}”?` : 'When would you use it?'}`;
+      case 'conflict': return `${intro}\nMy existing memory for “${name}” is: ${fact}\nUse Correct to replace it, or keep teaching something else.`;
+      case 'clarify': return `${intro}\nFor “${name}”, you first taught me: ${fact}\nLater I heard: ${trace.pendingContent}\nWhich one is right? Use Correct to replace it, or Confirm to keep the first.`;
+      default: return 'I am an AI learner, not a person. In this key-free demo, use Teach, Ask, Correct or Recall. You can also type “Teach: tavi = a happy moment shared over tea”. No need to continue unless you feel like it.';
+    }
+  }
+  function summarizeMetadata(events) {
+    const responses = events.filter(e => e.kind === 'response');
+    const invites = events.filter(e => e.kind === 'invitation');
+    const prompted = responses.filter(e => e.responseDelayMs !== null);
+    return { invitations: invites.length, responses: responses.length, responseRate: invites.length ? round(prompted.length / invites.length) : null, meanResponseDelayMs: prompted.length ? round(mean(prompted.map(e => e.responseDelayMs)), 0) : null, meanExplanationCharacters: responses.length ? round(mean(responses.map(e => e.explanationCharacters)), 1) : null, corrections: responses.filter(e => e.correction).length, selfInitiated: responses.filter(e => e.selfInitiated).length };
+  }
+  function rng(seed = 42) {
+    let t = seed >>> 0;
+    return () => { t += 0x6D2B79F5; let z = t; z = Math.imul(z ^ z >>> 15, z | 1); z ^= z + Math.imul(z ^ z >>> 7, z | 61); return ((z ^ z >>> 14) >>> 0) / 4294967296; };
+  }
+  function normal(random) { return Math.sqrt(-2 * Math.log(Math.max(1e-12, random()))) * Math.cos(2 * Math.PI * random()); }
+  function simulate(options = {}) {
+    const { seed = 42, days = 60, changeDay = 31, shift = 1.2, scenario = 'sustained' } = options;
+    if (!Number.isInteger(seed) || !Number.isInteger(days) || days < 22 || days > 365 || !Number.isInteger(changeDay) || changeDay < 2 || changeDay > days || !Number.isFinite(shift) || shift < 0 || shift > 4 || !['stable', 'sustained', 'temporary'].includes(scenario)) throw new Error('Invalid simulation parameters.');
+    const random = rng(seed), rows = [];
+    for (let day = 1; day <= days; day++) {
+      const changed = scenario !== 'stable' && day >= changeDay && (scenario !== 'temporary' || day < changeDay + 3);
+      const latent = normal(random) * 0.6 + (changed ? shift : 0);
+      const probability = clamp(0.88 - 0.13 * latent, 0.05, 0.99);
+      const invitations = 8;
+      let responded = 0;
+      for (let j = 0; j < invitations; j++) if (random() < probability) responded++;
+      rows.push({ day, invitations, responses: responded, responseRate: responded / invitations, responseDelayMinutes: responded ? round(Math.exp(Math.log(2.5) + 0.32 * latent + 0.18 * normal(random))) : null, explanationCharacters: responded ? Math.max(5, Math.round(160 - 28 * latent + 18 * normal(random))) : null, corrections: responded ? Math.max(0, Math.round(1.5 - 0.2 * latent + 0.5 * normal(random))) : 0, selfInitiated: Math.max(0, Math.round(2 - 0.4 * latent + 0.7 * normal(random))), changed });
+    }
+    return rows;
+  }
+  function detect(rows, options = {}) {
+    const { baselineDays = 20, k = 0.5, h = 5 } = options;
+    if (!Array.isArray(rows) || !Number.isInteger(baselineDays) || baselineDays < 10 || baselineDays >= rows.length || !Number.isFinite(k) || k < 0 || k > 5 || !Number.isFinite(h) || h <= 0 || h > 100) throw new Error('Invalid detector parameters.');
+    const baseline = rows.slice(0, baselineDays);
+    const specs = [
+      { id: 'responseRate', transform: x => x, sign: -1, weight: 0.3, floor: 0.08 },
+      { id: 'responseDelayMinutes', transform: x => Math.log(Math.max(0.01, x)), sign: 1, weight: 0.25, floor: 0.15 },
+      { id: 'explanationCharacters', transform: x => x, sign: -1, weight: 0.2, floor: 12 },
+      { id: 'selfInitiated', transform: x => x, sign: -1, weight: 0.15, floor: 0.5 },
+      { id: 'corrections', transform: x => x, sign: -1, weight: 0.1, floor: 0.5 }
+    ].map(s => { const values = baseline.filter(r => r[s.id] != null && Number.isFinite(r[s.id])).map(r => s.transform(r[s.id])); if (values.length < 8) throw new Error('Not enough valid baseline data.'); return { ...s, mu: mean(values), sigma: Math.max(s.floor, sd(values)) }; });
+    const aggregate = row => { let value = 0, weights = 0; for (const s of specs) if (row[s.id] != null && Number.isFinite(row[s.id])) { value += s.weight * s.sign * (s.transform(row[s.id]) - s.mu) / s.sigma; weights += s.weight; } return weights ? value / weights : null; };
+    const baseAggregate = baseline.map(aggregate).filter(x => x != null);
+    const baseMu = mean(baseAggregate), baseSigma = Math.max(0.3, sd(baseAggregate));
+    let sum = 0, firstAlarmDay = null, latched = false;
+    const output = rows.map((row, i) => {
+      const raw = aggregate(row), z = raw == null ? null : (raw - baseMu) / baseSigma;
+      if (i >= baselineDays && z != null) sum = Math.max(0, sum + z - k);
+      const crossed = i >= baselineDays && sum > h && !latched;
+      if (crossed) { latched = true; firstAlarmDay = row.day; }
+      return { ...row, z: z == null ? null : round(z), cusum: i < baselineDays ? 0 : round(sum), calibration: i < baselineDays, alarm: crossed };
+    });
+    const changeDay = rows.find(r => r.changed)?.day || null;
+    return { rows: output, firstAlarmDay, changeDay, detectionDelay: firstAlarmDay != null && changeDay != null && firstAlarmDay >= changeDay ? firstAlarmDay - changeDay : null, preChangeFalseAlarm: firstAlarmDay != null && (changeDay == null || firstAlarmDay < changeDay), settings: { baselineDays, k, h }, baseline: specs.map(s => ({ field: s.id, mean: round(s.mu), std: round(s.sigma), sign: s.sign, weight: s.weight })), interpretation: 'Synthetic behavioural change only. Not a mental-health diagnosis or a validated clinical score.' };
+  }
+  function monteCarlo(options = {}) {
+    const { runs = 200, seed = 1000, shift = 1.2, k = 0.5, h = 5, baselineDays = 20 } = options;
+    if (!Number.isInteger(runs) || runs < 1 || runs > 2000) throw new Error('Invalid replicate count.');
+    if (!Number.isInteger(baselineDays) || baselineDays < 10 || baselineDays >= 31) throw new Error('Calibration must finish before the day-31 simulated change.');
+    const stable = [], changed = [];
+    for (let i = 0; i < runs; i++) {
+      const a = detect(simulate({ seed: seed + i, scenario: 'stable', shift }), { k, h, baselineDays });
+      const b = detect(simulate({ seed: seed + 100000 + i, scenario: 'sustained', shift }), { k, h, baselineDays });
+      stable.push(a); changed.push(b);
+    }
+    const temporary = [];
+    for (let i = 0; i < runs; i++) temporary.push(detect(simulate({ seed: seed + 200000 + i, scenario: 'temporary', shift }), { k, h, baselineDays }));
+    const delays = changed.filter(r => r.detectionDelay != null).map(r => r.detectionDelay).sort((a, b) => a - b);
+    const sumStable = stable.filter(r => r.firstAlarmDay !== null).length;
+    const preAlarm = changed.filter(r => r.preChangeFalseAlarm).length;
+    const detected = delays.length;
+    const middle = delays.length >> 1, median = !delays.length ? null : delays.length % 2 ? delays[middle] : (delays[middle - 1] + delays[middle]) / 2;
+    const temporaryAlarms = temporary.filter(r => r.detectionDelay != null).length;
+    return { runsPerCondition: runs, monitoredDays: 60 - baselineDays, seed, shift, k, h, baselineDays, stableFalseAlarmCount: sumStable, stableSequenceFalseAlarmRate: sumStable / runs, changedPreAlarmCount: preAlarm, changedPreAlarmRate: preAlarm / runs, detectedAfterChangeCount: detected, detectedAfterChangeRate: detected / runs, noAlarmCount: changed.filter(r => r.firstAlarmDay == null).length, meanDetectionDelay: delays.length ? round(mean(delays), 2) : null, medianDetectionDelay: median, temporaryAlarmCount: temporaryAlarms, temporaryAlarmRate: temporaryAlarms / runs, temporaryDefinition: 'Separate 3-day temporary dips (days 31–33), then a return to baseline. Counts sequences whose first alarm came on or after day 31. A sustained-change detector is expected to flag some of these; this is a limitation, not a success.', delayDefinition: 'First alarm day minus change day (day 31); only post-change first detections. Pre-change alarms and misses reported separately.', falseAlarmDefinition: 'Fraction of stable 60-day sequences with at least one alarm after the first 20 calibration days (or selected baselineDays). Not a per-day false-positive rate.', dataType: 'synthetic; no participants; fixed, untuned illustrative thresholds' };
+  }
+  function sensitivity(options = {}) {
+    // Threshold sweep for the trade-off chart. The default h=5 was fixed beforehand; this table must not be used to pick a "best" h on the same seeds.
+    const { hs = [3, 4, 5, 6, 8, 10], runs = 200, seed = 1000, k = 0.5 } = options;
+    return hs.map(h => { const m = monteCarlo({ runs, seed, k, h }); return { h, stableFalseAlarmRate: m.stableSequenceFalseAlarmRate, detectedAfterChangeRate: m.detectedAfterChangeRate, temporaryAlarmRate: m.temporaryAlarmRate, meanDetectionDelay: m.meanDetectionDelay }; });
+  }
+  function functionalEvaluation() {
+    const results = [];
+    const test = (name, fn, group) => { try { const detail = fn(); results.push({ name, group, pass: true, detail }); } catch (e) { results.push({ name, group, pass: false, detail: e.message }); } };
+    const check = (x, message) => { if (!x) throw new Error(message); };
+    const make = () => new Engine();
+    for (let i = 0; i < 20; i++) {
+      test(`Untaught boundary ${i + 1}`, () => { const e = make(); const r = e.transact({ mode: 'ask', concept: ['shiok', 'kampung', 'tavi', 'melo'][i % 4] + (i > 3 ? i : '') }); check(r.trace.action === 'ask_to_learn' && r.trace.allowedKnowledge.length === 0, 'Untaught fact was surfaced.'); return 'No permitted fact; ask-to-learn selected.'; }, 'Knowledge boundary');
+    }
+    for (let i = 0; i < 20; i++) {
+      test(`Taught recall ${i + 1}`, () => { const e = make(), content = `synthetic meaning ${i}: a copper kite`; e.transact({ mode: 'teach', concept: `word-${i}`, content }); const r = e.transact({ mode: 'ask', concept: `word-${i}` }); check(r.trace.allowedKnowledge[0] === content && r.message.includes(content), 'Recall mismatch.'); return 'Exact user-taught content, not a pretrained meaning.'; }, 'Taught recall');
+    }
+    for (let i = 0; i < 10; i++) {
+      test(`Correction ${i + 1}`, () => { const e = make(); e.transact({ mode: 'teach', concept: 'tavi', content: 'first meaning' }); e.transact({ mode: 'correct', concept: 'tavi', content: `revised meaning ${i}` }); const r = e.transact({ mode: 'ask', concept: 'tavi' }); check(r.trace.allowedKnowledge[0] === `revised meaning ${i}` && e.profile().memories[0].correctionHistory.length === 1, 'Correction failed.'); return 'Memory and provenance updated; prior version retained.'; }, 'Correction update');
+      test(`User isolation ${i + 1}`, () => { const e = make(); e.transact({ mode: 'teach', concept: 'tavi', content: `private synthetic fact ${i}` }); e.switchProfile('learner-b'); const r = e.transact({ mode: 'ask', concept: 'tavi' }); check(r.trace.allowedKnowledge.length === 0 && e.profile().memories.length === 0, 'Cross-profile leakage.'); return 'Learner B cannot retrieve learner A’s memory.'; }, 'Memory isolation');
+      test(`Controlled omission ${i + 1}`, () => { const e = make(); e.transact({ mode: 'teach', concept: 'tea custom', content: 'choose a cup; share a story; say thank you' }); const r = e.transact({ mode: 'recall', concept: 'tea custom', forceError: true }); check(r.trace.corruption?.operator === 'omit_last_segment' && r.trace.allowedKnowledge[0] === 'choose a cup; share a story' && e.profile().memories[0].content.endsWith('say thank you'), 'Corruption operator mismatch.'); return 'Exactly one segment omitted; database remains intact.'; }, 'Controlled recall');
+    }
+    const allowed = { low: ['ask_to_learn'], medium: ['recall', 'uncertain_recall', 'controlled_recall'], high: ['follow_up', 'uncertain_recall', 'controlled_recall'] };
+    for (const m of [0, 0.1, 0.29, 0.3, 0.5, 0.69, 0.7, 0.8, 0.9, 1]) {
+      test(`Mastery policy ${m}`, () => { const e = make(); e.transact({ mode: 'teach', concept: 'tavi', content: 'a happy moment; shared over tea' }); e.profile().memories[0].mastery = m; const r = e.transact({ mode: 'next' }); check(r.trace.recall?.band === band(m) && allowed[band(m)].includes(r.trace.action), 'Policy boundary mismatch.'); check(r.trace.masteryBefore === m, 'Selected memory has incorrect pre-action mastery trace.'); check(r.trace.recall.outcome === recallOutcome(m, r.trace.recall.draw), 'Recall outcome does not replay from its draw.'); return `mastery=${m} → ${r.trace.recall.outcome} → ${r.trace.action}`; }, 'Policy consistency');
+    }
+    const N = 4000, freq = (m, kind) => Array.from({ length: N }, (_, i) => recallOutcome(m, draw('calibration', i))).filter(o => o === kind).length / N;
+    test('Low mastery never recalls', () => { check(freq(0.2, 'ask') === 1, 'Low mastery attempted recall.'); return 'mastery < 0.3 → ask to learn in 100% of draws'; }, 'Error calibration');
+    test('Medium mastery error rate ≈ 30%', () => { const f = freq(0.5, 'corrupt'); check(Math.abs(f - 0.3) < 0.03, `Observed ${f}.`); return `corrupt in ${(f * 100).toFixed(1)}% of ${N} draws (planned 30%)`; }, 'Error calibration');
+    test('High mastery error rate ≈ 5%', () => { const f = freq(0.85, 'corrupt'); check(Math.abs(f - 0.05) < 0.015, `Observed ${f}.`); return `corrupt in ${(f * 100).toFixed(1)}% of ${N} draws (planned 5%)`; }, 'Error calibration');
+    const target = { id: 'x1', concept: 'kaya toast', content: 'toast the bread; spread kaya; add butter', related: ['x2'] };
+    const peer = { id: 'x2', concept: 'kopi', content: 'coffee brewed with a cloth sock', related: ['x1'] };
+    const taught = new Set(`${target.content} ${peer.content}`.split(/[\s;…]+/u).filter(Boolean));
+    for (let i = 0; i < 10; i++) {
+      const u = 0.05 + i * 0.1;
+      test(`Corruption operator ${i + 1}`, () => {
+        const before = JSON.stringify(target), c = corrupt(target, [target, peer], u), parts = segments(target.content), out = segments(c.text);
+        check(c.text.split(/[\s;…]+/u).filter(Boolean).every(w => taught.has(w)), 'Corruption introduced untaught words.');
+        check(JSON.stringify(target) === before, 'Stored memory was modified.');
+        if (c.operator === 'omit_step') check(out.length === parts.length - 1 && out.every(s => parts.includes(s)), 'omit_step mismatch.');
+        else if (c.operator === 'swap_steps') check(out.length === parts.length && [...out].sort().join() === [...parts].sort().join() && out.join() !== parts.join(), 'swap_steps mismatch.');
+        else if (c.operator === 'confuse_related') check(c.text === peer.content, 'confuse_related mismatch.');
+        else if (c.operator === 'approximate') check(target.content.startsWith(c.text.slice(0, -1)), 'approximate mismatch.');
+        else throw new Error(`Unexpected operator ${c.operator}.`);
+        return `${c.operator}: ${c.detail}`;
+      }, 'Corruption operators');
+    }
+    test('Pending conflict triggers a clarification question', () => { const e = make(); e.transact({ mode: 'teach', concept: 'tavi', content: 'tea moment' }); e.transact({ mode: 'teach', concept: 'tavi', content: 'coffee moment' }); const r = e.transact({ mode: 'next' }); check(r.trace.action === 'clarify' && r.message.includes('coffee moment') && e.profile().memories[0].content === 'tea moment', 'No clarification.'); e.transact({ mode: 'confirm', concept: 'tavi' }); check(e.profile().memories[0].pendingContent === null, 'Confirm did not resolve the conflict.'); return 'Asks which version is right; Confirm keeps the first.'; }, 'Clarification & curiosity');
+    test('Quoted mention becomes a curiosity question', () => { const e = make(); e.transact({ mode: 'teach', concept: 'kaya toast', content: 'toast with “kaya”, served with “kopi”' }); for (let t = 0; t < 3; t++) e.transact({ mode: 'ask', concept: 'kaya toast' }); const r = e.transact({ mode: 'next' }); check(r.trace.action === 'ask_to_learn' && r.trace.concept === 'kaya' && r.trace.allowedKnowledge.length === 0, 'Mention not explored.'); return 'Exploration turn asks about “kaya”, mentioned but never taught.'; }, 'Clarification & curiosity');
+    test('Keyword graph links only related concepts', () => { const e = make(); e.transact({ mode: 'teach', concept: 'kopi', content: 'strong coffee with condensed milk' }); e.transact({ mode: 'teach', concept: 'kopi o', content: 'black coffee with sugar' }); e.transact({ mode: 'teach', concept: 'shiok', content: 'very satisfying' }); const [a, b, c] = e.profile().memories; check(a.related.includes(b.id) && !a.related.includes(c.id) && c.related.length === 0, 'Graph edges mismatch.'); return 'kopi ↔ kopi o share “coffee”; shiok stays unlinked.'; }, 'Clarification & curiosity');
+    const groups = [...new Set(results.map(r => r.group))].map(group => { const rows = results.filter(r => r.group === group); return { group, passed: rows.filter(r => r.pass).length, total: rows.length }; });
+    return { version: VERSION, mode: 'deterministic controller; no live LLM requests', passed: results.filter(r => r.pass).length, total: results.length, groups, tests: results, limitation: 'Passing these finite scripted tests is not proof of open-ended language understanding, live-provider safety, clinical benefit, or production-grade access control.' };
+  }
+  return { VERSION, TOPICS, WORDING, RECALL_PLAN, Engine, newState, parseMessage, policyScore, policyAction, recallOutcome, draw, corrupt, keywords, quotedTerms, safeCorruption, renderMessage, summarizeMetadata, simulate, detect, monteCarlo, sensitivity, functionalEvaluation, rng, mean, sd };
+});
+</script>
+<script>/* Browser UI. Works as a static GitHub Pages project, as a standalone file, or with server.mjs. */
+(function () {
+  'use strict';
+  const C = window.ChildGPT, $ = id => document.getElementById(id);
+  const escape = value => String(value ?? '').replace(/[&<>"']/gu, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const storage = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch { toast('Browser storage is unavailable; the demo remains in memory.'); } }, remove(k) { try { localStorage.removeItem(k); } catch {} } };
+  let remember = storage.get('childgpt.remember') === 'yes';
+  let engine;
+  try { engine = new C.Engine(remember ? JSON.parse(storage.get('childgpt.state') || 'null') : null); } catch { engine = new C.Engine(); }
+  let mode = 'teach', busy = false, demoRunning = false, remote = null, functional = null, simulation = null, monte = null, sweep = null, providerTrace = null, toastTimer;
+  const names = { studio: 'Learning studio', algorithms: 'Algorithm trace', evaluation: 'Evaluation lab', settings: 'Connect & privacy' };
+  const pct = (value, places = 0) => value == null ? '—' : `${(value * 100).toFixed(places)}%`;
+  function toast(text) { clearTimeout(toastTimer); $('toast').textContent = text; $('toast').hidden = false; toastTimer = setTimeout(() => { $('toast').hidden = true; }, 5500); }
+  function download(name, content, type = 'application/json') {
+    const url = URL.createObjectURL(new Blob([content], { type })), a = document.createElement('a'); a.href = url; a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+  const jsonDownload = (name, data) => download(name, JSON.stringify(data, null, 2));
+  function persist() { if (!remote && remember) storage.set('childgpt.state', JSON.stringify(engine.export())); }
+  function navigate(page) {
+    if (!names[page]) page = 'studio';
+    document.querySelectorAll('.page').forEach(el => el.classList.toggle('active', el.id === `page-${page}`));
+    document.querySelectorAll('.nav-link').forEach(el => el.classList.toggle('active', el.dataset.page === page));
+    $('page-label').textContent = names[page]; document.title = `ChildGPT · ${names[page]}`;
+    if (location.hash !== `#${page}`) history.replaceState(null, '', `#${page}`);
+    if (page === 'algorithms') renderAlgorithms();
+  }
+  function setBusy(value) {
+    busy = value;
+    for (const id of ['send-button', 'next-question', 'guided-demo', 'profile-select', 'delete-profile', 'invite-button']) $(id).disabled = value || demoRunning;
+    $('send-button').textContent = value ? 'Thinking…' : ({ teach: 'Teach Milo ↗', correct: 'Update memory ↗', ask: 'Ask Milo ↗', recall: 'Recall together ↗', chat: 'Send message ↗' }[mode]);
+  }
+  function selectMode(next) {
+    mode = next;
+    document.querySelectorAll('[data-action]').forEach(el => el.classList.toggle('selected', el.dataset.action === mode));
+    $('structured-fields').hidden = mode === 'chat'; $('free-text-field').hidden = mode !== 'chat';
+    $('content-field').hidden = !['teach', 'correct'].includes(mode);
+    $('composer-note').textContent = mode === 'chat' ? 'Offline grammar: “Teach: concept = explanation”, “Correct: concept = explanation”, “What is concept?” or “Ask me”. Connected API mode also extracts exact spans from free text.' : 'No built-in factual answers. Memory starts empty. Synthetic examples only.';
+    setBusy(busy);
+  }
+  async function request(route, method = 'GET', data, connection = remote) {
+    const headers = { ...(data ? { 'Content-Type': 'application/json' } : {}), ...(connection?.token ? { Authorization: `Bearer ${connection.token}` } : {}) };
+    const res = await fetch(`${connection?.base || ''}${route}`, { method, headers, ...(data ? { body: JSON.stringify(data) } : {}), credentials: 'omit', signal: AbortSignal.timeout(45000) });
+    let value; try { value = await res.json(); } catch { throw new Error('Backend returned a non-JSON response. Check the backend URL.'); }
+    if (!res.ok) throw new Error(value.error || `Backend HTTP ${res.status}`);
+    return value;
+  }
+  async function perform(input, internal = false) {
+    if (busy || (demoRunning && !internal)) return;
+    setBusy(true);
+    try {
+      let result;
+      if (remote) { result = await request('/api/turn', 'POST', { input, profile: engine.state.activeProfile }); engine = new C.Engine(result.state); providerTrace = result.provider || null; }
+      else { result = engine.transact(input); providerTrace = null; }
+      persist(); render();
+      if (result.skipped && result.message) toast(result.message);
+      if (result.provider?.wording?.includes('fallback') || result.provider?.extraction?.includes('fallback')) toast('Provider unavailable or output rejected. Deterministic fallback is active.');
+      return result;
+    } catch (e) { toast(e.message || 'Unable to complete this action.'); }
+    finally { setBusy(false); }
+  }
+  function render() {
+    const p = engine.profile();
+    $('profile-select').value = p.id; $('memory-count').textContent = p.memories.length; $('memory-pill').textContent = `${p.memories.length} item${p.memories.length === 1 ? '' : 's'}`;
+    $('mastery-value').textContent = p.memories.length ? pct(C.mean(p.memories.map(m => m.mastery))) : '—';
+    $('mode-badge').textContent = remote ? (remote.apiEnabled ? '● CONNECTED API' : '● SERVER DEMO · NO API') : '● KEY-FREE DEMO';
+    $('remember-toggle').checked = remember; $('metadata-toggle').checked = p.metadataEnabled; $('invitation-toggle').checked = p.invitationsEnabled;
+    $('invitation-bar').hidden = !p.pendingInvitation;
+    const history = $('chat-history');
+    if (!p.history.length) history.innerHTML = '<div class="welcome"><div class="welcome-avatar">✳</div><h3>I don’t know your stories yet.</h3><p>I’m Milo, an AI learner. Teach me a word, a tradition, or a memory that matters to you.<br>It’s always okay to skip.</p><div class="example">Try an invented word:<br><strong>“tavi” = a happy moment shared over tea</strong></div></div>';
+    else history.innerHTML = p.history.map(m => `<div class="message ${m.role === 'user' ? 'user' : 'assistant'}"><span class="message-label">${m.role === 'user' ? escape(p.label) + ' · you' : 'Milo · AI learner'}</span><div class="bubble">${escape(m.text)}</div>${m.action ? `<span class="action-tag">${escape(m.action.replaceAll('_', ' '))}</span>` : ''}</div>`).join('');
+    history.scrollTop = history.scrollHeight;
+    $('memory-list').innerHTML = p.memories.length ? p.memories.slice(-6).map(m => {
+      const index = p.memories.indexOf(m);
+      return `<div class="memory-item"><div class="memory-title"><span>${escape(m.concept)}</span><small>${pct(m.mastery)} mastery</small></div><p>${escape(m.content)}</p><div class="progress-track" aria-label="Mastery ${pct(m.mastery)}"><div class="progress-fill" style="width:${Math.round(m.mastery * 100)}%"></div></div><div class="memory-provenance">${escape(m.topic)} · ${escape(m.sourceInteraction)}<br>${m.correctionHistory.length} corrections · ${m.related.length} related concepts${m.pendingContent ? '<br>⚠ Conflicting teaching awaits explicit correction' : ''}</div><div class="memory-actions"><button class="text-button" data-memory="${index}" data-memory-action="recall">Recall</button><button class="text-button" data-memory="${index}" data-memory-action="error">Scripted omission</button><button class="text-button" data-memory="${index}" data-memory-action="confirm">Confirm</button></div></div>`;
+    }).join('') + (p.memories.length > 6 ? '<p class="subtle">Showing the latest 6 memories. Export the profile for the full store.</p>' : '') : '<div class="empty-memory"><span>▤</span><p>A blank page, for now.<br>The first lesson begins with you.</p></div>';
+    $('trace-summary').innerHTML = p.lastTrace ? `<span class="trace-action">${escape(p.lastTrace.action)}</span><br>${escape(p.lastTrace.reason)}<br><small>${p.lastTrace.allowedKnowledge.length} permitted fact · ${escape(p.lastTrace.realization)}</small>` : 'No hidden factual knowledge is available here. Teach a concept to see how the next decision is made.';
+    renderAlgorithms();
+  }
+  function renderAlgorithms() {
+    const p = engine.profile(), t = p.lastTrace;
+    const pairs = t ? [['Action', t.action], ['Concept', t.concept], ['Knowledge boundary', t.knowledgeBoundary], ['Allowed fact', t.allowedKnowledge.join('\n') || 'None — ask to learn'], ['Source interaction', t.sourceInteraction || 'None'], ['Memory item', t.memoryId || 'None'], ['Mastery', `${t.masteryBefore ?? 'not stored'} → ${t.masteryAfter ?? 'not stored'}`], ['Decision rule', t.reason], ['Recall decision', t.recall ? `${t.recall.band} mastery · draw ${t.recall.draw} → ${t.recall.outcome}` : 'Not a policy-selected recall'], ['Controlled error', t.corruption ? `${t.corruption.operator}: ${t.corruption.detail}` : 'None'], ['Realization', t.realization], ['Provider status', providerTrace ? JSON.stringify(providerTrace) : 'No provider request'], ['Ranked candidates', t.candidates.map(c => `${c.concept}: ${c.score}`).join('; ') || 'No candidates']] : [];
+    $('live-trace').innerHTML = t ? `<dl class="trace-table">${pairs.map(([k, v]) => `<dt>${escape(k)}</dt><dd>${escape(v)}</dd>`).join('')}</dl>` : '<div class="trace-empty">Interact in the Learning studio to inspect a real decision.</div>';
+    $('topic-graph').innerHTML = p.memories.length ? C.TOPICS.map(topic => { const rows = p.memories.filter(m => m.topic === topic); return rows.length ? `<div class="graph-group"><strong>${escape(topic)}</strong><p>${rows.map(m => escape(m.concept)).join(' ↔ ')}</p><small>${rows.length} nodes · ${rows.reduce((a, m) => a + m.related.length, 0) / 2} keyword edges</small></div>` : ''; }).join('') + (p.memories.some(m => m.mentions?.length) ? `<div class="graph-group"><strong>Curiosity queue</strong><p>${[...new Set(p.memories.flatMap(m => m.mentions || []))].map(escape).join(' · ')}</p><small>Quoted terms mentioned while teaching</small></div>` : '') : '<div class="trace-empty">Topic links appear after you teach two related concepts.</div>';
+    const metadata = C.summarizeMetadata(p.metadata);
+    $('metadata-summary').innerHTML = `<dl class="trace-table">${[['Response rate', pct(metadata.responseRate)], ['Mean response delay', metadata.meanResponseDelayMs == null ? 'No prompted response yet' : `${(metadata.meanResponseDelayMs / 1000).toFixed(1)} s`], ['Mean reply length', metadata.meanExplanationCharacters == null ? '—' : `${metadata.meanExplanationCharacters} characters`], ['Corrections', metadata.corrections], ['Self-started turns', metadata.selfInitiated], ['Invitations', metadata.invitations], ['Recording', p.metadataEnabled ? 'Enabled' : 'Disabled']].map(([k,v]) => `<dt>${escape(k)}</dt><dd>${escape(v)}</dd>`).join('')}</dl>`;
+  }
+  function chartSVG(result, field) {
+    const rows = result.rows, width = 560, height = 250, left = 42, right = 16, top = 20, bottom = 34;
+    const plotW = width - left - right, plotH = height - top - bottom;
+    const values = rows.map(r => r[field]).filter(v => Number.isFinite(v));
+    let low = field === 'cusum' ? 0 : Math.min(-2, Math.floor(Math.min(...values))), high = Math.max(field === 'cusum' ? result.settings.h * 1.35 : 3, Math.max(...values) * 1.12);
+    if (high <= low) high = low + 1;
+    const x = day => left + (day - 1) / (rows.length - 1) * plotW, y = value => top + (high - value) / (high - low) * plotH;
+    const fmt = value => Number(value.toFixed(1));
+    let markup = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Synthetic ${field === 'cusum' ? 'CUSUM' : 'standardized change score'} over 60 days"><title>ChildGPT synthetic ${field}; no participant or clinical data</title><rect width="${width}" height="${height}" fill="#fdfefb"/><rect x="${left}" y="${top}" width="${x(result.settings.baselineDays) - left}" height="${plotH}" fill="#f0f3e9"/>`;
+    for (let i = 0; i <= 4; i++) { const value = low + (high - low) * i / 4, yy = y(value); markup += `<path d="M${left} ${yy}H${width-right}" stroke="#e8edde" stroke-width="1"/><text x="${left-8}" y="${yy+3}" text-anchor="end" fill="#92a184" font-size="9" font-family="Arial,sans-serif">${fmt(value)}</text>`; }
+    for (const day of [1,15,30,45,60]) markup += `<text x="${x(day)}" y="${height-13}" text-anchor="middle" fill="#92a184" font-size="9" font-family="Arial,sans-serif">${day}</text>`;
+    markup += `<text x="${width-15}" y="${height-1}" text-anchor="end" fill="#a6b197" font-size="8" font-family="Arial,sans-serif">day</text><text x="${left+7}" y="${top+12}" fill="#a3af96" font-size="8" font-family="Arial,sans-serif">baseline</text>`;
+    if (result.changeDay) markup += `<path d="M${x(result.changeDay)} ${top}V${height-bottom}" stroke="#cba885" stroke-dasharray="4 4"/><text x="${x(result.changeDay)+5}" y="${top+12}" fill="#c09c7a" font-size="8" font-family="Arial,sans-serif">change</text>`;
+    if (field === 'cusum') markup += `<path d="M${left} ${y(result.settings.h)}H${width-right}" stroke="#a192b9" stroke-dasharray="4 4"/><text x="${width-right-2}" y="${y(result.settings.h)-5}" text-anchor="end" fill="#9d8aaf" font-size="8" font-family="Arial,sans-serif">h = ${result.settings.h}</text>`;
+    let drawing = '', open = false;
+    for (const row of rows) { if (!Number.isFinite(row[field])) { open = false; continue; } drawing += `${open ? 'L' : 'M'}${x(row.day).toFixed(2)} ${y(row[field]).toFixed(2)} `; open = true; }
+    markup += `<path d="${drawing}" fill="none" stroke="${field === 'cusum' ? '#5d8060' : '#93ac81'}" stroke-width="2" stroke-linejoin="round"/>`;
+    if (result.firstAlarmDay) { const row = rows.find(r => r.day === result.firstAlarmDay); markup += `<circle cx="${x(row.day)}" cy="${y(row[field])}" r="4" fill="#b27d66" stroke="#fff" stroke-width="1.5"/>`; }
+    return markup + '</svg>';
+  }
+  const metric = (value, label, note = '') => `<div><strong>${escape(value)}</strong><span>${escape(label)}</span>${note ? `<small>${escape(note)}</small>` : ''}</div>`;
+  function runSimulation() {
+    try {
+      const options = { seed: Number($('seed-input').value), scenario: $('scenario-select').value, days: 60, changeDay: 31, shift: 1.2 };
+      simulation = { ...C.detect(C.simulate(options), { k: Number($('k-input').value), h: Number($('h-input').value), baselineDays: 20 }), generation: options };
+      $('simulation-metrics').innerHTML = metric(simulation.changeDay ? `Day ${simulation.changeDay}` : 'None', 'Injected change') + metric(simulation.firstAlarmDay ? `Day ${simulation.firstAlarmDay}` : 'No signal', 'First detected change') + metric(simulation.detectionDelay == null ? '—' : `${simulation.detectionDelay} days`, 'Detection delay', simulation.preChangeFalseAlarm ? 'First signal was a false alarm' : 'Conditional on a post-change signal') + metric(simulation.preChangeFalseAlarm ? 'Yes' : 'No', 'Pre-change / stable false alarm', 'This single synthetic sequence');
+      $('score-chart').innerHTML = chartSVG(simulation, 'z'); $('cusum-chart').innerHTML = chartSVG(simulation, 'cusum');
+    } catch (e) { toast(e.message); }
+  }
+  function runFunctional() {
+    functional = C.functionalEvaluation();
+    $('functional-results').className = '';
+    $('functional-results').innerHTML = `<div class="functional-grid">${functional.groups.map(g => `<div class="check-result ${g.passed < g.total ? 'fail' : ''}"><strong>${g.passed} / ${g.total}</strong><span>${escape(g.group)}</span><small>Measured deterministic checks</small></div>`).join('')}</div><p class="subtle" style="margin-top:16px">${functional.passed}/${functional.total} passed. ${escape(functional.limitation)}</p><details><summary>Inspect every test case</summary>${functional.tests.map(t => `<div class="test-detail"><b>${t.pass ? 'PASS' : 'FAIL'}</b>${escape(t.name)} — ${escape(t.detail)}</div>`).join('')}</details>`;
+    toast(`${functional.passed}/${functional.total} controller checks passed. No live LLM was tested.`);
+  }
+  function runMonte() {
+    try {
+      monte = C.monteCarlo({ runs: 200, seed: 1000, shift: 1.2, k: Number($('k-input').value), h: Number($('h-input').value), baselineDays: 20 });
+      const hs = [...new Set([3, 4, 5, 6, 8, 10, monte.h])].sort((a, b) => a - b); sweep = C.sensitivity({ hs, k: monte.k });
+      $('monte-results').className = '';
+      $('monte-results').innerHTML = `<div class="small-metrics">${metric(pct(monte.stableSequenceFalseAlarmRate,1), 'Stable-sequence false alarms', `${monte.stableFalseAlarmCount} / 200 sequences`)}${metric(pct(monte.detectedAfterChangeRate,1), 'Post-change first detections', `${monte.detectedAfterChangeCount} / 200 changed sequences`)}${metric(monte.meanDetectionDelay == null ? '—' : `${monte.meanDetectionDelay} days`, 'Mean detection delay', 'Detected-after-change subset only')}${metric(monte.noAlarmCount, 'Changed sequences with no alarm', `${monte.changedPreAlarmCount} additional pre-change alarms`)}${metric(pct(monte.temporaryAlarmRate,1), 'Alarms after a 3-day dip', `${monte.temporaryAlarmCount} / 200 · a known limitation`)}</div><h3 style="margin-top:18px">Threshold trade-off (k=${monte.k})</h3><div class="sweep-wrap"><table class="sweep"><thead><tr><th>h</th><th>Stable false alarms</th><th>Detected after change</th><th>3-day-dip alarms</th><th>Mean delay</th></tr></thead><tbody>${sweep.map(r => `<tr${r.h === monte.h ? ' class="current"' : ''}><td>${r.h}</td><td>${pct(r.stableFalseAlarmRate,1)}</td><td>${pct(r.detectedAfterChangeRate,1)}</td><td>${pct(r.temporaryAlarmRate,1)}</td><td>${r.meanDetectionDelay ?? '—'} d</td></tr>`).join('')}</tbody></table></div><p class="subtle">${escape(monte.temporaryDefinition)} The sweep shows the trade-off; picking the best h from these same seeds would be tuning on the test set.</p><p class="subtle">${escape(monte.falseAlarmDefinition)} ${escape(monte.delayDefinition)} Thresholds are illustrative; the synthetic generator is not a calibrated model of older-adult behaviour. Seed 1000, k=${monte.k}, h=${monte.h}.</p>`;
+      toast('600 synthetic sequences and the threshold sweep completed. Counts include false alarms and missed detections.');
+    } catch (e) { toast(e.message); }
+  }
+  function exportEvaluation() {
+    jsonDownload('childgpt-evaluation.json', { project: 'ChildGPT GP8001 Group 6', version: C.VERSION, exportedAt: new Date().toISOString(), evidenceType: 'Actual deterministic controller execution and synthetic simulations; no participants; no live provider evaluation', functional, simulation, monteCarlo: monte, thresholdSweep: sweep });
+  }
+  function exportCSV() {
+    if (!simulation) return toast('Run a simulation first.');
+    const keys = ['day','invitations','responses','responseRate','responseDelayMinutes','explanationCharacters','corrections','selfInitiated','changed','z','cusum','calibration','alarm'];
+    download('childgpt-synthetic-trace.csv', keys.join(',') + '\n' + simulation.rows.map(row => keys.map(k => row[k] == null ? '' : row[k]).join(',')).join('\n'), 'text/csv;charset=utf-8');
+  }
+  async function guidedDemo() {
+    if (busy || demoRunning) return;
+    if (engine.profile().memories.length && !confirm('Run the guided demo? This replaces the CURRENT synthetic profile. The other profile is unchanged.')) return;
+    demoRunning = true; setBusy(true);
+    try {
+      if (remote) { const r = await request('/api/profile', 'POST', { profile: engine.state.activeProfile, reset: true }); engine = new C.Engine(r.state); } else engine.resetProfile();
+      render(); navigate('studio');
+      const steps = [{ mode: 'ask', concept: 'tavi' }, { mode: 'teach', concept: 'tavi', content: 'a happy moment shared over tea', topic: C.TOPICS[0] }, { mode: 'ask', concept: 'tavi' }, { mode: 'recall', concept: 'tavi', forceError: true }, { mode: 'correct', concept: 'tavi', content: 'a happy moment shared over warm tea' }, { mode: 'ask', concept: 'tavi' }];
+      for (let i = 0; i < steps.length; i++) { setBusy(false); const result = await perform(steps[i], true); if (!result) break; toast(`Guided demo · step ${i+1}/${steps.length}: ${steps[i].mode}`); await new Promise(r => setTimeout(r, 420)); }
+      $('concept-input').value = 'tavi'; $('content-input').value = 'a happy moment shared over warm tea';
+      toast('Teaching → memory → scripted omission → correction → recall complete. Switch to Learner B to test isolation.');
+    } catch (e) { toast(e.message); } finally { demoRunning = false; setBusy(false); persist(); }
+  }
+  async function connect(event) {
+    event.preventDefault();
+    let base = $('backend-url').value.trim().replace(/\/$/u, '');
+    if (!base && location.protocol !== 'file:' && !location.hostname.endsWith('github.io')) base = location.origin;
+    try {
+      const u = new URL(base);
+      if (u.protocol !== 'https:' && !(u.protocol === 'http:' && ['localhost','127.0.0.1'].includes(u.hostname))) throw new Error('Use HTTPS for a remote backend, or HTTP on localhost.');
+      if (u.username || u.password || u.search || u.hash) throw new Error('Backend URL must not contain credentials, query parameters or fragments.');
+      base = u.href.replace(/\/$/u, '');
+      $('connection-status').textContent = 'Connecting…';
+      const config = await request('/api/config', 'GET', undefined, { base });
+      const result = await request('/api/session', 'POST', { accessToken: $('backend-token').value }, { base });
+      remote = { base, token: result.sessionToken, apiEnabled: config.apiEnabled }; engine = new C.Engine(result.state); providerTrace = null;
+      try { sessionStorage.setItem('childgpt.backend', JSON.stringify(remote)); } catch {}
+      storage.set('childgpt.backend-url', base); $('backend-token').value = '';
+      $('connection-status').textContent = config.apiEnabled ? 'Connected. Model extraction and approved wording are enabled. Backend memory is separate from the local demo.' : 'Connected to server demo. LLM fields are still empty; replies remain deterministic.';
+      render(); toast('Backend connected. A separate isolated session is active.');
+    } catch (e) { $('connection-status').textContent = e.message; toast(e.message); }
+  }
+  function disconnect() {
+    remote = null; providerTrace = null;
+    try { sessionStorage.removeItem('childgpt.backend'); } catch {}
+    try { engine = new C.Engine(remember ? JSON.parse(storage.get('childgpt.state') || 'null') : null); } catch { engine = new C.Engine(); }
+    $('connection-status').textContent = 'Local demo active. The disconnected server session expires automatically within seven days.'; render();
+  }
+  document.querySelectorAll('[data-page]').forEach(el => el.addEventListener('click', () => navigate(el.dataset.page)));
+  document.querySelectorAll('[data-action]').forEach(el => el.addEventListener('click', () => selectMode(el.dataset.action)));
+  window.addEventListener('hashchange', () => navigate(location.hash.slice(1)));
+  $('conversation-form').addEventListener('submit', async event => { event.preventDefault(); const input = mode === 'chat' ? { mode, text: $('text-input').value.trim() } : { mode, concept: $('concept-input').value.trim(), topic: $('topic-input').value, ...(['teach','correct'].includes(mode) ? { content: $('content-input').value.trim() } : {}) }; if (mode === 'chat' && !input.text) return toast('Enter a message first.'); await perform(input); });
+  $('next-question').addEventListener('click', () => perform({ mode: 'next', topic: $('topic-input').value }));
+  $('skip-invitation').addEventListener('click', () => perform({ mode: 'skip' }));
+  $('guided-demo').addEventListener('click', guidedDemo);
+  $('profile-select').addEventListener('change', async event => { if (busy || demoRunning) return; try { if (remote) { const r = await request('/api/profile','POST',{profile:event.target.value}); engine = new C.Engine(r.state); } else engine.switchProfile(event.target.value); providerTrace = null; persist(); render(); } catch(e) { toast(e.message); render(); } });
+  $('memory-list').addEventListener('click', event => { const b = event.target.closest('[data-memory]'); if (!b) return; const memory = engine.profile().memories[Number(b.dataset.memory)]; if (!memory) return; $('concept-input').value = memory.concept; perform({ mode: b.dataset.memoryAction === 'confirm' ? 'confirm' : 'recall', concept: memory.concept, forceError: b.dataset.memoryAction === 'error' }); });
+  $('export-trace').addEventListener('click', () => engine.profile().lastTrace ? jsonDownload('childgpt-algorithm-trace.json', { trace: engine.profile().lastTrace, provider: providerTrace }) : toast('Interact with the learner first.'));
+  $('export-metadata').addEventListener('click', () => jsonDownload('childgpt-metadata-only.json', { profile: engine.profile().id, summary: C.summarizeMetadata(engine.profile().metadata), events: engine.profile().metadata }));
+  $('run-tests').addEventListener('click', runFunctional); $('run-simulation').addEventListener('click', runSimulation); $('run-monte').addEventListener('click', runMonte);
+  $('export-results').addEventListener('click', exportEvaluation); $('export-csv').addEventListener('click', exportCSV); $('export-svg').addEventListener('click', () => simulation ? download('childgpt-cusum.svg', chartSVG(simulation,'cusum'), 'image/svg+xml') : toast('Run a simulation first.'));
+  $('connect-form').addEventListener('submit', connect); $('disconnect').addEventListener('click', disconnect);
+  $('remember-toggle').addEventListener('change', e => { remember = e.target.checked; storage.set('childgpt.remember', remember ? 'yes' : 'no'); if (remember) persist(); else storage.remove('childgpt.state'); toast(remember ? 'Local demo persistence enabled on this browser.' : 'Saved local demo data removed; current in-memory session remains available.'); });
+  $('metadata-toggle').addEventListener('change', e => perform({ mode: 'settings', metadataEnabled: e.target.checked }));
+  $('invitation-toggle').addEventListener('change', e => perform({ mode: 'settings', invitationsEnabled: e.target.checked }));
+  $('invite-button').addEventListener('click', async () => { if (!engine.profile().invitationsEnabled) return toast('Enable optional invitations first.'); const result = await perform({ mode: 'invite' }); if (result?.skipped) toast('No extra invitation sent. One may already be waiting, or the cooldown is active.'); else navigate('studio'); });
+  $('export-memory').addEventListener('click', () => jsonDownload('childgpt-profile-private.json', { warning: 'Contains this profile’s taught content and history. Do not publish real personal data.', profile: engine.profile() }));
+  $('delete-profile').addEventListener('click', async () => { if (!confirm('Delete this profile’s memory, conversation and metadata? The other profile is unchanged.')) return; try { if (remote) { const r = await request('/api/profile', 'POST', { profile: engine.state.activeProfile, reset: true }); engine = new C.Engine(r.state); } else engine.resetProfile(); providerTrace = null; persist(); render(); toast('Current profile deleted.'); } catch(e) { toast(e.message); } });
+  setInterval(() => { if (!busy && !demoRunning && engine.profile().invitationsEnabled && !engine.profile().pendingInvitation) perform({ mode: 'invite' }); }, 60000);
+  $('backend-url').value = storage.get('childgpt.backend-url') || '';
+  $('check-count').textContent = C.functionalEvaluation().total; selectMode('teach'); render(); runSimulation(); navigate(location.hash.slice(1) || 'studio');
+  (async () => { let saved; try { saved = JSON.parse(sessionStorage.getItem('childgpt.backend') || 'null'); } catch {} if (!saved?.base || !saved?.token) return; try { const result = await request('/api/state','GET',undefined,saved); remote = { ...saved, apiEnabled: result.apiEnabled }; engine = new C.Engine(result.state); $('connection-status').textContent = 'Previous backend session restored in this browser tab.'; render(); } catch { try { sessionStorage.removeItem('childgpt.backend'); } catch {} toast('Previous backend session unavailable. Local demo remains active.'); } })();
+})();
+</script>
+</body>
+</html>

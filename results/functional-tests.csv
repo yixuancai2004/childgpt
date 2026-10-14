@@ -1,0 +1,97 @@
+name,group,passed
+Untaught boundary 1,Knowledge boundary,true
+Untaught boundary 2,Knowledge boundary,true
+Untaught boundary 3,Knowledge boundary,true
+Untaught boundary 4,Knowledge boundary,true
+Untaught boundary 5,Knowledge boundary,true
+Untaught boundary 6,Knowledge boundary,true
+Untaught boundary 7,Knowledge boundary,true
+Untaught boundary 8,Knowledge boundary,true
+Untaught boundary 9,Knowledge boundary,true
+Untaught boundary 10,Knowledge boundary,true
+Untaught boundary 11,Knowledge boundary,true
+Untaught boundary 12,Knowledge boundary,true
+Untaught boundary 13,Knowledge boundary,true
+Untaught boundary 14,Knowledge boundary,true
+Untaught boundary 15,Knowledge boundary,true
+Untaught boundary 16,Knowledge boundary,true
+Untaught boundary 17,Knowledge boundary,true
+Untaught boundary 18,Knowledge boundary,true
+Untaught boundary 19,Knowledge boundary,true
+Untaught boundary 20,Knowledge boundary,true
+Taught recall 1,Taught recall,true
+Taught recall 2,Taught recall,true
+Taught recall 3,Taught recall,true
+Taught recall 4,Taught recall,true
+Taught recall 5,Taught recall,true
+Taught recall 6,Taught recall,true
+Taught recall 7,Taught recall,true
+Taught recall 8,Taught recall,true
+Taught recall 9,Taught recall,true
+Taught recall 10,Taught recall,true
+Taught recall 11,Taught recall,true
+Taught recall 12,Taught recall,true
+Taught recall 13,Taught recall,true
+Taught recall 14,Taught recall,true
+Taught recall 15,Taught recall,true
+Taught recall 16,Taught recall,true
+Taught recall 17,Taught recall,true
+Taught recall 18,Taught recall,true
+Taught recall 19,Taught recall,true
+Taught recall 20,Taught recall,true
+Correction 1,Correction update,true
+User isolation 1,Memory isolation,true
+Controlled omission 1,Controlled recall,true
+Correction 2,Correction update,true
+User isolation 2,Memory isolation,true
+Controlled omission 2,Controlled recall,true
+Correction 3,Correction update,true
+User isolation 3,Memory isolation,true
+Controlled omission 3,Controlled recall,true
+Correction 4,Correction update,true
+User isolation 4,Memory isolation,true
+Controlled omission 4,Controlled recall,true
+Correction 5,Correction update,true
+User isolation 5,Memory isolation,true
+Controlled omission 5,Controlled recall,true
+Correction 6,Correction update,true
+User isolation 6,Memory isolation,true
+Controlled omission 6,Controlled recall,true
+Correction 7,Correction update,true
+User isolation 7,Memory isolation,true
+Controlled omission 7,Controlled recall,true
+Correction 8,Correction update,true
+User isolation 8,Memory isolation,true
+Controlled omission 8,Controlled recall,true
+Correction 9,Correction update,true
+User isolation 9,Memory isolation,true
+Controlled omission 9,Controlled recall,true
+Correction 10,Correction update,true
+User isolation 10,Memory isolation,true
+Controlled omission 10,Controlled recall,true
+Mastery policy 0,Policy consistency,true
+Mastery policy 0.1,Policy consistency,true
+Mastery policy 0.29,Policy consistency,true
+Mastery policy 0.3,Policy consistency,true
+Mastery policy 0.5,Policy consistency,true
+Mastery policy 0.69,Policy consistency,true
+Mastery policy 0.7,Policy consistency,true
+Mastery policy 0.8,Policy consistency,true
+Mastery policy 0.9,Policy consistency,true
+Mastery policy 1,Policy consistency,true
+Low mastery never recalls,Error calibration,true
+Medium mastery error rate ≈ 30%,Error calibration,true
+High mastery error rate ≈ 5%,Error calibration,true
+Corruption operator 1,Corruption operators,true
+Corruption operator 2,Corruption operators,true
+Corruption operator 3,Corruption operators,true
+Corruption operator 4,Corruption operators,true
+Corruption operator 5,Corruption operators,true
+Corruption operator 6,Corruption operators,true
+Corruption operator 7,Corruption operators,true
+Corruption operator 8,Corruption operators,true
+Corruption operator 9,Corruption operators,true
+Corruption operator 10,Corruption operators,true
+Pending conflict triggers a clarification question,Clarification & curiosity,true
+Quoted mention becomes a curiosity question,Clarification & curiosity,true
+Keyword graph links only related concepts,Clarification & curiosity,true

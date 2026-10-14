@@ -1,0 +1,1659 @@
+{
+  "project": "ChildGPT GP8001 Group 6",
+  "version": "1.1.0",
+  "generatedAt": "2026-10-14T12:03:25.519Z",
+  "runtime": "v24.15.0",
+  "evidence": "Executed deterministic controller tests and synthetic simulations. No live model calls; no recruited participants; no clinical or wellbeing claims.",
+  "functional": {
+    "version": "1.1.0",
+    "mode": "deterministic controller; no live LLM requests",
+    "passed": 96,
+    "total": 96,
+    "groups": [
+      {
+        "group": "Knowledge boundary",
+        "passed": 20,
+        "total": 20
+      },
+      {
+        "group": "Taught recall",
+        "passed": 20,
+        "total": 20
+      },
+      {
+        "group": "Correction update",
+        "passed": 10,
+        "total": 10
+      },
+      {
+        "group": "Memory isolation",
+        "passed": 10,
+        "total": 10
+      },
+      {
+        "group": "Controlled recall",
+        "passed": 10,
+        "total": 10
+      },
+      {
+        "group": "Policy consistency",
+        "passed": 10,
+        "total": 10
+      },
+      {
+        "group": "Error calibration",
+        "passed": 3,
+        "total": 3
+      },
+      {
+        "group": "Corruption operators",
+        "passed": 10,
+        "total": 10
+      },
+      {
+        "group": "Clarification & curiosity",
+        "passed": 3,
+        "total": 3
+      }
+    ],
+    "tests": [
+      {
+        "name": "Untaught boundary 1",
+        "group": "Knowledge boundary",
+        "pass": true,
+        "detail": "No permitted fact; ask-to-learn selected."
+      },
+      {
+        "name": "Untaught boundary 2",
+        "group": "Knowledge boundary",
+        "pass": true,
+        "detail": "No permitted fact; ask-to-learn selected."
+      },
+      {
+        "name": "Untaught boundary 3",
+        "group": "Knowledge boundary",
+        "pass": true,
+        "detail": "No permitted fact; ask-to-learn selected."
+      },
+      {
+        "name": "Untaught boundary 4",
+        "group": "Knowledge boundary",
+        "pass": true,
+        "detail": "No permitted fact; ask-to-learn selected."
+      },
+      {
+        "name": "Untaught boundary 5",
+        "group": "Knowledge boundary",
+        "pass": true,
+        "detail": "No permitted fact; ask-to-learn selected."
+      },
+      {
+        "name": "Untaught boundary 6",
+        "group": "Knowledge boundary",
+        "pass": true,
+        "detail": "No permitted fact; ask-to-learn selected."
+      },
+      {
+        "name": "Untaught boundary 7",
+        "group": "Knowledge boundary",
+        "pass": true,
+        "detail": "No permitted fact; ask-to-learn selected."
+      },
+      {
+        "name": "Untaught boundary 8",
+        "group": "Knowledge boundary",
+        "pass": true,
+        "detail": "No permitted fact; ask-to-learn selected."
+      },
+      {
+        "name": "Untaught boundary 9",
+        "group": "Knowledge boundary",
+        "pass": true,
+        "detail": "No permitted fact; ask-to-learn selected."
+      },
+      {
+        "name": "Untaught boundary 10",
+        "group": "Knowledge boundary",
+        "pass": true,
+        "detail": "No permitted fact; ask-to-learn selected."
+      },
+      {
+        "name": "Untaught boundary 11",
+        "group": "Knowledge boundary",
+        "pass": true,
+        "detail": "No permitted fact; ask-to-learn selected."
+      },
+      {
+        "name": "Untaught boundary 12",
+        "group": "Knowledge boundary",
+        "pass": true,
+        "detail": "No permitted fact; ask-to-learn selected."
+      },
+      {
+        "name": "Untaught boundary 13",
+        "group": "Knowledge boundary",
+        "pass": true,
+        "detail": "No permitted fact; ask-to-learn selected."
+      },
+      {
+        "name": "Untaught boundary 14",
+        "group": "Knowledge boundary",
+        "pass": true,
+        "detail": "No permitted fact; ask-to-learn selected."
+      },
+      {
+        "name": "Untaught boundary 15",
+        "group": "Knowledge boundary",
+        "pass": true,
+        "detail": "No permitted fact; ask-to-learn selected."
+      },
+      {
+        "name": "Untaught boundary 16",
+        "group": "Knowledge boundary",
+        "pass": true,
+        "detail": "No permitted fact; ask-to-learn selected."
+      },
+      {
+        "name": "Untaught boundary 17",
+        "group": "Knowledge boundary",
+        "pass": true,
+        "detail": "No permitted fact; ask-to-learn selected."
+      },
+      {
+        "name": "Untaught boundary 18",
+        "group": "Knowledge boundary",
+        "pass": true,
+        "detail": "No permitted fact; ask-to-learn selected."
+      },
+      {
+        "name": "Untaught boundary 19",
+        "group": "Knowledge boundary",
+        "pass": true,
+        "detail": "No permitted fact; ask-to-learn selected."
+      },
+      {
+        "name": "Untaught boundary 20",
+        "group": "Knowledge boundary",
+        "pass": true,
+        "detail": "No permitted fact; ask-to-learn selected."
+      },
+      {
+        "name": "Taught recall 1",
+        "group": "Taught recall",
+        "pass": true,
+        "detail": "Exact user-taught content, not a pretrained meaning."
+      },
+      {
+        "name": "Taught recall 2",
+        "group": "Taught recall",
+        "pass": true,
+        "detail": "Exact user-taught content, not a pretrained meaning."
+      },
+      {
+        "name": "Taught recall 3",
+        "group": "Taught recall",
+        "pass": true,
+        "detail": "Exact user-taught content, not a pretrained meaning."
+      },
+      {
+        "name": "Taught recall 4",
+        "group": "Taught recall",
+        "pass": true,
+        "detail": "Exact user-taught content, not a pretrained meaning."
+      },
+      {
+        "name": "Taught recall 5",
+        "group": "Taught recall",
+        "pass": true,
+        "detail": "Exact user-taught content, not a pretrained meaning."
+      },
+      {
+        "name": "Taught recall 6",
+        "group": "Taught recall",
+        "pass": true,
+        "detail": "Exact user-taught content, not a pretrained meaning."
+      },
+      {
+        "name": "Taught recall 7",
+        "group": "Taught recall",
+        "pass": true,
+        "detail": "Exact user-taught content, not a pretrained meaning."
+      },
+      {
+        "name": "Taught recall 8",
+        "group": "Taught recall",
+        "pass": true,
+        "detail": "Exact user-taught content, not a pretrained meaning."
+      },
+      {
+        "name": "Taught recall 9",
+        "group": "Taught recall",
+        "pass": true,
+        "detail": "Exact user-taught content, not a pretrained meaning."
+      },
+      {
+        "name": "Taught recall 10",
+        "group": "Taught recall",
+        "pass": true,
+        "detail": "Exact user-taught content, not a pretrained meaning."
+      },
+      {
+        "name": "Taught recall 11",
+        "group": "Taught recall",
+        "pass": true,
+        "detail": "Exact user-taught content, not a pretrained meaning."
+      },
+      {
+        "name": "Taught recall 12",
+        "group": "Taught recall",
+        "pass": true,
+        "detail": "Exact user-taught content, not a pretrained meaning."
+      },
+      {
+        "name": "Taught recall 13",
+        "group": "Taught recall",
+        "pass": true,
+        "detail": "Exact user-taught content, not a pretrained meaning."
+      },
+      {
+        "name": "Taught recall 14",
+        "group": "Taught recall",
+        "pass": true,
+        "detail": "Exact user-taught content, not a pretrained meaning."
+      },
+      {
+        "name": "Taught recall 15",
+        "group": "Taught recall",
+        "pass": true,
+        "detail": "Exact user-taught content, not a pretrained meaning."
+      },
+      {
+        "name": "Taught recall 16",
+        "group": "Taught recall",
+        "pass": true,
+        "detail": "Exact user-taught content, not a pretrained meaning."
+      },
+      {
+        "name": "Taught recall 17",
+        "group": "Taught recall",
+        "pass": true,
+        "detail": "Exact user-taught content, not a pretrained meaning."
+      },
+      {
+        "name": "Taught recall 18",
+        "group": "Taught recall",
+        "pass": true,
+        "detail": "Exact user-taught content, not a pretrained meaning."
+      },
+      {
+        "name": "Taught recall 19",
+        "group": "Taught recall",
+        "pass": true,
+        "detail": "Exact user-taught content, not a pretrained meaning."
+      },
+      {
+        "name": "Taught recall 20",
+        "group": "Taught recall",
+        "pass": true,
+        "detail": "Exact user-taught content, not a pretrained meaning."
+      },
+      {
+        "name": "Correction 1",
+        "group": "Correction update",
+        "pass": true,
+        "detail": "Memory and provenance updated; prior version retained."
+      },
+      {
+        "name": "User isolation 1",
+        "group": "Memory isolation",
+        "pass": true,
+        "detail": "Learner B cannot retrieve learner A’s memory."
+      },
+      {
+        "name": "Controlled omission 1",
+        "group": "Controlled recall",
+        "pass": true,
+        "detail": "Exactly one segment omitted; database remains intact."
+      },
+      {
+        "name": "Correction 2",
+        "group": "Correction update",
+        "pass": true,
+        "detail": "Memory and provenance updated; prior version retained."
+      },
+      {
+        "name": "User isolation 2",
+        "group": "Memory isolation",
+        "pass": true,
+        "detail": "Learner B cannot retrieve learner A’s memory."
+      },
+      {
+        "name": "Controlled omission 2",
+        "group": "Controlled recall",
+        "pass": true,
+        "detail": "Exactly one segment omitted; database remains intact."
+      },
+      {
+        "name": "Correction 3",
+        "group": "Correction update",
+        "pass": true,
+        "detail": "Memory and provenance updated; prior version retained."
+      },
+      {
+        "name": "User isolation 3",
+        "group": "Memory isolation",
+        "pass": true,
+        "detail": "Learner B cannot retrieve learner A’s memory."
+      },
+      {
+        "name": "Controlled omission 3",
+        "group": "Controlled recall",
+        "pass": true,
+        "detail": "Exactly one segment omitted; database remains intact."
+      },
+      {
+        "name": "Correction 4",
+        "group": "Correction update",
+        "pass": true,
+        "detail": "Memory and provenance updated; prior version retained."
+      },
+      {
+        "name": "User isolation 4",
+        "group": "Memory isolation",
+        "pass": true,
+        "detail": "Learner B cannot retrieve learner A’s memory."
+      },
+      {
+        "name": "Controlled omission 4",
+        "group": "Controlled recall",
+        "pass": true,
+        "detail": "Exactly one segment omitted; database remains intact."
+      },
+      {
+        "name": "Correction 5",
+        "group": "Correction update",
+        "pass": true,
+        "detail": "Memory and provenance updated; prior version retained."
+      },
+      {
+        "name": "User isolation 5",
+        "group": "Memory isolation",
+        "pass": true,
+        "detail": "Learner B cannot retrieve learner A’s memory."
+      },
+      {
+        "name": "Controlled omission 5",
+        "group": "Controlled recall",
+        "pass": true,
+        "detail": "Exactly one segment omitted; database remains intact."
+      },
+      {
+        "name": "Correction 6",
+        "group": "Correction update",
+        "pass": true,
+        "detail": "Memory and provenance updated; prior version retained."
+      },
+      {
+        "name": "User isolation 6",
+        "group": "Memory isolation",
+        "pass": true,
+        "detail": "Learner B cannot retrieve learner A’s memory."
+      },
+      {
+        "name": "Controlled omission 6",
+        "group": "Controlled recall",
+        "pass": true,
+        "detail": "Exactly one segment omitted; database remains intact."
+      },
+      {
+        "name": "Correction 7",
+        "group": "Correction update",
+        "pass": true,
+        "detail": "Memory and provenance updated; prior version retained."
+      },
+      {
+        "name": "User isolation 7",
+        "group": "Memory isolation",
+        "pass": true,
+        "detail": "Learner B cannot retrieve learner A’s memory."
+      },
+      {
+        "name": "Controlled omission 7",
+        "group": "Controlled recall",
+        "pass": true,
+        "detail": "Exactly one segment omitted; database remains intact."
+      },
+      {
+        "name": "Correction 8",
+        "group": "Correction update",
+        "pass": true,
+        "detail": "Memory and provenance updated; prior version retained."
+      },
+      {
+        "name": "User isolation 8",
+        "group": "Memory isolation",
+        "pass": true,
+        "detail": "Learner B cannot retrieve learner A’s memory."
+      },
+      {
+        "name": "Controlled omission 8",
+        "group": "Controlled recall",
+        "pass": true,
+        "detail": "Exactly one segment omitted; database remains intact."
+      },
+      {
+        "name": "Correction 9",
+        "group": "Correction update",
+        "pass": true,
+        "detail": "Memory and provenance updated; prior version retained."
+      },
+      {
+        "name": "User isolation 9",
+        "group": "Memory isolation",
+        "pass": true,
+        "detail": "Learner B cannot retrieve learner A’s memory."
+      },
+      {
+        "name": "Controlled omission 9",
+        "group": "Controlled recall",
+        "pass": true,
+        "detail": "Exactly one segment omitted; database remains intact."
+      },
+      {
+        "name": "Correction 10",
+        "group": "Correction update",
+        "pass": true,
+        "detail": "Memory and provenance updated; prior version retained."
+      },
+      {
+        "name": "User isolation 10",
+        "group": "Memory isolation",
+        "pass": true,
+        "detail": "Learner B cannot retrieve learner A’s memory."
+      },
+      {
+        "name": "Controlled omission 10",
+        "group": "Controlled recall",
+        "pass": true,
+        "detail": "Exactly one segment omitted; database remains intact."
+      },
+      {
+        "name": "Mastery policy 0",
+        "group": "Policy consistency",
+        "pass": true,
+        "detail": "mastery=0 → ask → ask_to_learn"
+      },
+      {
+        "name": "Mastery policy 0.1",
+        "group": "Policy consistency",
+        "pass": true,
+        "detail": "mastery=0.1 → ask → ask_to_learn"
+      },
+      {
+        "name": "Mastery policy 0.29",
+        "group": "Policy consistency",
+        "pass": true,
+        "detail": "mastery=0.29 → ask → ask_to_learn"
+      },
+      {
+        "name": "Mastery policy 0.3",
+        "group": "Policy consistency",
+        "pass": true,
+        "detail": "mastery=0.3 → uncertain → uncertain_recall"
+      },
+      {
+        "name": "Mastery policy 0.5",
+        "group": "Policy consistency",
+        "pass": true,
+        "detail": "mastery=0.5 → uncertain → uncertain_recall"
+      },
+      {
+        "name": "Mastery policy 0.69",
+        "group": "Policy consistency",
+        "pass": true,
+        "detail": "mastery=0.69 → uncertain → uncertain_recall"
+      },
+      {
+        "name": "Mastery policy 0.7",
+        "group": "Policy consistency",
+        "pass": true,
+        "detail": "mastery=0.7 → correct → follow_up"
+      },
+      {
+        "name": "Mastery policy 0.8",
+        "group": "Policy consistency",
+        "pass": true,
+        "detail": "mastery=0.8 → correct → follow_up"
+      },
+      {
+        "name": "Mastery policy 0.9",
+        "group": "Policy consistency",
+        "pass": true,
+        "detail": "mastery=0.9 → correct → follow_up"
+      },
+      {
+        "name": "Mastery policy 1",
+        "group": "Policy consistency",
+        "pass": true,
+        "detail": "mastery=1 → correct → follow_up"
+      },
+      {
+        "name": "Low mastery never recalls",
+        "group": "Error calibration",
+        "pass": true,
+        "detail": "mastery < 0.3 → ask to learn in 100% of draws"
+      },
+      {
+        "name": "Medium mastery error rate ≈ 30%",
+        "group": "Error calibration",
+        "pass": true,
+        "detail": "corrupt in 30.4% of 4000 draws (planned 30%)"
+      },
+      {
+        "name": "High mastery error rate ≈ 5%",
+        "group": "Error calibration",
+        "pass": true,
+        "detail": "corrupt in 5.0% of 4000 draws (planned 5%)"
+      },
+      {
+        "name": "Corruption operator 1",
+        "group": "Corruption operators",
+        "pass": true,
+        "detail": "confuse_related: used the meaning of related concept “kopi”"
+      },
+      {
+        "name": "Corruption operator 2",
+        "group": "Corruption operators",
+        "pass": true,
+        "detail": "swap_steps: swapped steps 1 and 2"
+      },
+      {
+        "name": "Corruption operator 3",
+        "group": "Corruption operators",
+        "pass": true,
+        "detail": "confuse_related: used the meaning of related concept “kopi”"
+      },
+      {
+        "name": "Corruption operator 4",
+        "group": "Corruption operators",
+        "pass": true,
+        "detail": "swap_steps: swapped steps 1 and 2"
+      },
+      {
+        "name": "Corruption operator 5",
+        "group": "Corruption operators",
+        "pass": true,
+        "detail": "swap_steps: swapped steps 1 and 2"
+      },
+      {
+        "name": "Corruption operator 6",
+        "group": "Corruption operators",
+        "pass": true,
+        "detail": "swap_steps: swapped steps 2 and 3"
+      },
+      {
+        "name": "Corruption operator 7",
+        "group": "Corruption operators",
+        "pass": true,
+        "detail": "omit_step: omitted step 2: “spread kaya”"
+      },
+      {
+        "name": "Corruption operator 8",
+        "group": "Corruption operators",
+        "pass": true,
+        "detail": "swap_steps: swapped steps 2 and 3"
+      },
+      {
+        "name": "Corruption operator 9",
+        "group": "Corruption operators",
+        "pass": true,
+        "detail": "approximate: only the first 5 of 7 words"
+      },
+      {
+        "name": "Corruption operator 10",
+        "group": "Corruption operators",
+        "pass": true,
+        "detail": "approximate: only the first 5 of 7 words"
+      },
+      {
+        "name": "Pending conflict triggers a clarification question",
+        "group": "Clarification & curiosity",
+        "pass": true,
+        "detail": "Asks which version is right; Confirm keeps the first."
+      },
+      {
+        "name": "Quoted mention becomes a curiosity question",
+        "group": "Clarification & curiosity",
+        "pass": true,
+        "detail": "Exploration turn asks about “kaya”, mentioned but never taught."
+      },
+      {
+        "name": "Keyword graph links only related concepts",
+        "group": "Clarification & curiosity",
+        "pass": true,
+        "detail": "kopi ↔ kopi o share “coffee”; shiok stays unlinked."
+      }
+    ],
+    "limitation": "Passing these finite scripted tests is not proof of open-ended language understanding, live-provider safety, clinical benefit, or production-grade access control."
+  },
+  "sample": {
+    "seed": 42,
+    "rows": [
+      {
+        "day": 1,
+        "invitations": 8,
+        "responses": 8,
+        "responseRate": 1,
+        "responseDelayMinutes": 2.5957,
+        "explanationCharacters": 171,
+        "corrections": 1,
+        "selfInitiated": 2,
+        "changed": false,
+        "z": -0.3167,
+        "cusum": 0,
+        "calibration": true,
+        "alarm": false
+      },
+      {
+        "day": 2,
+        "invitations": 8,
+        "responses": 8,
+        "responseRate": 1,
+        "responseDelayMinutes": 1.6266,
+        "explanationCharacters": 234,
+        "corrections": 2,
+        "selfInitiated": 2,
+        "changed": false,
+        "z": -1.5401,
+        "cusum": 0,
+        "calibration": true,
+        "alarm": false
+      },
+      {
+        "day": 3,
+        "invitations": 8,
+        "responses": 6,
+        "responseRate": 0.75,
+        "responseDelayMinutes": 4.2311,
+        "explanationCharacters": 112,
+        "corrections": 1,
+        "selfInitiated": 1,
+        "changed": false,
+        "z": 1.4638,
+        "cusum": 0,
+        "calibration": true,
+        "alarm": false
+      },
+      {
+        "day": 4,
+        "invitations": 8,
+        "responses": 6,
+        "responseRate": 0.75,
+        "responseDelayMinutes": 3.0758,
+        "explanationCharacters": 147,
+        "corrections": 1,
+        "selfInitiated": 2,
+        "changed": false,
+        "z": 0.6048,
+        "cusum": 0,
+        "calibration": true,
+        "alarm": false
+      },
+      {
+        "day": 5,
+        "invitations": 8,
+        "responses": 6,
+        "responseRate": 0.75,
+        "responseDelayMinutes": 2.657,
+        "explanationCharacters": 125,
+        "corrections": 1,
+        "selfInitiated": 2,
+        "changed": false,
+        "z": 0.6078,
+        "cusum": 0,
+        "calibration": true,
+        "alarm": false
+      },
+      {
+        "day": 6,
+        "invitations": 8,
+        "responses": 8,
+        "responseRate": 1,
+        "responseDelayMinutes": 2.1268,
+        "explanationCharacters": 183,
+        "corrections": 2,
+        "selfInitiated": 1,
+        "changed": false,
+        "z": -0.6185,
+        "cusum": 0,
+        "calibration": true,
+        "alarm": false
+      },
+      {
+        "day": 7,
+        "invitations": 8,
+        "responses": 8,
+        "responseRate": 1,
+        "responseDelayMinutes": 1.9035,
+        "explanationCharacters": 174,
+        "corrections": 2,
+        "selfInitiated": 2,
+        "changed": false,
+        "z": -0.929,
+        "cusum": 0,
+        "calibration": true,
+        "alarm": false
+      },
+      {
+        "day": 8,
+        "invitations": 8,
+        "responses": 8,
+        "responseRate": 1,
+        "responseDelayMinutes": 2.8192,
+        "explanationCharacters": 196,
+        "corrections": 2,
+        "selfInitiated": 2,
+        "changed": false,
+        "z": -0.6651,
+        "cusum": 0,
+        "calibration": true,
+        "alarm": false
+      },
+      {
+        "day": 9,
+        "invitations": 8,
+        "responses": 8,
+        "responseRate": 1,
+        "responseDelayMinutes": 1.6633,
+        "explanationCharacters": 167,
+        "corrections": 1,
+        "selfInitiated": 2,
+        "changed": false,
+        "z": -0.7695,
+        "cusum": 0,
+        "calibration": true,
+        "alarm": false
+      },
+      {
+        "day": 10,
+        "invitations": 8,
+        "responses": 8,
+        "responseRate": 1,
+        "responseDelayMinutes": 2.5099,
+        "explanationCharacters": 160,
+        "corrections": 2,
+        "selfInitiated": 3,
+        "changed": false,
+        "z": -0.7828,
+        "cusum": 0,
+        "calibration": true,
+        "alarm": false
+      },
+      {
+        "day": 11,
+        "invitations": 8,
+        "responses": 7,
+        "responseRate": 0.875,
+        "responseDelayMinutes": 2.4225,
+        "explanationCharacters": 181,
+        "corrections": 2,
+        "selfInitiated": 2,
+        "changed": false,
+        "z": -0.4385,
+        "cusum": 0,
+        "calibration": true,
+        "alarm": false
+      },
+      {
+        "day": 12,
+        "invitations": 8,
+        "responses": 5,
+        "responseRate": 0.625,
+        "responseDelayMinutes": 2.6272,
+        "explanationCharacters": 143,
+        "corrections": 2,
+        "selfInitiated": 1,
+        "changed": false,
+        "z": 0.7462,
+        "cusum": 0,
+        "calibration": true,
+        "alarm": false
+      },
+      {
+        "day": 13,
+        "invitations": 8,
+        "responses": 4,
+        "responseRate": 0.5,
+        "responseDelayMinutes": 5.5809,
+        "explanationCharacters": 93,
+        "corrections": 1,
+        "selfInitiated": 2,
+        "changed": false,
+        "z": 2.2083,
+        "cusum": 0,
+        "calibration": true,
+        "alarm": false
+      },
+      {
+        "day": 14,
+        "invitations": 8,
+        "responses": 8,
+        "responseRate": 1,
+        "responseDelayMinutes": 2.0532,
+        "explanationCharacters": 156,
+        "corrections": 1,
+        "selfInitiated": 4,
+        "changed": false,
+        "z": -0.9732,
+        "cusum": 0,
+        "calibration": true,
+        "alarm": false
+      },
+      {
+        "day": 15,
+        "invitations": 8,
+        "responses": 6,
+        "responseRate": 0.75,
+        "responseDelayMinutes": 3.2465,
+        "explanationCharacters": 145,
+        "corrections": 1,
+        "selfInitiated": 2,
+        "changed": false,
+        "z": 0.678,
+        "cusum": 0,
+        "calibration": true,
+        "alarm": false
+      },
+      {
+        "day": 16,
+        "invitations": 8,
+        "responses": 8,
+        "responseRate": 1,
+        "responseDelayMinutes": 3.2505,
+        "explanationCharacters": 114,
+        "corrections": 1,
+        "selfInitiated": 1,
+        "changed": false,
+        "z": 0.6022,
+        "cusum": 0,
+        "calibration": true,
+        "alarm": false
+      },
+      {
+        "day": 17,
+        "invitations": 8,
+        "responses": 4,
+        "responseRate": 0.5,
+        "responseDelayMinutes": 2.6192,
+        "explanationCharacters": 119,
+        "corrections": 1,
+        "selfInitiated": 2,
+        "changed": false,
+        "z": 1.1977,
+        "cusum": 0,
+        "calibration": true,
+        "alarm": false
+      },
+      {
+        "day": 18,
+        "invitations": 8,
+        "responses": 7,
+        "responseRate": 0.875,
+        "responseDelayMinutes": 2.2079,
+        "explanationCharacters": 170,
+        "corrections": 2,
+        "selfInitiated": 2,
+        "changed": false,
+        "z": -0.4582,
+        "cusum": 0,
+        "calibration": true,
+        "alarm": false
+      },
+      {
+        "day": 19,
+        "invitations": 8,
+        "responses": 6,
+        "responseRate": 0.75,
+        "responseDelayMinutes": 3.1037,
+        "explanationCharacters": 154,
+        "corrections": 2,
+        "selfInitiated": 1,
+        "changed": false,
+        "z": 0.5653,
+        "cusum": 0,
+        "calibration": true,
+        "alarm": false
+      },
+      {
+        "day": 20,
+        "invitations": 8,
+        "responses": 8,
+        "responseRate": 1,
+        "responseDelayMinutes": 1.9933,
+        "explanationCharacters": 215,
+        "corrections": 1,
+        "selfInitiated": 3,
+        "changed": false,
+        "z": -1.1824,
+        "cusum": 0,
+        "calibration": true,
+        "alarm": false
+      },
+      {
+        "day": 21,
+        "invitations": 8,
+        "responses": 7,
+        "responseRate": 0.875,
+        "responseDelayMinutes": 2.5289,
+        "explanationCharacters": 128,
+        "corrections": 2,
+        "selfInitiated": 2,
+        "changed": false,
+        "z": -0.0026,
+        "cusum": 0,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 22,
+        "invitations": 8,
+        "responses": 6,
+        "responseRate": 0.75,
+        "responseDelayMinutes": 4.2693,
+        "explanationCharacters": 132,
+        "corrections": 1,
+        "selfInitiated": 1,
+        "changed": false,
+        "z": 1.3266,
+        "cusum": 0.8266,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 23,
+        "invitations": 8,
+        "responses": 4,
+        "responseRate": 0.5,
+        "responseDelayMinutes": 3.1857,
+        "explanationCharacters": 135,
+        "corrections": 2,
+        "selfInitiated": 1,
+        "changed": false,
+        "z": 1.2944,
+        "cusum": 1.621,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 24,
+        "invitations": 8,
+        "responses": 6,
+        "responseRate": 0.75,
+        "responseDelayMinutes": 2.4847,
+        "explanationCharacters": 155,
+        "corrections": 1,
+        "selfInitiated": 1,
+        "changed": false,
+        "z": 0.5711,
+        "cusum": 1.6921,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 25,
+        "invitations": 8,
+        "responses": 6,
+        "responseRate": 0.75,
+        "responseDelayMinutes": 2.4632,
+        "explanationCharacters": 187,
+        "corrections": 1,
+        "selfInitiated": 1,
+        "changed": false,
+        "z": 0.3266,
+        "cusum": 1.5188,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 26,
+        "invitations": 8,
+        "responses": 8,
+        "responseRate": 1,
+        "responseDelayMinutes": 2.6822,
+        "explanationCharacters": 187,
+        "corrections": 2,
+        "selfInitiated": 2,
+        "changed": false,
+        "z": -0.6529,
+        "cusum": 0.3658,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 27,
+        "invitations": 8,
+        "responses": 8,
+        "responseRate": 1,
+        "responseDelayMinutes": 1.3517,
+        "explanationCharacters": 172,
+        "corrections": 2,
+        "selfInitiated": 2,
+        "changed": false,
+        "z": -1.2852,
+        "cusum": 0,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 28,
+        "invitations": 8,
+        "responses": 8,
+        "responseRate": 1,
+        "responseDelayMinutes": 2.7309,
+        "explanationCharacters": 157,
+        "corrections": 3,
+        "selfInitiated": 0,
+        "changed": false,
+        "z": -0.1545,
+        "cusum": 0,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 29,
+        "invitations": 8,
+        "responses": 5,
+        "responseRate": 0.625,
+        "responseDelayMinutes": 2.3178,
+        "explanationCharacters": 198,
+        "corrections": 2,
+        "selfInitiated": 3,
+        "changed": false,
+        "z": -0.3064,
+        "cusum": 0,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 30,
+        "invitations": 8,
+        "responses": 7,
+        "responseRate": 0.875,
+        "responseDelayMinutes": 2.9481,
+        "explanationCharacters": 160,
+        "corrections": 1,
+        "selfInitiated": 3,
+        "changed": false,
+        "z": -0.0737,
+        "cusum": 0,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 31,
+        "invitations": 8,
+        "responses": 5,
+        "responseRate": 0.625,
+        "responseDelayMinutes": 4.5022,
+        "explanationCharacters": 114,
+        "corrections": 1,
+        "selfInitiated": 1,
+        "changed": true,
+        "z": 1.797,
+        "cusum": 1.297,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 32,
+        "invitations": 8,
+        "responses": 6,
+        "responseRate": 0.75,
+        "responseDelayMinutes": 4.4433,
+        "explanationCharacters": 107,
+        "corrections": 1,
+        "selfInitiated": 2,
+        "changed": true,
+        "z": 1.2972,
+        "cusum": 2.0942,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 33,
+        "invitations": 8,
+        "responses": 6,
+        "responseRate": 0.75,
+        "responseDelayMinutes": 5.0047,
+        "explanationCharacters": 125,
+        "corrections": 1,
+        "selfInitiated": 1,
+        "changed": true,
+        "z": 1.5502,
+        "cusum": 3.1444,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 34,
+        "invitations": 8,
+        "responses": 8,
+        "responseRate": 1,
+        "responseDelayMinutes": 2.3985,
+        "explanationCharacters": 152,
+        "corrections": 2,
+        "selfInitiated": 1,
+        "changed": true,
+        "z": -0.2605,
+        "cusum": 2.3839,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 35,
+        "invitations": 8,
+        "responses": 4,
+        "responseRate": 0.5,
+        "responseDelayMinutes": 2.7438,
+        "explanationCharacters": 135,
+        "corrections": 1,
+        "selfInitiated": 1,
+        "changed": true,
+        "z": 1.3868,
+        "cusum": 3.2707,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 36,
+        "invitations": 8,
+        "responses": 6,
+        "responseRate": 0.75,
+        "responseDelayMinutes": 3.5171,
+        "explanationCharacters": 99,
+        "corrections": 1,
+        "selfInitiated": 0,
+        "changed": true,
+        "z": 1.6154,
+        "cusum": 4.3861,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 37,
+        "invitations": 8,
+        "responses": 6,
+        "responseRate": 0.75,
+        "responseDelayMinutes": 3.1178,
+        "explanationCharacters": 142,
+        "corrections": 1,
+        "selfInitiated": 1,
+        "changed": true,
+        "z": 0.9126,
+        "cusum": 4.7987,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 38,
+        "invitations": 8,
+        "responses": 5,
+        "responseRate": 0.625,
+        "responseDelayMinutes": 4.3644,
+        "explanationCharacters": 77,
+        "corrections": 1,
+        "selfInitiated": 1,
+        "changed": true,
+        "z": 2.0352,
+        "cusum": 6.3339,
+        "calibration": false,
+        "alarm": true
+      },
+      {
+        "day": 39,
+        "invitations": 8,
+        "responses": 5,
+        "responseRate": 0.625,
+        "responseDelayMinutes": 2.8659,
+        "explanationCharacters": 157,
+        "corrections": 1,
+        "selfInitiated": 3,
+        "changed": true,
+        "z": 0.479,
+        "cusum": 6.3129,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 40,
+        "invitations": 8,
+        "responses": 6,
+        "responseRate": 0.75,
+        "responseDelayMinutes": 4.3247,
+        "explanationCharacters": 146,
+        "corrections": 1,
+        "selfInitiated": 1,
+        "changed": true,
+        "z": 1.2377,
+        "cusum": 7.0506,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 41,
+        "invitations": 8,
+        "responses": 6,
+        "responseRate": 0.75,
+        "responseDelayMinutes": 2.6427,
+        "explanationCharacters": 168,
+        "corrections": 1,
+        "selfInitiated": 3,
+        "changed": true,
+        "z": 0.0297,
+        "cusum": 6.5803,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 42,
+        "invitations": 8,
+        "responses": 5,
+        "responseRate": 0.625,
+        "responseDelayMinutes": 5.1617,
+        "explanationCharacters": 72,
+        "corrections": 2,
+        "selfInitiated": 1,
+        "changed": true,
+        "z": 1.9995,
+        "cusum": 8.0798,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 43,
+        "invitations": 8,
+        "responses": 3,
+        "responseRate": 0.375,
+        "responseDelayMinutes": 7.28,
+        "explanationCharacters": 74,
+        "corrections": 0,
+        "selfInitiated": 0,
+        "changed": true,
+        "z": 3.6834,
+        "cusum": 11.2632,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 44,
+        "invitations": 8,
+        "responses": 7,
+        "responseRate": 0.875,
+        "responseDelayMinutes": 3.1141,
+        "explanationCharacters": 143,
+        "corrections": 1,
+        "selfInitiated": 2,
+        "changed": true,
+        "z": 0.3669,
+        "cusum": 11.1301,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 45,
+        "invitations": 8,
+        "responses": 3,
+        "responseRate": 0.375,
+        "responseDelayMinutes": 4.1086,
+        "explanationCharacters": 98,
+        "corrections": 2,
+        "selfInitiated": 0,
+        "changed": true,
+        "z": 2.3789,
+        "cusum": 13.009,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 46,
+        "invitations": 8,
+        "responses": 5,
+        "responseRate": 0.625,
+        "responseDelayMinutes": 4.4946,
+        "explanationCharacters": 111,
+        "corrections": 1,
+        "selfInitiated": 1,
+        "changed": true,
+        "z": 1.8172,
+        "cusum": 14.3262,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 47,
+        "invitations": 8,
+        "responses": 7,
+        "responseRate": 0.875,
+        "responseDelayMinutes": 2.9977,
+        "explanationCharacters": 124,
+        "corrections": 2,
+        "selfInitiated": 2,
+        "changed": true,
+        "z": 0.2111,
+        "cusum": 14.0373,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 48,
+        "invitations": 8,
+        "responses": 8,
+        "responseRate": 1,
+        "responseDelayMinutes": 2.8631,
+        "explanationCharacters": 145,
+        "corrections": 1,
+        "selfInitiated": 0,
+        "changed": true,
+        "z": 0.4933,
+        "cusum": 14.0306,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 49,
+        "invitations": 8,
+        "responses": 4,
+        "responseRate": 0.5,
+        "responseDelayMinutes": 3.1395,
+        "explanationCharacters": 145,
+        "corrections": 1,
+        "selfInitiated": 3,
+        "changed": true,
+        "z": 0.9466,
+        "cusum": 14.4772,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 50,
+        "invitations": 8,
+        "responses": 7,
+        "responseRate": 0.875,
+        "responseDelayMinutes": 6.1321,
+        "explanationCharacters": 118,
+        "corrections": 1,
+        "selfInitiated": 0,
+        "changed": true,
+        "z": 1.7975,
+        "cusum": 15.7747,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 51,
+        "invitations": 8,
+        "responses": 6,
+        "responseRate": 0.75,
+        "responseDelayMinutes": 2.6361,
+        "explanationCharacters": 136,
+        "corrections": 1,
+        "selfInitiated": 1,
+        "changed": true,
+        "z": 0.7748,
+        "cusum": 16.0495,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 52,
+        "invitations": 8,
+        "responses": 4,
+        "responseRate": 0.5,
+        "responseDelayMinutes": 4.7321,
+        "explanationCharacters": 145,
+        "corrections": 2,
+        "selfInitiated": 1,
+        "changed": true,
+        "z": 1.6497,
+        "cusum": 17.1991,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 53,
+        "invitations": 8,
+        "responses": 4,
+        "responseRate": 0.5,
+        "responseDelayMinutes": 3.5022,
+        "explanationCharacters": 152,
+        "corrections": 1,
+        "selfInitiated": 1,
+        "changed": true,
+        "z": 1.5263,
+        "cusum": 18.2255,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 54,
+        "invitations": 8,
+        "responses": 6,
+        "responseRate": 0.75,
+        "responseDelayMinutes": 3.6548,
+        "explanationCharacters": 157,
+        "corrections": 1,
+        "selfInitiated": 2,
+        "changed": true,
+        "z": 0.7182,
+        "cusum": 18.4436,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 55,
+        "invitations": 8,
+        "responses": 7,
+        "responseRate": 0.875,
+        "responseDelayMinutes": 4.7416,
+        "explanationCharacters": 89,
+        "corrections": 2,
+        "selfInitiated": 1,
+        "changed": true,
+        "z": 1.2214,
+        "cusum": 19.165,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 56,
+        "invitations": 8,
+        "responses": 4,
+        "responseRate": 0.5,
+        "responseDelayMinutes": 4.9996,
+        "explanationCharacters": 70,
+        "corrections": 1,
+        "selfInitiated": 0,
+        "changed": true,
+        "z": 2.7708,
+        "cusum": 21.4358,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 57,
+        "invitations": 8,
+        "responses": 8,
+        "responseRate": 1,
+        "responseDelayMinutes": 3.1347,
+        "explanationCharacters": 148,
+        "corrections": 2,
+        "selfInitiated": 3,
+        "changed": true,
+        "z": -0.4538,
+        "cusum": 20.482,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 58,
+        "invitations": 8,
+        "responses": 6,
+        "responseRate": 0.75,
+        "responseDelayMinutes": 3.3102,
+        "explanationCharacters": 156,
+        "corrections": 1,
+        "selfInitiated": 1,
+        "changed": true,
+        "z": 0.8746,
+        "cusum": 20.8566,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 59,
+        "invitations": 8,
+        "responses": 5,
+        "responseRate": 0.625,
+        "responseDelayMinutes": 3.1506,
+        "explanationCharacters": 164,
+        "corrections": 1,
+        "selfInitiated": 3,
+        "changed": true,
+        "z": 0.5302,
+        "cusum": 20.8868,
+        "calibration": false,
+        "alarm": false
+      },
+      {
+        "day": 60,
+        "invitations": 8,
+        "responses": 5,
+        "responseRate": 0.625,
+        "responseDelayMinutes": 3.6354,
+        "explanationCharacters": 139,
+        "corrections": 1,
+        "selfInitiated": 2,
+        "changed": true,
+        "z": 1.1253,
+        "cusum": 21.5121,
+        "calibration": false,
+        "alarm": false
+      }
+    ],
+    "firstAlarmDay": 38,
+    "changeDay": 31,
+    "detectionDelay": 7,
+    "preChangeFalseAlarm": false,
+    "settings": {
+      "baselineDays": 20,
+      "k": 0.5,
+      "h": 5
+    },
+    "baseline": [
+      {
+        "field": "responseRate",
+        "mean": 0.8563,
+        "std": 0.1734,
+        "sign": -1,
+        "weight": 0.3
+      },
+      {
+        "field": "responseDelayMinutes",
+        "mean": 0.9535,
+        "std": 0.2994,
+        "sign": 1,
+        "weight": 0.25
+      },
+      {
+        "field": "explanationCharacters",
+        "mean": 157.95,
+        "std": 35.3173,
+        "sign": -1,
+        "weight": 0.2
+      },
+      {
+        "field": "selfInitiated",
+        "mean": 1.95,
+        "std": 0.7592,
+        "sign": -1,
+        "weight": 0.15
+      },
+      {
+        "field": "corrections",
+        "mean": 1.45,
+        "std": 0.5104,
+        "sign": -1,
+        "weight": 0.1
+      }
+    ],
+    "interpretation": "Synthetic behavioural change only. Not a mental-health diagnosis or a validated clinical score."
+  },
+  "monteCarlo": {
+    "runsPerCondition": 200,
+    "monitoredDays": 40,
+    "seed": 1000,
+    "shift": 1.2,
+    "k": 0.5,
+    "h": 5,
+    "baselineDays": 20,
+    "stableFalseAlarmCount": 40,
+    "stableSequenceFalseAlarmRate": 0.2,
+    "changedPreAlarmCount": 5,
+    "changedPreAlarmRate": 0.025,
+    "detectedAfterChangeCount": 195,
+    "detectedAfterChangeRate": 0.975,
+    "noAlarmCount": 0,
+    "meanDetectionDelay": 4.13,
+    "medianDetectionDelay": 3,
+    "temporaryAlarmCount": 90,
+    "temporaryAlarmRate": 0.45,
+    "temporaryDefinition": "Separate 3-day temporary dips (days 31–33), then a return to baseline. Counts sequences whose first alarm came on or after day 31. A sustained-change detector is expected to flag some of these; this is a limitation, not a success.",
+    "delayDefinition": "First alarm day minus change day (day 31); only post-change first detections. Pre-change alarms and misses reported separately.",
+    "falseAlarmDefinition": "Fraction of stable 60-day sequences with at least one alarm after the first 20 calibration days (or selected baselineDays). Not a per-day false-positive rate.",
+    "dataType": "synthetic; no participants; fixed, untuned illustrative thresholds"
+  },
+  "thresholdSweep": [
+    {
+      "h": 3,
+      "stableFalseAlarmRate": 0.445,
+      "detectedAfterChangeRate": 0.865,
+      "temporaryAlarmRate": 0.62,
+      "meanDetectionDelay": 2.41
+    },
+    {
+      "h": 4,
+      "stableFalseAlarmRate": 0.31,
+      "detectedAfterChangeRate": 0.955,
+      "temporaryAlarmRate": 0.565,
+      "meanDetectionDelay": 3.29
+    },
+    {
+      "h": 5,
+      "stableFalseAlarmRate": 0.2,
+      "detectedAfterChangeRate": 0.975,
+      "temporaryAlarmRate": 0.45,
+      "meanDetectionDelay": 4.13
+    },
+    {
+      "h": 6,
+      "stableFalseAlarmRate": 0.12,
+      "detectedAfterChangeRate": 0.985,
+      "temporaryAlarmRate": 0.33,
+      "meanDetectionDelay": 4.98
+    },
+    {
+      "h": 8,
+      "stableFalseAlarmRate": 0.09,
+      "detectedAfterChangeRate": 0.985,
+      "temporaryAlarmRate": 0.19,
+      "meanDetectionDelay": 6.7
+    },
+    {
+      "h": 10,
+      "stableFalseAlarmRate": 0.045,
+      "detectedAfterChangeRate": 0.985,
+      "temporaryAlarmRate": 0.11,
+      "meanDetectionDelay": 8.19
+    }
+  ]
+}

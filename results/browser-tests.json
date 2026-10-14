@@ -1,0 +1,82 @@
+{
+  "suite": "Real Chromium browser smoke tests",
+  "passed": 18,
+  "total": 18,
+  "checks": [
+    {
+      "name": "Fresh static UI starts without API or seed memory",
+      "pass": true
+    },
+    {
+      "name": "Guided teach \u2192 recall \u2192 omission \u2192 correction \u2192 recall completes",
+      "pass": true
+    },
+    {
+      "name": "Profile B cannot retrieve profile A knowledge through UI",
+      "pass": true
+    },
+    {
+      "name": "Algorithm inspector renders actual stored provenance and actions",
+      "pass": true
+    },
+    {
+      "name": "Browser actually executes all 96 controller checks",
+      "pass": true
+    },
+    {
+      "name": "600-run simulation and threshold sweep reproduce CLI metrics including false alarms",
+      "pass": true
+    },
+    {
+      "name": "Evaluation JSON export contains executed counts, not target placeholders",
+      "pass": true
+    },
+    {
+      "name": "Simulation CSV exports 60 days plus header",
+      "pass": true
+    },
+    {
+      "name": "CUSUM chart SVG downloads successfully",
+      "pass": true
+    },
+    {
+      "name": "Opt-in local memory survives reload",
+      "pass": true
+    },
+    {
+      "name": "Blank-provider backend connects as an isolated server demo",
+      "pass": true
+    },
+    {
+      "name": "User-taught HTML renders as text, not executable markup",
+      "pass": true
+    },
+    {
+      "name": "Backend bearer session and stored memory survive tab reload",
+      "pass": true
+    },
+    {
+      "name": "Disconnect restores separate local demo rather than mixing server memory",
+      "pass": true
+    },
+    {
+      "name": "Profile deletion removes persisted local data",
+      "pass": true
+    },
+    {
+      "name": "Desktop flow has no uncaught JavaScript errors",
+      "pass": true
+    },
+    {
+      "name": "390px mobile viewport has no horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "Bundled standalone document teaches with zero external requests",
+      "pass": true
+    }
+  ],
+  "scope": "Executed browser checks listed below; no live model provider calls.",
+  "inlinePreview": false,
+  "environmentNotes": "Full browser navigation suite."
+}

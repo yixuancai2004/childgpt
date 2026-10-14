@@ -1,0 +1,18 @@
+{
+  "name": "childgpt-gp8001",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A teachable AI child: inspectable cognitive harness and reproducible synthetic evaluation.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "evaluate": "node scripts/evaluate.mjs",
+    "check": "npm test && npm run evaluate && npm run build",
+    "publish:github": "bash scripts/publish-github.sh",
+    "prestart": "npm run build"
+  }
+}

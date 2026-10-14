@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="ChildGPT: a teachable AI learner with an inspectable cognitive harness and reproducible synthetic evaluation. GP8001 Group 6 prototype.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https: http://localhost:* http://127.0.0.1:*; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <title>ChildGPT · Learning Studio</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="#studio" aria-label="ChildGPT home"><span class="brand-mark">✳</span><span>ChildGPT<span class="brand-small">A LITTLE CURIOUS</span></span></a>
+    <div class="workspace-label">THE WORKSPACE</div>
+    <nav aria-label="Main navigation">
+      <button class="nav-link active" data-page="studio"><span>◉</span> Learning studio</button>
+      <button class="nav-link" data-page="algorithms"><span>⌘</span> Algorithm trace</button>
+      <button class="nav-link" data-page="evaluation"><span>▥</span> Evaluation lab</button>
+      <button class="nav-link" data-page="settings"><span>⚙</span> Connect & privacy</button>
+    </nav>
+    <div class="sidebar-note"><span class="tiny-label">THE IDEA</span><p>Not an assistant with every answer.<br><strong>A learner with a reason to ask.</strong></p><span class="sprout">↗</span></div>
+    <div class="sidebar-bottom"><span class="status-dot"></span> GP8001 · GROUP 06<small>Research prototype · v1.1<br>Public-demo ready · no clinical claims</small></div>
+  </aside>
+  <div class="body-wrap">
+    <header class="topbar"><div class="breadcrumb">Workspace <span>/</span> <strong id="page-label">Learning studio</strong></div><div class="header-actions"><span id="mode-badge" class="badge soft">● KEY-FREE DEMO</span><label class="profile-control">Profile <select id="profile-select" aria-label="Active synthetic learner"><option value="learner-a">Learner A</option><option value="learner-b">Learner B</option></select></label></div></header>
+    <main id="main">
+      <section id="page-studio" class="page active" aria-label="Learning studio">
+        <div class="page-heading"><div><div class="eyebrow">A TEACHABLE AI CHILD</div><h1>A little curious.<br><em>A lot to learn from you.</em></h1><p>Your stories become its memory. You decide what to share.</p></div><button id="guided-demo" class="button primary"><span>▷</span> Run guided demo</button></div>
+        <div class="summary-grid"><div class="summary-card"><span class="metric-icon">▤</span><div><strong id="memory-count">0</strong><span>Memories learned</span></div><small>Only what you teach</small></div><div class="summary-card"><span class="metric-icon lavender">↗</span><div><strong id="mastery-value">—</strong><span>Average mastery</span></div><small>A controller score, not LLM confidence</small></div><div class="summary-card"><span class="metric-icon peach">◇</span><div><strong>Isolated</strong><span>Per-profile knowledge</span></div><small>Synthetic profiles, no shared facts</small></div></div>
+        <div class="studio-grid">
+          <div class="chat-card card">
+            <div class="chat-header"><div class="mini-avatar"><i></i><i></i></div><div><h2>Milo <span class="badge">AI LEARNER</span></h2><p>Curious, transparent, and still learning.</p></div><span class="live-dot"></span></div>
+            <div class="chat-history" id="chat-history" role="log" aria-live="polite" aria-label="Conversation"></div>
+            <div class="invitation-bar" id="invitation-bar" hidden>A teaching invitation is waiting. It is always okay to skip. <button id="skip-invitation" class="text-button">Skip</button></div>
+            <form id="conversation-form" class="composer">
+              <div class="action-tabs" role="group" aria-label="Conversation action"><button type="button" data-action="teach" class="selected">Teach</button><button type="button" data-action="ask">Ask</button><button type="button" data-action="recall">Recall</button><button type="button" data-action="correct">Correct</button><button type="button" data-action="chat">Free text</button></div>
+              <div id="structured-fields"><div class="field-row"><label>Concept<input id="concept-input" maxlength="120" placeholder="e.g. tavi (an invented word)" autocomplete="off"></label><label class="topic-field">Teaching domain<select id="topic-input"><option>Dialect & expressions</option><option>Family traditions</option><option>Local stories</option></select></label></div><label id="content-field">What would you like to teach?<textarea id="content-input" rows="2" maxlength="3000" placeholder="A happy moment shared over tea"></textarea></label></div>
+              <label id="free-text-field" hidden>Your message<textarea id="text-input" rows="3" maxlength="3000" placeholder="Teach: tavi = a happy moment shared over tea"></textarea></label>
+              <div class="composer-footer"><button type="button" id="next-question" class="text-button">↗ Ask me a question</button><button type="submit" id="send-button" class="button primary">Teach Milo <span>↗</span></button></div>
+              <p class="composer-note" id="composer-note">No built-in factual answers. Memory starts empty. Synthetic examples only.</p>
+            </form>
+          </div>
+          <aside class="memory-column">
+            <div class="card memory-card"><div class="card-heading"><h2>Growing memory</h2><span class="pill" id="memory-pill">0 items</span></div><p class="subtle">What this learner knows, and where it came from.</p><div id="memory-list"></div></div>
+            <div class="card decision-card"><div class="card-heading"><h2>Behind the reply</h2><span class="badge soft">CONTROLLER</span></div><div id="trace-summary" class="trace-summary"></div><button class="text-button" data-page="algorithms">Inspect the algorithm <span>→</span></button></div>
+            <div class="gentle-note"><span>♡</span><p><strong>Care is always optional.</strong><br>This is an AI, not a real child. No guilt, penalties, or escalating reminders. Recall errors follow a fixed, inspectable rule and never invent facts.</p></div>
+          </aside>
+        </div>
+      </section>
+      <section id="page-algorithms" class="page" aria-label="Algorithm trace">
+        <div class="page-heading"><div><div class="eyebrow">PRESENTATION REQUIREMENT 03</div><h1>Decisions you can inspect.</h1><p>The controller owns the knowledge. The language model never gets the final say.</p></div><button id="export-trace" class="button">Export trace JSON ↓</button></div>
+        <div class="pipeline card"><div><b>01</b><strong>Parse</strong><small>Structured input or grounded spans</small></div><span>→</span><div><b>02</b><strong>Validate & update</strong><small>Deterministic memory transaction</small></div><span>→</span><div><b>03</b><strong>Retrieve & choose</strong><small>This profile only; explicit rules</small></div><span>→</span><div><b>04</b><strong>Realize</strong><small>Approved wording + exact facts</small></div><span>→</span><div><b>05</b><strong>Log & persist</strong><small>Trace, history and metadata</small></div></div>
+        <div class="algorithm-grid"><div class="card"><div class="card-heading"><h2>Live decision trace</h2><span class="pill">Same engine as the chat</span></div><div id="live-trace"></div></div><div class="card"><h2>How the policy works</h2><div class="formula">priority = 0.5(1 − mastery)<br>+ 0.3(staleness) + 0.2(relevance)</div><p class="subtle">Staleness is normalized turns since practice, not a timestamp. Every fifth question-selection turn explores a new concept. The draw u is a hash, so every decision can be replayed. Bands: low &lt; 0.30 ≤ medium &lt; 0.70 ≤ high.</p><pre><code>if a memory has a pending conflict:
+    clarify()
+elif exploration turn (every 5th):
+    ask_to_learn(quoted mention or new concept)
+else:
+    item = highest priority
+    u = hash(profile, item, turn)
+    low:    ask_to_learn()
+    medium: 40% recall, 30% unsure,
+            30% controlled error
+    high:   90% follow_up, 5% unsure,
+            5% controlled error
+
+# Operators use taught content only:
+# omit_step, swap_steps,
+# confuse_related, approximate
+# Never invent a replacement fact.</code></pre><p class="subtle">Teaching starts at 0.35. Repetition adds 0.10; confirmation adds 0.15; explicit correction adds 0.20. These are illustrative design parameters, not learned or validated estimates.</p></div></div>
+        <div class="algorithm-grid lower-grid"><div class="card"><h2>Topic / keyword graph</h2><p class="subtle">Edges link concepts in the same domain that share a keyword or mention each other. Quoted terms (e.g. “kopi”) become curiosity questions.</p><div id="topic-graph"></div></div><div class="card"><h2>Content-free interaction log</h2><p class="subtle">Metadata is separate from conversation content. No diagnosis is inferred.</p><div id="metadata-summary"></div><button id="export-metadata" class="text-button">Export metadata only ↓</button></div></div>
+      </section>
+      <section id="page-evaluation" class="page" aria-label="Evaluation lab">
+        <div class="page-heading"><div><div class="eyebrow">PRESENTATION REQUIREMENT 04</div><h1>Evidence, not promises.</h1><p>Run the actual controller tests and reproducible synthetic behavioural experiments.</p></div><button id="export-results" class="button">Export evaluation JSON ↓</button></div>
+        <div class="evidence-banner"><span class="badge">SYNTHETIC DATA ONLY</span> No older adults were recruited. These results do not establish wellbeing benefits or clinical validity.</div>
+        <div class="card functional-card"><div class="card-heading"><div><h2>01 · Functional evaluation</h2><p class="subtle"><span id="check-count">96</span> scripted controller checks, executed in this browser. No live-provider tests.</p></div><button id="run-tests" class="button primary">Run all checks</button></div><div id="functional-results" class="empty-inline">Run the suite to inspect measured pass counts. No assumed 100% scores.</div></div>
+        <div class="card simulation-card"><div class="card-heading"><div><h2>02 · Personal-baseline change detection</h2><p class="subtle">First 20 days calibrate the baseline. Monitoring begins on day 21; a scripted change starts on day 31.</p></div><span class="badge soft">ONE-SIDED CUSUM</span></div><div class="simulation-controls"><label>Scenario<select id="scenario-select"><option value="sustained">Sustained change</option><option value="stable">Stable behaviour</option><option value="temporary">3-day temporary change</option></select></label><label>Random seed<input id="seed-input" type="number" value="42" min="0" max="999999"></label><label>Reference k<input id="k-input" type="number" value="0.5" min="0" max="5" step="0.1"></label><label>Threshold h<input id="h-input" type="number" value="5" min="0.5" max="30" step="0.5"></label><button id="run-simulation" class="button primary">Run simulation</button></div><div id="simulation-metrics" class="small-metrics"></div><div class="chart-grid"><div><h3>Standardized change score</h3><p class="subtle">Lower response rate, longer delay, shorter replies, fewer self-started turns and corrections → higher score.</p><div id="score-chart" class="chart"></div></div><div><h3>Cumulative deviation</h3><p class="subtle">Sₜ = max(0, Sₜ₋₁ + zₜ − k); signal when Sₜ &gt; h.</p><div id="cusum-chart" class="chart"></div></div></div><div class="chart-footer"><span>▧ Baseline &nbsp; ┆ Injected change &nbsp; ● First signal</span><div><button id="export-csv" class="text-button">Download trace CSV ↓</button><button id="export-svg" class="text-button">Download chart SVG ↓</button></div></div></div>
+        <div class="card monte-card"><div class="card-heading"><div><h2>03 · Repeated-run robustness</h2><p class="subtle">200 stable + 200 sustained-change + 200 three-day-dip sequences, plus a threshold sweep. The default h was fixed in advance.</p></div><button id="run-monte" class="button">Run simulations</button></div><div id="monte-results" class="empty-inline">A single attractive trace is not an evaluation. Run repeated simulations to expose false alarms and misses.</div></div>
+        <div class="card outcomes"><h2>What these results do — and do not — show</h2><div class="outcome-grid"><div><span class="check-tag">IMPLEMENTATION EVIDENCE</span><h3>A credible teaching loop</h3><p>Boundary tests, recall, corrections and profile isolation show whether the implemented controller behaves as specified.</p></div><div><span class="check-tag">SIMULATION EVIDENCE</span><h3>A visible change signal</h3><p>False alarms and detection delay quantify the detector on our declared synthetic generator, not on elderly users.</p></div><div><span class="check-tag neutral">STILL A HYPOTHESIS</span><h3>Meaningful human benefit</h3><p>Engagement, loneliness, authenticity and safety need consented user research. They cannot be concluded from this demo.</p></div></div></div>
+      </section>
+      <section id="page-settings" class="page" aria-label="Connect and privacy">
+        <div class="page-heading"><div><div class="eyebrow">OPTIONAL BY DESIGN</div><h1>Connect when you're ready.</h1><p>The public demo works without an API key. Provider credentials stay on your server.</p></div></div>
+        <div class="algorithm-grid"><div class="card"><h2>Connect the backend</h2><p class="subtle">Enter your ChildGPT backend, not a model-provider endpoint. GitHub Pages hosts only the static frontend.</p><form id="connect-form"><label>Backend URL<input id="backend-url" type="url" placeholder="https://your-childgpt-backend.example" autocomplete="off"></label><label>Application access token<input id="backend-token" type="password" placeholder="Separate app token — NOT the provider API key" autocomplete="off"></label><div class="form-buttons"><button class="button primary" type="submit">Connect backend</button><button class="button" type="button" id="disconnect">Use local demo</button></div></form><p id="connection-status" class="subtle" role="status">Not connected. API configuration is intentionally empty.</p><div class="callout"><strong>Constrained API mode</strong><p>The model extracts verbatim spans from your message and selects approved conversational wording. The controller validates both. It cannot inject its pretrained factual answers into the teaching domain.</p></div></div><div class="card"><h2>Server-only configuration</h2><p class="subtle">Copy <code>.env.example</code> to <code>.env</code> in the source project. All provider fields are shipped empty.</p><pre><code>LLM_BASE_URL=
+LLM_API_KEY=
+LLM_MODEL=
+APP_ACCESS_TOKEN=
+ALLOWED_ORIGINS=</code></pre><p class="subtle">Restart the Node server after editing. A configured provider requires a separate application token (24+ characters). Never put the provider key in a frontend file, Pages secret injection, URL or public repository.</p><p class="subtle">Requests require the Chat Completions-compatible endpoint and JSON output support. API errors fall back to deterministic replies, with the fallback reported in the trace.</p></div></div>
+        <div class="algorithm-grid lower-grid"><div class="card"><h2>Your demo data</h2><label class="switch-row"><input id="remember-toggle" type="checkbox"><span><strong>Remember the local demo on this browser</strong><small>Off by default. Shared-device users should leave this off.</small></span></label><label class="switch-row"><input id="metadata-toggle" type="checkbox" checked><span><strong>Record content-free interaction metadata</strong><small>Response timing, length, correction count and initiation only.</small></span></label><label class="switch-row"><input id="invitation-toggle" type="checkbox"><span><strong>Allow gentle teaching invitations</strong><small>At most one outstanding invitation. No escalation.</small></span></label><div class="form-buttons"><button id="invite-button" class="button">Try one invitation</button><button id="export-memory" class="button">Export profile JSON ↓</button><button id="delete-profile" class="button danger">Delete current profile</button></div><p class="subtle">Local profiles are logical demo partitions, not authenticated identities. Backend sessions add separate bearer-token access; production accounts are out of scope.</p></div><div class="card"><h2>Scope and limitations</h2><p>This is a software prototype for GP8001 Group 6, not a care service. Use invented examples, not personal, medical or identifying information.</p><p>Memory is deliberately explicit; exact concept matching and approved reply templates trade language flexibility for inspectability. Controlled omissions are presenter-triggered, not spontaneous child cognition.</p><p>Optional invitations work only while this page is open. The backend has a seven-day session lifetime. Consent, age-appropriate field research, clinical validation and production security require separate work.</p><p class="subtle">No analytics, third-party fonts or external scripts are embedded in this app. Public hosting has its own server logs.</p></div></div>
+      </section>
+      <footer class="main-footer"><span>ChildGPT · GP8001 Group 6</span><span>Designed to learn from you. Never to replace someone.</span></footer>
+    </main>
+  </div>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script src="core.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
