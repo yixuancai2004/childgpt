@@ -25,6 +25,11 @@ pct = lambda x: f'{x * 100:.1f}%'
 def record(name):
     checks.append({'name': name, 'pass': True})
 
+def select_action(page, mode):
+    if not page.locator('#debug-controls').get_attribute('open') == '':
+        page.locator('#debug-controls > summary').click()
+    page.click(f'[data-action="{mode}"]')
+
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True, executable_path=args.chromium, args=['--no-sandbox'])
     context = browser.new_context(viewport={'width': 1480, 'height': 1080}, device_scale_factor=1, bypass_csp=True)  # test harness only: wait_for_function evaluates strings
@@ -38,23 +43,42 @@ with sync_playwright() as p:
         page.goto(args.base, wait_until='networkidle')
     assert page.locator('#memory-count').inner_text() == '0'
     assert page.locator('#mode-badge').inner_text() == '● KEY-FREE DEMO'
+    assert page.locator('#text-input').is_visible()
+    assert not page.locator('[data-action="teach"]').is_visible()
     record('Fresh static UI starts without API or seed memory')
     page.evaluate('window.scrollTo(0,0)')
     page.screenshot(path=str(OUT / 'studio-empty.png'), full_page=True)
-    page.click('#guided-demo')
-    page.wait_for_function("document.querySelectorAll('.message').length === 12 && !document.querySelector('#guided-demo').disabled", timeout=15000)
+    # Static/no-provider regression: the live demo buttons intentionally require an LLM.
+    # Recorded real-provider demos are readable without issuing any model request.
+    page.click('[data-recording="learning"]')
+    page.wait_for_function("!document.querySelector('#demo-panel').hidden")
+    assert '实测回放' in page.locator('#mode-badge').inner_text()
+    assert '先系红绳' in page.locator('#memory-list').inner_text()
+    page.click('#demo-return')
+    assert page.locator('#memory-count').inner_text() == '0'
+    record('Recorded demo loads independently and return restores the blank original profile')
+    for mode, content in [('ask', None), ('teach', 'a happy moment shared over tea'), ('ask', None), ('omission', None), ('correct', 'a happy moment shared over warm tea'), ('ask', None)]:
+        if mode == 'omission':
+            page.click('[data-memory-action="error"]')
+            continue
+        select_action(page, mode)
+        page.fill('#concept-input', 'tavi')
+        if content:
+            page.fill('#content-input', content)
+        page.click('#send-button')
+    page.wait_for_function("document.querySelectorAll('.message').length === 12 && !document.querySelector('#send-button').disabled", timeout=15000)
     assert page.locator('#memory-count').inner_text() == '1'
     assert 'warm tea' in page.locator('#memory-list').inner_text()
-    record('Guided teach → recall → omission → correction → recall completes')
+    record('Static structured teach → recall → omission → correction → recall completes')
     page.evaluate('window.scrollTo(0,0)')
     page.locator('#toast').evaluate('(el) => el.hidden=true')
     page.screenshot(path=str(OUT / 'studio.png'), full_page=True)
     page.select_option('#profile-select', 'learner-b')
     assert page.locator('#memory-count').inner_text() == '0'
-    page.click('[data-action="ask"]')
+    select_action(page, 'ask')
     page.fill('#concept-input', 'tavi')
     page.click('#send-button')
-    assert 'not learned' in page.locator('.message.assistant').last.inner_text()
+    assert "don't know that one yet" in page.locator('.message.assistant').last.inner_text()
     record('Profile B cannot retrieve profile A knowledge through UI')
     page.select_option('#profile-select', 'learner-a')
     page.click('.nav-link[data-page="algorithms"]')
@@ -102,7 +126,7 @@ with sync_playwright() as p:
         assert page.locator('#memory-count').inner_text() == '0'
         record('Blank-provider backend connects as an isolated server demo')
         page.click('.nav-link[data-page="studio"]')
-        page.click('[data-action="teach"]')
+        select_action(page, 'teach')
         page.fill('#concept-input', 'server-fact')
         page.fill('#content-input', '<img src=x onerror="window.pwned=1"> harmless synthetic test')
         page.click('#send-button')
@@ -125,7 +149,7 @@ with sync_playwright() as p:
         record('Profile deletion removes persisted local data')
     else:
         page.click('.nav-link[data-page="studio"]')
-        page.click('[data-action="teach"]')
+        select_action(page, 'teach')
         page.fill('#concept-input', 'markup-test')
         page.fill('#content-input', '<img src=x onerror="window.pwned=1"> synthetic example')
         page.click('#send-button')
@@ -153,7 +177,7 @@ with sync_playwright() as p:
         sp.set_content((ROOT / 'ChildGPT-demo.html').read_text(), wait_until='load')
     else:
         sp.goto((ROOT / 'ChildGPT-demo.html').as_uri(),wait_until='load')
-    sp.click('[data-action="teach"]')
+    select_action(sp, 'teach')
     sp.fill('#concept-input','offline-word')
     sp.fill('#content-input','a completely offline lesson')
     sp.click('#send-button')

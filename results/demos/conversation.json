@@ -1,0 +1,392 @@
+{
+  "schema": "childgpt.frontend-demo.v1",
+  "kind": "conversation",
+  "createdAt": "2026-10-18T12:57:26.262Z",
+  "evidenceType": "Actual frontend session; per-reply provider provenance; synthetic conversation only",
+  "status": "已完成 · 3/3 条回复均由 Groq / qwen/qwen3.8-27b 生成。普通聊天没有写成知识记忆。",
+  "completed": true,
+  "steps": [
+    {
+      "label": "打个招呼",
+      "input": {
+        "mode": "chat",
+        "text": "Hi, Milo."
+      },
+      "message": "Hi! I was just wondering what sound a cloud makes when it rumbles. Just a tiny, low thump, maybe?",
+      "trace": {
+        "interactionId": "learner-a-turn-1",
+        "inputMode": "chat",
+        "action": "help",
+        "concept": "a new expression",
+        "topic": "Dialect & expressions",
+        "memoryId": null,
+        "sourceInteraction": null,
+        "masteryBefore": null,
+        "masteryAfter": null,
+        "allowedKnowledge": [],
+        "retention": null,
+        "development": {
+          "id": "discovering",
+          "label": "初识",
+          "known": 0,
+          "reinforced": 0,
+          "lessons": 0,
+          "style": "Notice one concrete detail at a time. Use short, lively language. A simple reaction is enough; a question is optional unless the action requires it.",
+          "next": {
+            "id": "practising",
+            "label": "练习",
+            "known": 3,
+            "reinforced": 2,
+            "lessons": 6
+          }
+        },
+        "conversation": {
+          "language": "English",
+          "cue": "greeting"
+        },
+        "knowledgeBoundary": "per-user external memory only",
+        "reason": "Conversation without a knowledge update. Respond to the person; clarify only when needed.",
+        "candidates": [],
+        "recall": null,
+        "relatedConcept": null,
+        "corruption": null,
+        "pendingContent": null,
+        "generatedAt": "2026-10-18T12:57:26.582Z",
+        "realization": "api-generated-response",
+        "provider": {
+          "enabled": true,
+          "model": "qwen/qwen3.8-27b",
+          "service": "Groq",
+          "extraction": "api-grounded-spans",
+          "wording": "api-generated-response",
+          "error": null,
+          "extractionError": null
+        }
+      },
+      "provider": {
+        "enabled": true,
+        "model": "qwen/qwen3.8-27b",
+        "service": "Groq",
+        "extraction": "api-grounded-spans",
+        "wording": "api-generated-response",
+        "error": null,
+        "extractionError": null
+      },
+      "memoryAfter": []
+    },
+    {
+      "label": "接住日常聊天",
+      "input": {
+        "mode": "chat",
+        "text": "I can tell you how to cook"
+      },
+      "message": "Oh, a whole recipe? I'm listening.",
+      "trace": {
+        "interactionId": "learner-a-turn-2",
+        "inputMode": "chat",
+        "action": "help",
+        "concept": "a new expression",
+        "topic": "Dialect & expressions",
+        "memoryId": null,
+        "sourceInteraction": null,
+        "masteryBefore": null,
+        "masteryAfter": null,
+        "allowedKnowledge": [],
+        "retention": null,
+        "development": {
+          "id": "discovering",
+          "label": "初识",
+          "known": 0,
+          "reinforced": 0,
+          "lessons": 0,
+          "style": "Notice one concrete detail at a time. Use short, lively language. A simple reaction is enough; a question is optional unless the action requires it.",
+          "next": {
+            "id": "practising",
+            "label": "练习",
+            "known": 3,
+            "reinforced": 2,
+            "lessons": 6
+          }
+        },
+        "conversation": {
+          "language": "English",
+          "cue": "chat"
+        },
+        "knowledgeBoundary": "per-user external memory only",
+        "reason": "Conversation without a knowledge update. Respond to the person; clarify only when needed.",
+        "candidates": [],
+        "recall": null,
+        "relatedConcept": null,
+        "corruption": null,
+        "pendingContent": null,
+        "generatedAt": "2026-10-18T12:57:27.374Z",
+        "realization": "api-generated-response",
+        "provider": {
+          "enabled": true,
+          "model": "qwen/qwen3.8-27b",
+          "service": "Groq",
+          "extraction": "api-grounded-spans",
+          "wording": "api-generated-response",
+          "error": null,
+          "extractionError": null
+        }
+      },
+      "provider": {
+        "enabled": true,
+        "model": "qwen/qwen3.8-27b",
+        "service": "Groq",
+        "extraction": "api-grounded-spans",
+        "wording": "api-generated-response",
+        "error": null,
+        "extractionError": null
+      },
+      "memoryAfter": []
+    },
+    {
+      "label": "一起玩想象游戏",
+      "input": {
+        "mode": "chat",
+        "text": "Let's pretend we are opening a tiny café. You choose its name."
+      },
+      "message": "The Cloudy Spoon. It sounds cozy, like a warm soup on a rainy day.",
+      "trace": {
+        "interactionId": "learner-a-turn-3",
+        "inputMode": "chat",
+        "action": "help",
+        "concept": "a new expression",
+        "topic": "Dialect & expressions",
+        "memoryId": null,
+        "sourceInteraction": null,
+        "masteryBefore": null,
+        "masteryAfter": null,
+        "allowedKnowledge": [],
+        "retention": null,
+        "development": {
+          "id": "discovering",
+          "label": "初识",
+          "known": 0,
+          "reinforced": 0,
+          "lessons": 0,
+          "style": "Notice one concrete detail at a time. Use short, lively language. A simple reaction is enough; a question is optional unless the action requires it.",
+          "next": {
+            "id": "practising",
+            "label": "练习",
+            "known": 3,
+            "reinforced": 2,
+            "lessons": 6
+          }
+        },
+        "conversation": {
+          "language": "English",
+          "cue": "chat"
+        },
+        "knowledgeBoundary": "per-user external memory only",
+        "reason": "Conversation without a knowledge update. Respond to the person; clarify only when needed.",
+        "candidates": [],
+        "recall": null,
+        "relatedConcept": null,
+        "corruption": null,
+        "pendingContent": null,
+        "generatedAt": "2026-10-18T12:57:28.112Z",
+        "realization": "api-generated-response",
+        "provider": {
+          "enabled": true,
+          "model": "qwen/qwen3.8-27b",
+          "service": "Groq",
+          "extraction": "api-grounded-spans",
+          "wording": "api-generated-response",
+          "error": null,
+          "extractionError": null
+        }
+      },
+      "provider": {
+        "enabled": true,
+        "model": "qwen/qwen3.8-27b",
+        "service": "Groq",
+        "extraction": "api-grounded-spans",
+        "wording": "api-generated-response",
+        "error": null,
+        "extractionError": null
+      },
+      "memoryAfter": []
+    }
+  ],
+  "state": {
+    "version": "1.2.1",
+    "activeProfile": "learner-a",
+    "profiles": {
+      "learner-a": {
+        "id": "learner-a",
+        "label": "Learner A",
+        "memories": [],
+        "history": [
+          {
+            "role": "user",
+            "text": "Hi, Milo.",
+            "at": "2026-10-18T12:57:26.582Z"
+          },
+          {
+            "role": "assistant",
+            "text": "Hi! I was just wondering what sound a cloud makes when it rumbles. Just a tiny, low thump, maybe?",
+            "at": "2026-10-18T12:57:26.582Z",
+            "action": "help",
+            "traceId": "learner-a-turn-1",
+            "generation": {
+              "source": "llm",
+              "model": "qwen/qwen3.8-27b",
+              "service": "Groq",
+              "error": null,
+              "at": "2026-10-18T12:57:26.878Z"
+            }
+          },
+          {
+            "role": "user",
+            "text": "I can tell you how to cook",
+            "at": "2026-10-18T12:57:27.374Z"
+          },
+          {
+            "role": "assistant",
+            "text": "Oh, a whole recipe? I'm listening.",
+            "at": "2026-10-18T12:57:27.374Z",
+            "action": "help",
+            "traceId": "learner-a-turn-2",
+            "generation": {
+              "source": "llm",
+              "model": "qwen/qwen3.8-27b",
+              "service": "Groq",
+              "error": null,
+              "at": "2026-10-18T12:57:27.814Z"
+            }
+          },
+          {
+            "role": "user",
+            "text": "Let's pretend we are opening a tiny café. You choose its name.",
+            "at": "2026-10-18T12:57:28.112Z"
+          },
+          {
+            "role": "assistant",
+            "text": "The Cloudy Spoon. It sounds cozy, like a warm soup on a rainy day.",
+            "at": "2026-10-18T12:57:28.112Z",
+            "action": "help",
+            "traceId": "learner-a-turn-3",
+            "generation": {
+              "source": "llm",
+              "model": "qwen/qwen3.8-27b",
+              "service": "Groq",
+              "error": null,
+              "at": "2026-10-18T12:57:28.382Z"
+            }
+          }
+        ],
+        "metadata": [
+          {
+            "at": "2026-10-18T12:57:26.582Z",
+            "kind": "response",
+            "responseDelayMs": null,
+            "explanationCharacters": 9,
+            "correction": false,
+            "selfInitiated": true
+          },
+          {
+            "at": "2026-10-18T12:57:27.374Z",
+            "kind": "response",
+            "responseDelayMs": null,
+            "explanationCharacters": 26,
+            "correction": false,
+            "selfInitiated": true
+          },
+          {
+            "at": "2026-10-18T12:57:28.112Z",
+            "kind": "response",
+            "responseDelayMs": null,
+            "explanationCharacters": 62,
+            "correction": false,
+            "selfInitiated": true
+          }
+        ],
+        "lastTrace": {
+          "interactionId": "learner-a-turn-3",
+          "inputMode": "chat",
+          "action": "help",
+          "concept": "a new expression",
+          "topic": "Dialect & expressions",
+          "memoryId": null,
+          "sourceInteraction": null,
+          "masteryBefore": null,
+          "masteryAfter": null,
+          "allowedKnowledge": [],
+          "retention": null,
+          "development": {
+            "id": "discovering",
+            "label": "初识",
+            "known": 0,
+            "reinforced": 0,
+            "lessons": 0,
+            "style": "Notice one concrete detail at a time. Use short, lively language. A simple reaction is enough; a question is optional unless the action requires it.",
+            "next": {
+              "id": "practising",
+              "label": "练习",
+              "known": 3,
+              "reinforced": 2,
+              "lessons": 6
+            }
+          },
+          "conversation": {
+            "language": "English",
+            "cue": "chat"
+          },
+          "knowledgeBoundary": "per-user external memory only",
+          "reason": "Conversation without a knowledge update. Respond to the person; clarify only when needed.",
+          "candidates": [],
+          "recall": null,
+          "relatedConcept": null,
+          "corruption": null,
+          "pendingContent": null,
+          "generatedAt": "2026-10-18T12:57:28.112Z",
+          "realization": "api-generated-response",
+          "provider": {
+            "enabled": true,
+            "model": "qwen/qwen3.8-27b",
+            "service": "Groq",
+            "extraction": "api-grounded-spans",
+            "wording": "api-generated-response",
+            "error": null,
+            "extractionError": null
+          }
+        },
+        "dialogue": null,
+        "development": {
+          "stage": "discovering",
+          "startedAt": "2026-10-18T12:57:26.582Z",
+          "milestones": []
+        },
+        "pendingInvitation": null,
+        "lastInvitationAt": 0,
+        "invitationsEnabled": false,
+        "metadataEnabled": true,
+        "turn": 3,
+        "asked": []
+      },
+      "learner-b": {
+        "id": "learner-b",
+        "label": "Learner B",
+        "memories": [],
+        "history": [],
+        "metadata": [],
+        "lastTrace": null,
+        "dialogue": null,
+        "development": {
+          "stage": "discovering",
+          "startedAt": null,
+          "milestones": []
+        },
+        "pendingInvitation": null,
+        "lastInvitationAt": 0,
+        "invitationsEnabled": false,
+        "metadataEnabled": true,
+        "turn": 0,
+        "asked": []
+      }
+    }
+  }
+}

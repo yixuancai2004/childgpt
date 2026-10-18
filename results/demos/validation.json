@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-18T13:10:56.570087+00:00",
+  "method": "Observed through Codex in-app browser UI; demos exported through the page download button",
+  "model": "qwen/qwen3.8-27b",
+  "service": "Groq",
+  "liveDemoReplies": 8,
+  "liveDemoRepliesGeneratedByModel": 8,
+  "additionalOrdinaryChatReplies": 1,
+  "nodeTests": {
+    "passed": 205,
+    "total": 205,
+    "liveProvider": false
+  },
+  "checks": [
+    {
+      "description": "Fresh localhost page automatically connects to configured Groq service without entering secrets in the UI",
+      "pass": true
+    },
+    {
+      "description": "Conversation demo: 3/3 actual model replies, including cooking invitation; no knowledge writes",
+      "pass": true
+    },
+    {
+      "description": "Learning demo: 5/5 actual model replies; unknown, teach, controlled omission, correction, sampled recall",
+      "pass": true
+    },
+    {
+      "description": "Learning memory preserves the complete steps during omission and records red string after correction, 2 lessons, 1 correction, mastery 0.55",
+      "pass": true
+    },
+    {
+      "description": "Returning from demos restores the original blank conversation; demo memories do not appear there",
+      "pass": true
+    },
+    {
+      "description": "Direct ordinary chat respects a request for quiet company and generates a Chinese reply without a question",
+      "pass": true
+    },
+    {
+      "description": "Original ordinary chat and per-reply provenance survive browser reload and backend restart",
+      "pass": true
+    },
+    {
+      "description": "Both recorded demos load through their frontend buttons and direct query links, explicitly labelled as recordings",
+      "pass": true
+    },
+    {
+      "description": "No browser JavaScript errors observed in final demo pages",
+      "pass": true
+    }
+  ],
+  "screenshots": [
+    "conversation.jpg",
+    "learning.jpg"
+  ],
+  "limitations": [
+    "Finite synthetic examples, not a general language quality evaluation",
+    "One learning step explicitly requests controlled omission",
+    "Public GitHub Pages site was not deployed",
+    "Mobile viewport and legacy optional Python browser suite were not executed in this verification"
+  ]
+}

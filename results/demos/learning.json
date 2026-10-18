@@ -1,0 +1,794 @@
+{
+  "schema": "childgpt.frontend-demo.v1",
+  "kind": "learning",
+  "createdAt": "2026-10-18T13:01:42.243Z",
+  "evidenceType": "Actual frontend session; per-reply provider provenance; synthetic conversation only",
+  "status": "已完成 · 5/5 条回复均由 Groq / qwen/qwen3.8-27b 生成。漏记为受控演示；真实记忆已纠正为红绳，回忆不增加掌握度。",
+  "completed": true,
+  "steps": [
+    {
+      "label": "第一次听说",
+      "input": {
+        "mode": "chat",
+        "text": "月铃礼是什么？"
+      },
+      "message": "月铃礼是什么呀？我好像没听过这个词。",
+      "trace": {
+        "interactionId": "learner-a-turn-1",
+        "inputMode": "ask",
+        "action": "ask_to_learn",
+        "concept": "月铃礼",
+        "topic": "Dialect & expressions",
+        "memoryId": null,
+        "sourceInteraction": null,
+        "masteryBefore": null,
+        "masteryAfter": null,
+        "allowedKnowledge": [],
+        "retention": null,
+        "development": {
+          "id": "discovering",
+          "label": "初识",
+          "known": 0,
+          "reinforced": 0,
+          "lessons": 0,
+          "style": "Notice one concrete detail at a time. Use short, lively language. A simple reaction is enough; a question is optional unless the action requires it.",
+          "next": {
+            "id": "practising",
+            "label": "练习",
+            "known": 3,
+            "reinforced": 2,
+            "lessons": 6
+          }
+        },
+        "conversation": {
+          "language": "Chinese",
+          "cue": null
+        },
+        "knowledgeBoundary": "per-user external memory only",
+        "reason": "Knowledge boundary: exact concept not found in this learner’s memory. Base-model facts are not permitted.",
+        "candidates": [],
+        "recall": null,
+        "relatedConcept": null,
+        "corruption": null,
+        "pendingContent": null,
+        "generatedAt": "2026-10-18T13:01:42.481Z",
+        "realization": "api-generated-response",
+        "provider": {
+          "enabled": true,
+          "model": "qwen/qwen3.8-27b",
+          "service": "Groq",
+          "extraction": "api-grounded-spans",
+          "wording": "api-generated-response",
+          "error": null,
+          "extractionError": null
+        }
+      },
+      "provider": {
+        "enabled": true,
+        "model": "qwen/qwen3.8-27b",
+        "service": "Groq",
+        "extraction": "api-grounded-spans",
+        "wording": "api-generated-response",
+        "error": null,
+        "extractionError": null
+      },
+      "memoryAfter": []
+    },
+    {
+      "label": "用自然语言教他",
+      "input": {
+        "mode": "chat",
+        "text": "月铃礼就是先系蓝绳；再敲三下铜铃。"
+      },
+      "message": "先系蓝绳，再敲三下铜铃……听起来很有节奏感呢。",
+      "trace": {
+        "interactionId": "learner-a-turn-2",
+        "inputMode": "teach",
+        "action": "teach",
+        "concept": "月铃礼",
+        "topic": "Dialect & expressions",
+        "memoryId": "learner-a-m2",
+        "sourceInteraction": "learner-a-turn-2",
+        "masteryBefore": null,
+        "masteryAfter": 0.35,
+        "allowedKnowledge": [
+          "月铃礼就是先系蓝绳；再敲三下铜铃。"
+        ],
+        "retention": {
+          "strength": 0.35,
+          "effectiveMastery": 0.35,
+          "elapsedDays": 0,
+          "stabilityDays": 3
+        },
+        "development": {
+          "id": "discovering",
+          "label": "初识",
+          "known": 1,
+          "reinforced": 0,
+          "lessons": 1,
+          "style": "Notice one concrete detail at a time. Use short, lively language. A simple reaction is enough; a question is optional unless the action requires it.",
+          "next": {
+            "id": "practising",
+            "label": "练习",
+            "known": 3,
+            "reinforced": 2,
+            "lessons": 6
+          }
+        },
+        "conversation": {
+          "language": "Chinese",
+          "cue": null
+        },
+        "knowledgeBoundary": "per-user external memory only",
+        "reason": "New user-provided fact. Stored with provenance; initial mastery is 0.35.",
+        "candidates": [],
+        "recall": null,
+        "relatedConcept": null,
+        "corruption": null,
+        "pendingContent": null,
+        "generatedAt": "2026-10-18T13:01:43.049Z",
+        "realization": "api-generated-response",
+        "provider": {
+          "enabled": true,
+          "model": "qwen/qwen3.8-27b",
+          "service": "Groq",
+          "extraction": "api-grounded-spans",
+          "wording": "api-generated-response",
+          "error": null,
+          "extractionError": null
+        }
+      },
+      "provider": {
+        "enabled": true,
+        "model": "qwen/qwen3.8-27b",
+        "service": "Groq",
+        "extraction": "api-grounded-spans",
+        "wording": "api-generated-response",
+        "error": null,
+        "extractionError": null
+      },
+      "memoryAfter": [
+        {
+          "id": "learner-a-m2",
+          "concept": "月铃礼",
+          "content": "月铃礼就是先系蓝绳；再敲三下铜铃。",
+          "topic": "Dialect & expressions",
+          "related": [],
+          "mentions": [],
+          "mastery": 0.35,
+          "learnedAt": "2026-10-18T13:01:43.049Z",
+          "lastReviewedTurn": 2,
+          "sourceInteraction": "learner-a-turn-2",
+          "correctionHistory": [],
+          "pendingContent": null,
+          "stabilityDays": 3,
+          "lastReinforcedAt": "2026-10-18T13:01:43.049Z",
+          "learningCount": 1
+        }
+      ]
+    },
+    {
+      "label": "受控漏记（演示按钮指定，非随机）",
+      "input": {
+        "mode": "recall",
+        "concept": "月铃礼",
+        "forceError": true
+      },
+      "message": "月铃礼就是先系蓝绳，然后呢？我后面好像忘啦。",
+      "trace": {
+        "interactionId": "learner-a-turn-3",
+        "inputMode": "recall",
+        "action": "controlled_recall",
+        "concept": "月铃礼",
+        "topic": "Dialect & expressions",
+        "memoryId": "learner-a-m2",
+        "sourceInteraction": "learner-a-turn-2",
+        "masteryBefore": 0.35,
+        "masteryAfter": 0.35,
+        "allowedKnowledge": [
+          "月铃礼就是先系蓝绳"
+        ],
+        "retention": {
+          "strength": 0.35,
+          "effectiveMastery": 0.35,
+          "elapsedDays": 0,
+          "stabilityDays": 3
+        },
+        "development": {
+          "id": "discovering",
+          "label": "初识",
+          "known": 1,
+          "reinforced": 0,
+          "lessons": 1,
+          "style": "Notice one concrete detail at a time. Use short, lively language. A simple reaction is enough; a question is optional unless the action requires it.",
+          "next": {
+            "id": "practising",
+            "label": "练习",
+            "known": 3,
+            "reinforced": 2,
+            "lessons": 6
+          }
+        },
+        "conversation": {
+          "language": "Chinese",
+          "cue": null
+        },
+        "knowledgeBoundary": "per-user external memory only",
+        "reason": "Unified recall: strength 0.35, 0 days since reinforcement, half-life 3 days → current mastery 0.35. medium → corrupt (draw 0.9079); presenter-triggered omission. Stored facts remain unchanged.",
+        "candidates": [
+          {
+            "concept": "月铃礼",
+            "score": 0.555,
+            "mastery": 0.35
+          }
+        ],
+        "recall": {
+          "band": "medium",
+          "draw": 0.9079,
+          "outcome": "corrupt",
+          "forced": true,
+          "strength": 0.35,
+          "effectiveMastery": 0.35,
+          "elapsedDays": 0,
+          "stabilityDays": 3
+        },
+        "relatedConcept": null,
+        "corruption": {
+          "text": "月铃礼就是先系蓝绳",
+          "operator": "omit_last_segment",
+          "omitted": "再敲三下铜铃。",
+          "detail": "omitted the last step: “再敲三下铜铃。”"
+        },
+        "pendingContent": null,
+        "generatedAt": "2026-10-18T13:01:43.349Z",
+        "realization": "api-generated-response",
+        "provider": {
+          "enabled": true,
+          "model": "qwen/qwen3.8-27b",
+          "service": "Groq",
+          "extraction": "not-needed",
+          "wording": "api-generated-response",
+          "error": null,
+          "extractionError": null
+        }
+      },
+      "provider": {
+        "enabled": true,
+        "model": "qwen/qwen3.8-27b",
+        "service": "Groq",
+        "extraction": "not-needed",
+        "wording": "api-generated-response",
+        "error": null,
+        "extractionError": null
+      },
+      "memoryAfter": [
+        {
+          "id": "learner-a-m2",
+          "concept": "月铃礼",
+          "content": "月铃礼就是先系蓝绳；再敲三下铜铃。",
+          "topic": "Dialect & expressions",
+          "related": [],
+          "mentions": [],
+          "mastery": 0.35,
+          "learnedAt": "2026-10-18T13:01:43.049Z",
+          "lastReviewedTurn": 3,
+          "sourceInteraction": "learner-a-turn-2",
+          "correctionHistory": [],
+          "pendingContent": null,
+          "stabilityDays": 3,
+          "lastReinforcedAt": "2026-10-18T13:01:43.049Z",
+          "learningCount": 1
+        }
+      ]
+    },
+    {
+      "label": "自然语言纠正",
+      "input": {
+        "mode": "chat",
+        "text": "不对，月铃礼应该是先系红绳；再敲三下铜铃。"
+      },
+      "message": "先系红绳，再敲三下铜铃。",
+      "trace": {
+        "interactionId": "learner-a-turn-4",
+        "inputMode": "correct",
+        "action": "correct",
+        "concept": "月铃礼",
+        "topic": "Dialect & expressions",
+        "memoryId": "learner-a-m2",
+        "sourceInteraction": "learner-a-turn-4",
+        "masteryBefore": 0.35,
+        "masteryAfter": 0.55,
+        "allowedKnowledge": [
+          "月铃礼应该是先系红绳；再敲三下铜铃。"
+        ],
+        "retention": {
+          "strength": 0.55,
+          "effectiveMastery": 0.55,
+          "elapsedDays": 0,
+          "stabilityDays": 4.5
+        },
+        "development": {
+          "id": "discovering",
+          "label": "初识",
+          "known": 1,
+          "reinforced": 1,
+          "lessons": 2,
+          "style": "Notice one concrete detail at a time. Use short, lively language. A simple reaction is enough; a question is optional unless the action requires it.",
+          "next": {
+            "id": "practising",
+            "label": "练习",
+            "known": 3,
+            "reinforced": 2,
+            "lessons": 6
+          }
+        },
+        "conversation": {
+          "language": "Chinese",
+          "cue": null
+        },
+        "knowledgeBoundary": "per-user external memory only",
+        "reason": "Explicit correction. Preserve revision history, replace fact, add 0.20 to current mastery and extend retention.",
+        "candidates": [
+          {
+            "concept": "月铃礼",
+            "score": 0.555,
+            "mastery": 0.35
+          }
+        ],
+        "recall": null,
+        "relatedConcept": null,
+        "corruption": null,
+        "pendingContent": null,
+        "generatedAt": "2026-10-18T13:01:43.989Z",
+        "realization": "api-generated-response",
+        "provider": {
+          "enabled": true,
+          "model": "qwen/qwen3.8-27b",
+          "service": "Groq",
+          "extraction": "api-grounded-spans",
+          "wording": "api-generated-response",
+          "error": null,
+          "extractionError": null
+        }
+      },
+      "provider": {
+        "enabled": true,
+        "model": "qwen/qwen3.8-27b",
+        "service": "Groq",
+        "extraction": "api-grounded-spans",
+        "wording": "api-generated-response",
+        "error": null,
+        "extractionError": null
+      },
+      "memoryAfter": [
+        {
+          "id": "learner-a-m2",
+          "concept": "月铃礼",
+          "content": "月铃礼应该是先系红绳；再敲三下铜铃。",
+          "topic": "Dialect & expressions",
+          "related": [],
+          "mentions": [],
+          "mastery": 0.55,
+          "learnedAt": "2026-10-18T13:01:43.049Z",
+          "lastReviewedTurn": 4,
+          "sourceInteraction": "learner-a-turn-4",
+          "correctionHistory": [
+            {
+              "previous": "月铃礼就是先系蓝绳；再敲三下铜铃。",
+              "updated": "月铃礼应该是先系红绳；再敲三下铜铃。",
+              "interactionId": "learner-a-turn-4",
+              "at": "2026-10-18T13:01:43.989Z"
+            }
+          ],
+          "pendingContent": null,
+          "stabilityDays": 4.5,
+          "lastReinforcedAt": "2026-10-18T13:01:43.989Z",
+          "learningCount": 2,
+          "pendingSourceInteraction": null
+        }
+      ]
+    },
+    {
+      "label": "再次回忆（按当前掌握度抽样）",
+      "input": {
+        "mode": "chat",
+        "text": "月铃礼是什么？"
+      },
+      "message": "我好像记得，月铃礼是先把红绳系好，然后再敲三下铜铃。我记对了吗？",
+      "trace": {
+        "interactionId": "learner-a-turn-5",
+        "inputMode": "ask",
+        "action": "uncertain_recall",
+        "concept": "月铃礼",
+        "topic": "Dialect & expressions",
+        "memoryId": "learner-a-m2",
+        "sourceInteraction": "learner-a-turn-4",
+        "masteryBefore": 0.55,
+        "masteryAfter": 0.55,
+        "allowedKnowledge": [
+          "月铃礼应该是先系红绳；再敲三下铜铃。"
+        ],
+        "retention": {
+          "strength": 0.55,
+          "effectiveMastery": 0.55,
+          "elapsedDays": 0,
+          "stabilityDays": 4.5
+        },
+        "development": {
+          "id": "discovering",
+          "label": "初识",
+          "known": 1,
+          "reinforced": 1,
+          "lessons": 2,
+          "style": "Notice one concrete detail at a time. Use short, lively language. A simple reaction is enough; a question is optional unless the action requires it.",
+          "next": {
+            "id": "practising",
+            "label": "练习",
+            "known": 3,
+            "reinforced": 2,
+            "lessons": 6
+          }
+        },
+        "conversation": {
+          "language": "Chinese",
+          "cue": null
+        },
+        "knowledgeBoundary": "per-user external memory only",
+        "reason": "Unified recall: strength 0.55, 0 days since reinforcement, half-life 4.5 days → current mastery 0.55. medium → uncertain (draw 0.4771). Stored facts remain unchanged.",
+        "candidates": [
+          {
+            "concept": "月铃礼",
+            "score": 0.455,
+            "mastery": 0.55
+          }
+        ],
+        "recall": {
+          "band": "medium",
+          "draw": 0.4771,
+          "outcome": "uncertain",
+          "forced": false,
+          "strength": 0.55,
+          "effectiveMastery": 0.55,
+          "elapsedDays": 0,
+          "stabilityDays": 4.5
+        },
+        "relatedConcept": null,
+        "corruption": null,
+        "pendingContent": null,
+        "generatedAt": "2026-10-18T13:01:44.488Z",
+        "realization": "api-generated-response",
+        "provider": {
+          "enabled": true,
+          "model": "qwen/qwen3.8-27b",
+          "service": "Groq",
+          "extraction": "api-grounded-spans",
+          "wording": "api-generated-response",
+          "error": null,
+          "extractionError": null
+        }
+      },
+      "provider": {
+        "enabled": true,
+        "model": "qwen/qwen3.8-27b",
+        "service": "Groq",
+        "extraction": "api-grounded-spans",
+        "wording": "api-generated-response",
+        "error": null,
+        "extractionError": null
+      },
+      "memoryAfter": [
+        {
+          "id": "learner-a-m2",
+          "concept": "月铃礼",
+          "content": "月铃礼应该是先系红绳；再敲三下铜铃。",
+          "topic": "Dialect & expressions",
+          "related": [],
+          "mentions": [],
+          "mastery": 0.55,
+          "learnedAt": "2026-10-18T13:01:43.049Z",
+          "lastReviewedTurn": 5,
+          "sourceInteraction": "learner-a-turn-4",
+          "correctionHistory": [
+            {
+              "previous": "月铃礼就是先系蓝绳；再敲三下铜铃。",
+              "updated": "月铃礼应该是先系红绳；再敲三下铜铃。",
+              "interactionId": "learner-a-turn-4",
+              "at": "2026-10-18T13:01:43.989Z"
+            }
+          ],
+          "pendingContent": null,
+          "stabilityDays": 4.5,
+          "lastReinforcedAt": "2026-10-18T13:01:43.989Z",
+          "learningCount": 2,
+          "pendingSourceInteraction": null
+        }
+      ]
+    }
+  ],
+  "state": {
+    "version": "1.2.1",
+    "activeProfile": "learner-a",
+    "profiles": {
+      "learner-a": {
+        "id": "learner-a",
+        "label": "Learner A",
+        "memories": [
+          {
+            "id": "learner-a-m2",
+            "concept": "月铃礼",
+            "content": "月铃礼应该是先系红绳；再敲三下铜铃。",
+            "topic": "Dialect & expressions",
+            "related": [],
+            "mentions": [],
+            "mastery": 0.55,
+            "learnedAt": "2026-10-18T13:01:43.049Z",
+            "lastReviewedTurn": 5,
+            "sourceInteraction": "learner-a-turn-4",
+            "correctionHistory": [
+              {
+                "previous": "月铃礼就是先系蓝绳；再敲三下铜铃。",
+                "updated": "月铃礼应该是先系红绳；再敲三下铜铃。",
+                "interactionId": "learner-a-turn-4",
+                "at": "2026-10-18T13:01:43.989Z"
+              }
+            ],
+            "pendingContent": null,
+            "stabilityDays": 4.5,
+            "lastReinforcedAt": "2026-10-18T13:01:43.989Z",
+            "learningCount": 2,
+            "pendingSourceInteraction": null
+          }
+        ],
+        "history": [
+          {
+            "role": "user",
+            "text": "月铃礼是什么？",
+            "at": "2026-10-18T13:01:42.481Z"
+          },
+          {
+            "role": "assistant",
+            "text": "月铃礼是什么呀？我好像没听过这个词。",
+            "at": "2026-10-18T13:01:42.481Z",
+            "action": "ask_to_learn",
+            "traceId": "learner-a-turn-1",
+            "generation": {
+              "source": "llm",
+              "model": "qwen/qwen3.8-27b",
+              "service": "Groq",
+              "error": null,
+              "at": "2026-10-18T13:01:42.734Z"
+            }
+          },
+          {
+            "role": "user",
+            "text": "月铃礼就是先系蓝绳；再敲三下铜铃。",
+            "at": "2026-10-18T13:01:43.049Z"
+          },
+          {
+            "role": "assistant",
+            "text": "先系蓝绳，再敲三下铜铃……听起来很有节奏感呢。",
+            "at": "2026-10-18T13:01:43.049Z",
+            "action": "teach",
+            "traceId": "learner-a-turn-2",
+            "generation": {
+              "source": "llm",
+              "model": "qwen/qwen3.8-27b",
+              "service": "Groq",
+              "error": null,
+              "at": "2026-10-18T13:01:43.344Z"
+            }
+          },
+          {
+            "role": "user",
+            "text": "Recall: 月铃礼",
+            "at": "2026-10-18T13:01:43.349Z"
+          },
+          {
+            "role": "assistant",
+            "text": "月铃礼就是先系蓝绳，然后呢？我后面好像忘啦。",
+            "at": "2026-10-18T13:01:43.349Z",
+            "action": "controlled_recall",
+            "traceId": "learner-a-turn-3",
+            "generation": {
+              "source": "llm",
+              "model": "qwen/qwen3.8-27b",
+              "service": "Groq",
+              "error": null,
+              "at": "2026-10-18T13:01:43.651Z"
+            }
+          },
+          {
+            "role": "user",
+            "text": "不对，月铃礼应该是先系红绳；再敲三下铜铃。",
+            "at": "2026-10-18T13:01:43.989Z"
+          },
+          {
+            "role": "assistant",
+            "text": "先系红绳，再敲三下铜铃。",
+            "at": "2026-10-18T13:01:43.989Z",
+            "action": "correct",
+            "traceId": "learner-a-turn-4",
+            "generation": {
+              "source": "llm",
+              "model": "qwen/qwen3.8-27b",
+              "service": "Groq",
+              "error": null,
+              "at": "2026-10-18T13:01:44.239Z"
+            }
+          },
+          {
+            "role": "user",
+            "text": "月铃礼是什么？",
+            "at": "2026-10-18T13:01:44.488Z"
+          },
+          {
+            "role": "assistant",
+            "text": "我好像记得，月铃礼是先把红绳系好，然后再敲三下铜铃。我记对了吗？",
+            "at": "2026-10-18T13:01:44.488Z",
+            "action": "uncertain_recall",
+            "traceId": "learner-a-turn-5",
+            "generation": {
+              "source": "llm",
+              "model": "qwen/qwen3.8-27b",
+              "service": "Groq",
+              "error": null,
+              "at": "2026-10-18T13:01:49.899Z"
+            }
+          }
+        ],
+        "metadata": [
+          {
+            "at": "2026-10-18T13:01:42.481Z",
+            "kind": "response",
+            "responseDelayMs": null,
+            "explanationCharacters": 7,
+            "correction": false,
+            "selfInitiated": true
+          },
+          {
+            "at": "2026-10-18T13:01:43.049Z",
+            "kind": "response",
+            "responseDelayMs": null,
+            "explanationCharacters": 17,
+            "correction": false,
+            "selfInitiated": true
+          },
+          {
+            "at": "2026-10-18T13:01:43.349Z",
+            "kind": "response",
+            "responseDelayMs": null,
+            "explanationCharacters": 11,
+            "correction": false,
+            "selfInitiated": true
+          },
+          {
+            "at": "2026-10-18T13:01:43.989Z",
+            "kind": "response",
+            "responseDelayMs": null,
+            "explanationCharacters": 18,
+            "correction": true,
+            "selfInitiated": true
+          },
+          {
+            "at": "2026-10-18T13:01:44.488Z",
+            "kind": "response",
+            "responseDelayMs": null,
+            "explanationCharacters": 7,
+            "correction": false,
+            "selfInitiated": true
+          }
+        ],
+        "lastTrace": {
+          "interactionId": "learner-a-turn-5",
+          "inputMode": "ask",
+          "action": "uncertain_recall",
+          "concept": "月铃礼",
+          "topic": "Dialect & expressions",
+          "memoryId": "learner-a-m2",
+          "sourceInteraction": "learner-a-turn-4",
+          "masteryBefore": 0.55,
+          "masteryAfter": 0.55,
+          "allowedKnowledge": [
+            "月铃礼应该是先系红绳；再敲三下铜铃。"
+          ],
+          "retention": {
+            "strength": 0.55,
+            "effectiveMastery": 0.55,
+            "elapsedDays": 0,
+            "stabilityDays": 4.5
+          },
+          "development": {
+            "id": "discovering",
+            "label": "初识",
+            "known": 1,
+            "reinforced": 1,
+            "lessons": 2,
+            "style": "Notice one concrete detail at a time. Use short, lively language. A simple reaction is enough; a question is optional unless the action requires it.",
+            "next": {
+              "id": "practising",
+              "label": "练习",
+              "known": 3,
+              "reinforced": 2,
+              "lessons": 6
+            }
+          },
+          "conversation": {
+            "language": "Chinese",
+            "cue": null
+          },
+          "knowledgeBoundary": "per-user external memory only",
+          "reason": "Unified recall: strength 0.55, 0 days since reinforcement, half-life 4.5 days → current mastery 0.55. medium → uncertain (draw 0.4771). Stored facts remain unchanged.",
+          "candidates": [
+            {
+              "concept": "月铃礼",
+              "score": 0.455,
+              "mastery": 0.55
+            }
+          ],
+          "recall": {
+            "band": "medium",
+            "draw": 0.4771,
+            "outcome": "uncertain",
+            "forced": false,
+            "strength": 0.55,
+            "effectiveMastery": 0.55,
+            "elapsedDays": 0,
+            "stabilityDays": 4.5
+          },
+          "relatedConcept": null,
+          "corruption": null,
+          "pendingContent": null,
+          "generatedAt": "2026-10-18T13:01:44.488Z",
+          "realization": "api-generated-response",
+          "provider": {
+            "enabled": true,
+            "model": "qwen/qwen3.8-27b",
+            "service": "Groq",
+            "extraction": "api-grounded-spans",
+            "wording": "api-generated-response",
+            "error": null,
+            "extractionError": null
+          }
+        },
+        "dialogue": {
+          "concept": "月铃礼",
+          "memoryId": "learner-a-m2",
+          "topic": "Dialect & expressions",
+          "expectedReply": "confirmation",
+          "corrupted": false
+        },
+        "development": {
+          "stage": "discovering",
+          "startedAt": "2026-10-18T13:01:42.481Z",
+          "milestones": []
+        },
+        "pendingInvitation": null,
+        "lastInvitationAt": 0,
+        "invitationsEnabled": false,
+        "metadataEnabled": true,
+        "turn": 5,
+        "asked": []
+      },
+      "learner-b": {
+        "id": "learner-b",
+        "label": "Learner B",
+        "memories": [],
+        "history": [],
+        "metadata": [],
+        "lastTrace": null,
+        "dialogue": null,
+        "development": {
+          "stage": "discovering",
+          "startedAt": null,
+          "milestones": []
+        },
+        "pendingInvitation": null,
+        "lastInvitationAt": 0,
+        "invitationsEnabled": false,
+        "metadataEnabled": true,
+        "turn": 0,
+        "asked": []
+      }
+    }
+  }
+}

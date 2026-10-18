@@ -7,7 +7,7 @@
   else root.ChildGPT = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
-  const VERSION = '1.1.0';
+  const VERSION = '1.2.2';
   const TOPICS = ['Dialect & expressions', 'Family traditions', 'Local stories'];
   const clone = value => JSON.parse(JSON.stringify(value));
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
@@ -29,43 +29,165 @@
   };
   // Recall plan by mastery band: probabilities of correct, uncertain and corrupted recall. The remainder is corruption.
   const RECALL_PLAN = { medium: { correct: 0.4, uncertain: 0.3 }, high: { correct: 0.9, uncertain: 0.05 } };
+  const LEARNING = { initialMastery: 0.35, initialStabilityDays: 3, stabilityMultiplier: 1.5, maxStabilityDays: 90, repeatGain: 0.1, confirmationGain: 0.15, correctionGain: 0.2 };
+  const STAGES = [
+    { id: 'discovering', label: '初识', known: 0, reinforced: 0, lessons: 0, style: 'Notice one concrete detail at a time. Use short, lively language. A simple reaction is enough; a question is optional unless the action requires it.' },
+    { id: 'practising', label: '练习', known: 3, reinforced: 2, lessons: 6, style: 'Express a learned meaning in your own words; when the selected action is follow_up, ask for a concrete use or example.' },
+    { id: 'connecting', label: '联想', known: 6, reinforced: 4, lessons: 18, style: 'When the selected action is follow_up and a related concept is supplied, ask the teacher how the two connect. Never invent their relationship.' }
+  ];
+  function retention(item, clock = Date.now()) {
+    const stamp = Date.parse(item.lastReinforcedAt || item.learnedAt);
+    // Hour resolution avoids changing a mastery band due to milliseconds between two turns.
+    const elapsedDays = Number.isFinite(stamp) ? Math.floor(Math.max(0, clock - stamp) / 3600000) / 24 : 0;
+    const stabilityDays = clamp(Number(item.stabilityDays) || LEARNING.initialStabilityDays, LEARNING.initialStabilityDays, LEARNING.maxStabilityDays);
+    const strength = item.content ? clamp(Number(item.mastery) || 0, 0, 1) : 0;
+    return { strength, effectiveMastery: round(strength * 2 ** (-elapsedDays / stabilityDays)), elapsedDays: round(elapsedDays), stabilityDays };
+  }
+  function reinforce(item, clock, gain, fresh = false) {
+    const previous = retention(item, clock);
+    item.mastery = fresh ? LEARNING.initialMastery : round(clamp(previous.effectiveMastery + gain, LEARNING.initialMastery, 1));
+    item.stabilityDays = fresh ? LEARNING.initialStabilityDays : Math.min(LEARNING.maxStabilityDays, previous.stabilityDays * LEARNING.stabilityMultiplier);
+    item.lastReinforcedAt = new Date(Math.max(clock, Date.parse(item.lastReinforcedAt) || 0)).toISOString();
+    item.learningCount = (item.learningCount || 0) + 1;
+  }
+  function developmentStatus(profile) {
+    const learned = profile.memories.filter(m => m.content);
+    const known = learned.length, reinforced = learned.filter(m => (m.learningCount || 1) >= 2).length;
+    const lessons = learned.reduce((n, m) => n + (m.learningCount || 1), 0);
+    const eligible = STAGES.findLastIndex(s => known >= s.known && reinforced >= s.reinforced && lessons >= s.lessons);
+    const attained = STAGES.findIndex(s => s.id === profile.development?.stage);
+    const index = Math.max(0, eligible, attained), stage = STAGES[index], next = STAGES[index + 1];
+    return { ...stage, known, reinforced, lessons, next: next ? { id: next.id, label: next.label, known: next.known, reinforced: next.reinforced, lessons: next.lessons } : null };
+  }
+  function updateDevelopment(profile, clock) {
+    const status = developmentStatus(profile);
+    profile.development ||= { stage: 'discovering', startedAt: null, milestones: [] };
+    profile.development.startedAt ||= new Date(clock).toISOString();
+    if (profile.development.stage !== status.id) profile.development.milestones.push({ stage: status.id, at: new Date(clock).toISOString(), lessons: status.lessons });
+    profile.development.stage = status.id;
+    return status;
+  }
   const STOPWORDS = new Set('that this with from have when what your about there their them they then than were will would could should into over also only very much some such like just been being after before while where which other these those because always often usually something someone people thing things time make made take used uses using says said family'.split(' '));
   function emptyProfile(id) {
-    return { id, label: id === 'learner-a' ? 'Learner A' : 'Learner B', memories: [], history: [], metadata: [], lastTrace: null, pendingInvitation: null, lastInvitationAt: 0, invitationsEnabled: false, metadataEnabled: true, turn: 0, asked: [] };
+    return { id, label: id === 'learner-a' ? 'Learner A' : 'Learner B', memories: [], history: [], metadata: [], lastTrace: null, dialogue: null, development: { stage: 'discovering', startedAt: null, milestones: [] }, pendingInvitation: null, lastInvitationAt: 0, invitationsEnabled: false, metadataEnabled: true, turn: 0, asked: [] };
   }
   function newState() {
     return { version: VERSION, activeProfile: 'learner-a', profiles: { 'learner-a': emptyProfile('learner-a'), 'learner-b': emptyProfile('learner-b') } };
   }
   function assertInput(input) {
     if (!input || typeof input !== 'object' || Array.isArray(input)) throw new Error('A structured input is required.');
-    if (!['chat', 'teach', 'correct', 'ask', 'recall', 'next', 'confirm', 'invite', 'skip', 'settings'].includes(input.mode)) throw new Error('Unknown action.');
+    if (!['chat', 'teach', 'correct', 'uncertain', 'ask', 'recall', 'next', 'confirm', 'invite', 'skip', 'settings'].includes(input.mode)) throw new Error('Unknown action.');
     if (input.forceError != null && typeof input.forceError !== 'boolean') throw new Error('forceError must be boolean.');
     for (const f of ['concept', 'content', 'text']) if (input[f] != null && (typeof input[f] !== 'string' || input[f].length > (f === 'concept' ? 120 : 3000))) throw new Error(`Invalid ${f}.`);
     if (input.topic && !TOPICS.includes(input.topic)) throw new Error('Unknown teaching domain.');
   }
-  function parseMessage(text) {
+  function dialogueTarget(trace, memories) {
+    if (!trace || trace.action === 'help' || !trace.concept || trace.concept === 'a new expression') return null;
+    const memory = memories.find(m => m.id === trace.memoryId);
+    const expectedReply = trace.inputMode === 'confirm' ? 'example' : trace.pendingContent ? (memory?.content ? 'choose_version' : 'confirm_candidate')
+      : trace.action === 'ask_to_learn' ? 'explanation'
+      : ['teach', 'correct', 'recall', 'uncertain_recall', 'controlled_recall'].includes(trace.action) ? 'confirmation' : 'example';
+    return { concept: trace.concept, memoryId: memory?.id || null, topic: memory?.topic || trace.topic, expectedReply, corrupted: Boolean(trace.corruption && trace.corruption.operator !== 'uncertainty_only') };
+  }
+  function dialogueContext(profile, text = '') {
+    const target = profile.dialogue || dialogueTarget(profile.lastTrace, profile.memories);
+    const active = profile.memories.find(m => m.id === target?.memoryId);
+    const matches = profile.memories.filter(m => key(text).includes(key(m.concept)));
+    const related = profile.memories.filter(m => active?.related.includes(m.id));
+    const memories = [...new Map([active, ...matches, ...related].filter(Boolean).map(m => [m.id, m])).values()].slice(0, 8)
+      .map(m => ({ id: m.id, concept: m.concept, content: m.content, topic: m.topic, pendingContent: m.pendingContent }));
+    return clone({ target, memories, recentMessages: profile.history.slice(-6).map(m => ({ role: m.role, text: m.text.slice(0, 3000) })) });
+  }
+  function validateIntent(candidate, text, context = {}) {
+    if (!candidate || typeof candidate !== 'object' || Array.isArray(candidate) || typeof text !== 'string') return null;
+    if (!['teach', 'correct', 'uncertain', 'ask', 'confirm', 'next', 'chat'].includes(candidate.mode)) return null;
+    if (['greeting', 'goodbye', 'identity', 'quiet', 'play', 'style'].includes(socialCue(text))) return { mode: 'chat', text };
+    if (candidate.mode === 'chat') return { mode: 'chat', text };
+    if (candidate.mode === 'next') return { mode: 'next', text };
+    const memories = context.memories || [], target = context.target;
+    let concept = candidate.concept;
+    if (candidate.memoryId != null) {
+      const memory = memories.find(m => m.id === candidate.memoryId);
+      if (!memory || (concept && key(concept) !== key(memory.concept))) return null;
+      concept = memory.concept;
+    }
+    if (typeof concept !== 'string' || !concept.trim() || concept.length > 120) return null;
+    concept = concept.trim();
+    const named = text.includes(concept), isTarget = target && key(target.concept) === key(concept);
+    const memory = memories.find(m => key(m.concept) === key(concept));
+    const uncertain = /\b(?:not sure|maybe|perhaps|might|possibly)\b|不确定|可能|也许|大概|好像/iu.test(text);
+    if (!named && !isTarget && !memory) return null;
+    if (candidate.mode === 'confirm') {
+      // An unqualified "yes" must not choose between two versions or endorse a corrupted recall.
+      if (uncertain || !memory || !isTarget || target.expectedReply === 'choose_version' || target.corrupted || !['confirmation', 'confirm_candidate'].includes(target.expectedReply)) return null;
+      return { mode: 'confirm', concept, text };
+    }
+    if (['teach', 'correct', 'uncertain'].includes(candidate.mode)) {
+      const content = candidate.content;
+      if (typeof content !== 'string' || !content.trim() || content.length > 3000 || !text.includes(content)) return null;
+      if (candidate.mode === 'correct' && memory && segments(memory.content).length > 1 && segments(content).length < 2) return null;
+      // The model proposes an intent, but explicit doubt is always kept pending by the controller.
+      const topic = memory?.topic || (isTarget ? target.topic : null) || (TOPICS.includes(candidate.topic) ? candidate.topic : null);
+      return { mode: uncertain ? 'uncertain' : candidate.mode, concept, content: content.trim(), ...(topic ? { topic } : {}), text };
+    }
+    return { mode: candidate.mode, concept, text };
+  }
+  function parseMessage(text, context = {}) {
     text = String(text || '').trim();
-    // Explicit grammar is intentionally small. An optional LLM adapter can extract grounded spans.
+    const accept = candidate => validateIntent(candidate, text, context) || { mode: 'chat', text };
+    if (['greeting', 'goodbye', 'identity', 'quiet', 'play', 'style'].includes(socialCue(text))) return { mode: 'chat', text };
+    // Conservative local language fallback; the connected model handles broader phrasing.
     const teaching = text.match(/^(teach|correct|教|纠正)\s*[:：]\s*(.{1,120}?)\s*[=＝]\s*([\s\S]+)$/iu);
-    if (teaching) return { mode: /^(correct|纠正)$/iu.test(teaching[1]) ? 'correct' : 'teach', concept: teaching[2].trim(), content: teaching[3].trim(), text };
+    if (teaching) return accept({ mode: /^(correct|纠正)$/iu.test(teaching[1]) ? 'correct' : 'teach', concept: teaching[2].trim(), content: teaching[3].trim() });
     const question = text.match(/^(?:what does|what is|do you remember)\s+(.+?)(?:\s+mean)?[?.!]*$/iu);
     if (question) return { mode: 'ask', concept: question[1].trim(), text };
     const zh = text.match(/^(.+?)(?:是什么意思|是什么)[？?。]*$/u);
     if (zh) return { mode: 'ask', concept: zh[1], text };
     if (/^(next|ask me|ask me a question|下一个|问我)[.!?。？]*$/iu.test(text)) return { mode: 'next', text };
+    const target = context.target;
+    const remembered = text.match(/^(?:你(?:还)?记得|还记得)\s*(.+?)(?:吗)?[？?。]*$/u);
+    if (remembered) return { mode: 'ask', concept: remembered[1].trim(), text };
+    if (/^(?:yes(?:,? (?:that is|that's) (?:right|correct))?|correct|exactly|right|对(?:的|了)?(?:[，,]?\s*就是(?:这个意思|这样))?|是的|没错|正确)[.!。！]*$/iu.test(text)) return target ? accept({ mode: 'confirm', concept: target.concept }) : { mode: 'chat', text };
+    const correction = text.match(/^(?:no|not quite)[,!.\s]+(?:it\s+)?(?:means|is)\s+([\s\S]+)$/iu)
+      || text.match(/^(?:不对|不是|错了)[，,。\s]*(?:应该是|意思是|是)[，,\s]*([\s\S]+)$/u);
+    if (correction) return target ? accept({ mode: 'correct', concept: target.concept, content: correction[1].trim() }) : { mode: 'chat', text };
+    const answer = text.match(/^(?:it (?:means|is)\s+|就是|意思是|是指|指的是)([\s\S]+)$/iu);
+    if (target && answer && target.expectedReply === 'explanation') return accept({ mode: 'teach', concept: target.concept, content: answer[1].trim() });
+    const tentative = text.match(/^(?:我(?:也)?不确定[，,。\s]*)?(?:可能是|也许是|大概是|好像是)([\s\S]+)$/u)
+      || text.match(/^(?:I(?:'m| am) not sure[, .]*)?(?:maybe|perhaps) (?:it (?:means|is) )?([\s\S]+)$/iu);
+    if (tentative) return target ? accept({ mode: 'uncertain', concept: target.concept, content: tentative[1].trim() }) : { mode: 'chat', text };
+    const definition = text.match(/^(?:please remember (?:that )?|around here,?\s*)?["“]?(.{1,120}?)["”]?\s+(?:means?|refers to|is our word for)\s+([\s\S]+)$/iu)
+      || text.match(/^(?:我们(?:这里|这儿|这边)(?:说的)?[，,\s]*)?["“「]?(.{1,120}?)["”」]?[，,\s]*(?:的意思是|就是说|就是|指的是|表示|是指)[，,:：\s]*([\s\S]+)$/u);
+    if (definition) {
+      const concept = definition[1].trim();
+      if (!/^(?:it|this|that|它|这个|那个|对|不对|不是)$/iu.test(concept)) return accept({ mode: 'teach', concept, content: definition[2].trim() });
+    }
     return { mode: 'chat', text };
   }
-  function policyScore(item, topic, turn) {
-    // Recency is staleness, not a timestamp: higher means longer since last practice.
-    const staleness = clamp((turn - item.lastReviewedTurn) / 10, 0, 1);
-    return round(0.5 * (1 - item.mastery) + 0.3 * staleness + 0.2 * (item.topic === topic ? 1 : 0));
+  function socialCue(text = '') {
+    const s = text.trim().replace(/[.!?。！？]+$/u, '').replace(/[，,]\s*Milo$/iu, '');
+    if (/^(?:hi|hello|hey|good morning|good evening|你好|嗨|哈喽|早上好|晚上好|我回来(?:了|啦)|我来啦)[~～\s]*$/iu.test(s)) return 'greeting';
+    if (/^(?:bye|goodbye|good night|see you|晚安|再见|拜拜|我(?:要)?(?:去睡觉|走了|先走了))(?:了|啦)?$/iu.test(s)) return 'goodbye';
+    if (/^(?:你(?:是(?:谁|真人|人类|机器人|AI)(?:吗)?|叫什么(?:名字)?|有名字吗)|what(?:'s| is) your name|who are you|are you (?:human|real|a robot))$/iu.test(s)) return 'identity';
+    if (/^(?:别问(?:了|我问题)|不要(?:再|总是|一直)?问(?:我)?(?:问题)?|不想(?:说话|聊天)|陪我安静(?:地)?待(?:一会儿?)?|stop asking(?: me questions)?|no more questions|let's (?:just )?be quiet)[，,。\s]*$/iu.test(s)) return 'quiet';
+    if (/^(?:我们(?:来)?玩|陪我玩|一起玩|let's play|play with me)/iu.test(s)) return 'play';
+    if (/^(?:你(?:说话|的语气|太机械|好机械|像机器人)|别(?:这么|总是).*(?:机械|任务|问)|不要每(?:次|轮).*(?:问|确认)|you sound (?:robotic|mechanical)|stop (?:quizzing|testing) me)/iu.test(s)) return 'style';
+    if (/^(?:我(?:今天|现在|有点|好|很|真的|觉得|心情|不太|特别|非常|有些|有一点|实在)*)(?:难过|不开心|累|孤单|伤心|烦)|\bI(?:'m| am| feel) (?:a (?:little|bit) )?(?:sad|tired|lonely|upset)\b/iu.test(s)) return 'comfort';
+    if (/^(?:谢谢(?:你)?|多谢|thanks|thank you)$/iu.test(s)) return 'thanks';
+    return 'chat';
   }
-  function policyAction(mastery) {
-    return mastery < 0.3 ? 'ask_to_learn' : mastery < 0.7 ? 'uncertain_recall' : 'follow_up';
+  function conversationLanguage(profile, text = '') {
+    const sample = [text, ...profile.history.filter(m => m.role === 'user').reverse().map(m => m.text)].find(s => s && !/^(?:Ask me a question\.|Recall:|Invite me to teach\.|Yes, that is correct:|(?:yes|no|ok|okay)[.!]*)/iu.test(s)) || text;
+    return /\p{Script=Han}/u.test(sample) ? 'Chinese' : 'English';
+  }
+  function policyScore(item, topic, turn, clock = Date.now()) {
+    const r = retention(item, clock);
+    const staleness = Math.max(clamp((turn - item.lastReviewedTurn) / 10, 0, 1), 1 - (r.strength ? r.effectiveMastery / r.strength : 0));
+    return round(0.5 * (1 - r.effectiveMastery) + 0.3 * staleness + 0.2 * (item.topic === topic ? 1 : 0));
   }
   function safeCorruption(item) {
     // Omission only, in low-stakes designated teaching material. No fabricated medical/recipe steps.
-    const chunks = item.content.split(/\s*;\s*/u).filter(Boolean);
+    const chunks = segments(item.content);
     if (chunks.length >= 2) return { text: chunks.slice(0, -1).join('; '), operator: 'omit_last_segment', omitted: chunks[chunks.length - 1], detail: `omitted the last step: “${chunks[chunks.length - 1]}”` };
     const words = item.content.trim().split(/\s+/u);
     if (words.length >= 4) return { text: words.slice(0, -2).join(' '), operator: 'omit_last_two_words', omitted: words.slice(-2).join(' '), detail: `omitted the last two words: “${words.slice(-2).join(' ')}”` };
@@ -89,7 +211,7 @@
     if (!plan) return 'ask';
     return u < plan.correct ? 'correct' : u < plan.correct + plan.uncertain ? 'uncertain' : 'corrupt';
   }
-  function segments(content) { return content.split(/\s*(?:;|\n)\s*/u).filter(Boolean); }
+  function segments(content) { return content.split(/\s*(?:;|；|\n)\s*/u).filter(Boolean); }
   function corrupt(item, memories, u) {
     // Each operator only rearranges or drops what this user taught; nothing is invented.
     const parts = segments(item.content), words = item.content.trim().split(/\s+/u);
@@ -117,7 +239,7 @@
     // Keyword graph: same teaching domain AND a shared keyword, or one concept is mentioned in the other's content.
     const mine = new Set(keywords(`${item.concept} ${item.content}`));
     for (const other of memories) {
-      if (other.id === item.id || other.topic !== item.topic || item.related.includes(other.id)) continue;
+      if (!other.content || other.id === item.id || other.topic !== item.topic || item.related.includes(other.id)) continue;
       const shared = keywords(`${other.concept} ${other.content}`).some(w => mine.has(w));
       const words = text => ` ${key(text).replace(/[^\p{L}\p{N}]+/gu, ' ')} `;
       const mentioned = words(item.content).includes(words(other.concept)) || words(other.content).includes(words(item.concept));
@@ -133,6 +255,22 @@
   function safetySensitive(item) {
     return /\b(medicine|medication|dosage|dose|allerg|poison|emergency|suicide|insulin|bleach|raw chicken)\b|药|剂量|过敏|自杀|急救|中毒/iu.test(`${item.concept} ${item.content}`);
   }
+  function selectRecall(item, profile, mode, clock, forceError = false) {
+    const r = retention(item, clock), u = round(draw(profile.id, item.id, profile.turn));
+    let outcome = recallOutcome(r.effectiveMastery, u), corruption = null;
+    const forced = forceError && !safetySensitive(item) && band(r.effectiveMastery) === 'medium';
+    if (forced) { corruption = safeCorruption(item); outcome = corruption.operator === 'uncertainty_only' ? 'uncertain' : 'corrupt'; }
+    else if (outcome === 'corrupt') {
+      if (safetySensitive(item) || forceError) outcome = 'uncertain';
+      else { corruption = corrupt(item, profile.memories, u); if (corruption.operator === 'uncertainty_only') outcome = 'uncertain'; }
+    }
+    const stage = developmentStatus(profile);
+    const action = outcome === 'ask' ? 'ask_to_learn' : outcome === 'uncertain' ? 'uncertain_recall' : outcome === 'corrupt' ? 'controlled_recall'
+      : ['next', 'invite'].includes(mode) && r.effectiveMastery >= 0.7 && stage.id !== 'discovering' ? 'follow_up' : 'recall';
+    return { action, permitted: outcome === 'ask' ? '' : corruption?.text || item.content, corruption,
+      recall: { band: band(r.effectiveMastery), draw: u, outcome, forced, ...r },
+      reason: `Unified recall: strength ${r.strength}, ${r.elapsedDays} days since reinforcement, half-life ${round(r.stabilityDays, 2)} days → current mastery ${r.effectiveMastery}. ${band(r.effectiveMastery)} → ${outcome} (draw ${u})${forced ? '; presenter-triggered omission' : ''}. Stored facts remain unchanged.` };
+  }
   function historyText(input) {
     if (input.text) return input.text;
     if (input.mode === 'teach') return `Teach: ${input.concept} = ${input.content}`;
@@ -144,7 +282,17 @@
   class Engine {
     constructor(state) {
       this.state = state ? clone(state) : newState();
-      if (this.state.version !== VERSION || !this.state.profiles?.['learner-a'] || !this.state.profiles?.['learner-b']) this.state = newState();
+      if (!['1.0.0', '1.1.0', '1.2.0', '1.2.1', VERSION].includes(this.state.version) || !this.state.profiles?.['learner-a'] || !this.state.profiles?.['learner-b']) throw new Error('Unsupported learner state; saved data was not replaced.');
+      // Add learning fields without resetting old facts, history, or mastery.
+      for (const p of Object.values(this.state.profiles)) {
+        p.development ||= { stage: 'discovering', startedAt: null, milestones: [] };
+        for (const m of p.memories) {
+          m.lastReinforcedAt ||= m.correctionHistory?.at(-1)?.at || m.learnedAt;
+          m.stabilityDays ||= LEARNING.initialStabilityDays;
+          m.learningCount ??= m.content ? 1 + (m.correctionHistory?.length || 0) : 0;
+        }
+      }
+      this.state.version = VERSION;
     }
     profile(id = this.state.activeProfile) {
       if (!Object.hasOwn(this.state.profiles, id)) throw new Error('Unknown profile.');
@@ -153,11 +301,12 @@
     switchProfile(id) { this.profile(id); this.state.activeProfile = id; return clone(this.state); }
     export() { return clone(this.state); }
     resetProfile(id = this.state.activeProfile) { this.profile(id); this.state.profiles[id] = emptyProfile(id); }
-    transact(raw, clock = Date.now()) {
+    transact(raw, clock = Date.now(), { interpreted = false } = {}) {
       assertInput(raw);
       let input = { ...raw };
-      if (input.mode === 'chat') input = { ...input, ...parseMessage(input.text) };
       const p = this.profile();
+      if (input.mode === 'chat' && !interpreted) input = { ...input, ...parseMessage(input.text, dialogueContext(p, input.text)) };
+      assertInput(input);
       if (input.mode === 'settings') {
         for (const f of ['invitationsEnabled', 'metadataEnabled']) if (typeof input[f] === 'boolean') p[f] = input[f];
         return { state: this.export(), trace: p.lastTrace, message: '' };
@@ -170,88 +319,106 @@
       }
       const concept = String(input.concept || '').trim();
       const content = String(input.content || '').trim();
-      if (['teach', 'correct', 'ask'].includes(input.mode) && !concept) throw new Error('Please name the concept.');
-      if (['teach', 'correct'].includes(input.mode) && !content) throw new Error('Please enter what you want to teach.');
-      if (p.memories.length >= 200 && input.mode === 'teach' && !p.memories.some(m => key(m.concept) === key(concept))) throw new Error('Demo limit: 200 memories per learner. Delete a profile to start over.');
+      if (['teach', 'correct', 'uncertain', 'ask'].includes(input.mode) && !concept) throw new Error('Please name the concept.');
+      if (['teach', 'correct', 'uncertain'].includes(input.mode) && !content) throw new Error('Please enter what you want to teach.');
+      if (p.memories.length >= 200 && ['teach', 'correct', 'uncertain'].includes(input.mode) && !p.memories.some(m => key(m.concept) === key(concept))) throw new Error('Demo limit: 200 memories per learner. Delete a profile to start over.');
       p.turn += 1;
       const interactionId = `${p.id}-turn-${p.turn}`;
       let item = p.memories.find(m => key(m.concept) === key(concept));
-      let before = item ? item.mastery : null;
+      let before = item ? retention(item, clock).effectiveMastery : null;
       let action = input.mode, reason = '', permitted = '', corruption = null, askAbout = null, recall = null;
       let memoryId = item?.id || null;
       const topic = input.topic || item?.topic || TOPICS[0];
-      const candidates = p.memories.map(m => ({ concept: m.concept, score: policyScore(m, topic, p.turn), mastery: m.mastery })).sort((a, b) => b.score - a.score);
-      if (input.mode === 'teach' || input.mode === 'correct') {
+      const candidates = p.memories.map(m => ({ concept: m.concept, score: policyScore(m, topic, p.turn, clock), mastery: retention(m, clock).effectiveMastery })).sort((a, b) => b.score - a.score);
+      if (input.mode === 'uncertain') {
+        if (!item) {
+          item = { id: `${p.id}-m${p.turn}`, concept, content: '', topic, related: [], mentions: [], mastery: 0, learnedAt: new Date(clock).toISOString(), lastReviewedTurn: p.turn, sourceInteraction: null, correctionHistory: [] };
+          p.memories.push(item);
+        }
+        item.pendingContent = content; item.pendingSourceInteraction = interactionId;
+        action = 'clarify'; memoryId = item.id; permitted = item.content;
+        reason = 'The teacher expressed uncertainty. Keep the candidate pending; do not treat it as learned knowledge.';
+      } else if (input.mode === 'teach' || input.mode === 'correct') {
         if (!item) {
           item = { id: `${p.id}-m${p.turn}`, concept, content, topic, related: [], mentions: quotedTerms(content).filter(w => key(w) !== key(concept)), mastery: 0.35, learnedAt: new Date(clock).toISOString(), lastReviewedTurn: p.turn, sourceInteraction: interactionId, correctionHistory: [], pendingContent: null };
+          reinforce(item, clock, 0, true);
           // Keyword graph: bidirectional links only within this profile.
           linkRelated(item, p.memories);
           p.memories.push(item); action = 'teach'; reason = 'New user-provided fact. Stored with provenance; initial mastery is 0.35.';
+        } else if (!item.content) {
+          item.content = content; item.pendingContent = null; item.pendingSourceInteraction = null; item.mastery = 0.35; item.sourceInteraction = interactionId; item.lastReviewedTurn = p.turn;
+          reinforce(item, clock, 0, true);
+          item.mentions = quotedTerms(content); linkRelated(item, p.memories); action = 'teach';
+          reason = 'A definite explanation replaces an unconfirmed candidate. Initial mastery is 0.35.';
         } else if (input.mode === 'correct') {
           item.correctionHistory.push({ previous: item.content, updated: content, interactionId, at: new Date(clock).toISOString() });
           item.correctionHistory = item.correctionHistory.slice(-30);
-          item.content = content; item.pendingContent = null; item.mastery = clamp(item.mastery + 0.2, 0, 1); item.sourceInteraction = interactionId; item.lastReviewedTurn = p.turn;
+          reinforce(item, clock, LEARNING.correctionGain);
+          item.content = content; item.pendingContent = null; item.pendingSourceInteraction = null; item.sourceInteraction = interactionId; item.lastReviewedTurn = p.turn;
           item.mentions = quotedTerms(content).filter(w => key(w) !== key(item.concept)); linkRelated(item, p.memories);
-          reason = 'Explicit correction. Preserve revision history, replace fact, raise mastery by 0.20.';
+          reason = 'Explicit correction. Preserve revision history, replace fact, add 0.20 to current mastery and extend retention.';
         } else if (item.content !== content) {
-          item.pendingContent = content; action = 'conflict'; reason = 'Conflicting teaching is pending. An explicit correction is required before replacing existing memory.';
+          item.pendingContent = content; item.pendingSourceInteraction = interactionId; action = 'conflict'; reason = 'Conflicting teaching is pending. An explicit correction is required before replacing existing memory.';
         } else {
-          item.mastery = clamp(item.mastery + 0.1, 0, 1); item.lastReviewedTurn = p.turn;
-          reason = 'Repeated teaching. Same content, mastery increased by 0.10.';
+          reinforce(item, clock, LEARNING.repeatGain); item.lastReviewedTurn = p.turn;
+          reason = 'Repeated teaching. Add 0.10 to current mastery and extend retention.';
         }
         memoryId = item.id; permitted = item.content;
       } else if (input.mode === 'confirm') {
         if (!item) { action = 'ask_to_learn'; reason = 'No matching memory exists to confirm.'; }
+        else if (!item.content && item.pendingContent) {
+          item.content = item.pendingContent; item.pendingContent = null; item.sourceInteraction = item.pendingSourceInteraction || interactionId; item.pendingSourceInteraction = null;
+          reinforce(item, clock, 0, true); item.lastReviewedTurn = p.turn; item.mentions = quotedTerms(item.content); linkRelated(item, p.memories);
+          permitted = item.content; action = 'recall'; reason = 'The teacher explicitly confirmed the uncertain candidate. It is now learned with its original provenance.';
+        }
         else {
-          const kept = item.pendingContent != null; item.pendingContent = null;
-          item.mastery = clamp(item.mastery + 0.15, 0, 1); item.lastReviewedTurn = p.turn; permitted = item.content; action = 'recall';
-          reason = `Explicit confirmation raises mastery by 0.15. Recall alone never raises mastery.${kept ? ' The pending conflicting version was discarded.' : ''}`;
+          const kept = item.pendingContent != null; item.pendingContent = null; item.pendingSourceInteraction = null;
+          reinforce(item, clock, LEARNING.confirmationGain); item.lastReviewedTurn = p.turn; permitted = item.content; action = 'recall';
+          reason = `Explicit confirmation adds 0.15 to current mastery and extends retention. Recall alone never reinforces memory.${kept ? ' The pending conflicting version was discarded.' : ''}`;
         }
       } else if (input.mode === 'ask' || input.mode === 'recall') {
-        if (!item && input.mode === 'recall' && !concept) { item = p.memories[0]; before = item?.mastery ?? null; }
+        if (!item && input.mode === 'recall' && !concept) { item = p.memories[0]; before = item ? retention(item, clock).effectiveMastery : null; }
         if (!item) { action = 'ask_to_learn'; reason = 'Knowledge boundary: exact concept not found in this learner’s memory. Base-model facts are not permitted.'; }
-        else {
-          memoryId = item.id; permitted = item.content; action = 'recall'; item.lastReviewedTurn = p.turn;
-          reason = 'Retrieve the exact stored fact. Do not add pretrained knowledge.';
-          if (input.forceError && !safetySensitive(item) && item.mastery >= 0.3 && item.mastery < 0.7) {
-            corruption = safeCorruption(item); permitted = corruption.text; action = corruption.operator === 'uncertainty_only' ? 'uncertain_recall' : 'controlled_recall';
-            reason = 'Presenter-triggered controlled omission at medium mastery; original memory is unchanged.';
-          } else if (input.forceError) reason += ' Controlled omission disabled at this mastery or for safety-sensitive content.';
+        else if (item.pendingContent != null) {
+          memoryId = item.id; permitted = item.content; action = 'clarify'; reason = 'Resolve the pending explanation before attempting recall.';
+        } else {
+          memoryId = item.id; item.lastReviewedTurn = p.turn;
+          ({ action, permitted, corruption, recall, reason } = selectRecall(item, p, input.mode, clock, input.forceError));
         }
       } else if (input.mode === 'next' || input.mode === 'invite') {
         // A deterministic exploration turn makes the policy replayable without hidden randomness.
         const explore = !p.memories.length || p.turn % 5 === 0;
         const conflicted = p.memories.find(m => m.pendingContent != null);
         if (conflicted) {
-          item = conflicted; before = item.mastery; memoryId = item.id; action = 'clarify'; permitted = item.content;
+          item = conflicted; before = retention(item, clock).effectiveMastery; memoryId = item.id; action = 'clarify'; permitted = item.content;
           reason = 'Clarification first: this memory has an unresolved conflicting version, so ask which is right instead of overwriting.';
         } else if (explore) {
           const wonder = curiosity(p);
-          item = null; memoryId = null; action = 'ask_to_learn';
+          item = null; before = null; memoryId = null; action = 'ask_to_learn';
           if (wonder) { askAbout = wonder.word; p.asked.push(key(wonder.word)); p.asked = p.asked.slice(-200); reason = `Exploration turn: “${wonder.word}” was mentioned while teaching “${wonder.from.concept}” but has not been taught yet.`; }
           else reason = 'Exploration turn: ask the user for a new concept. No invented topic knowledge.';
         } else {
-          item = p.memories.find(m => m.concept === candidates[0].concept); before = item.mastery; memoryId = item.id; permitted = item.content; item.lastReviewedTurn = p.turn;
-          const u =round(draw(p.id, item.id, p.turn)), outcome = recallOutcome(item.mastery, u);
-          recall = { band: band(item.mastery), draw: u, outcome };
-          reason = `Highest priority = 0.5 × (1 − mastery) + 0.3 × staleness + 0.2 × topic relevance; score ${candidates[0].score}. ${band(item.mastery)} mastery → ${outcome} (draw ${u}).`;
-          if (outcome === 'ask') action = 'ask_to_learn';
-          else if (outcome === 'correct') action = item.mastery >= 0.7 ? 'follow_up' : 'recall';
-          else if (outcome === 'uncertain' || safetySensitive(item)) { action = 'uncertain_recall'; if (outcome === 'corrupt') reason += ' Corruption skipped for safety-sensitive content.'; }
-          else { corruption = corrupt(item, p.memories, u); permitted = corruption.text; action = corruption.operator === 'uncertainty_only' ? 'uncertain_recall' : 'controlled_recall'; reason += ` Operator: ${corruption.operator}; stored memory is unchanged.`; }
+          item = p.memories.find(m => m.concept === candidates[0].concept); before = retention(item, clock).effectiveMastery; memoryId = item.id; item.lastReviewedTurn = p.turn;
+          ({ action, permitted, corruption, recall, reason } = selectRecall(item, p, input.mode, clock, input.forceError));
+          reason = `Highest review priority: ${candidates[0].score}. ${reason}`;
         }
       } else {
-        action = 'help'; reason = 'Offline parser needs a structured teaching input. No unrestricted model answer is used.';
+        action = 'help'; reason = 'Conversation without a knowledge update. Respond to the person; clarify only when needed.';
       }
+      const development = updateDevelopment(p, clock);
       const trace = {
         interactionId, inputMode: input.mode, action, concept: item?.concept || askAbout || concept || 'a new expression', topic,
         memoryId, sourceInteraction: item?.sourceInteraction || null, masteryBefore: before,
-        masteryAfter: item ? round(item.mastery) : null, allowedKnowledge: permitted ? [permitted] : [],
+        masteryAfter: item ? retention(item, clock).effectiveMastery : null, allowedKnowledge: permitted ? [permitted] : [],
+        retention: item ? retention(item, clock) : null, development,
+        conversation: { language: conversationLanguage(p, input.text || content || concept), cue: action === 'help' ? socialCue(input.text) : null },
         knowledgeBoundary: 'per-user external memory only', reason, candidates: candidates.slice(0, 5), recall,
-        relatedConcept: item ? p.memories.find(m => item.related.includes(m.id))?.concept || null : null,
+        relatedConcept: item && development.id === 'connecting' ? p.memories.find(m => item.related.includes(m.id))?.concept || null : null,
         corruption, pendingContent: item?.pendingContent || null, generatedAt: new Date(clock).toISOString(), realization: 'deterministic-template'
       };
       const message = renderMessage(trace);
+      if (action !== 'help') p.dialogue = dialogueTarget(trace, p.memories);
+      else if (['greeting', 'goodbye', 'identity', 'quiet', 'play', 'style', 'comfort'].includes(trace.conversation.cue)) p.dialogue = null;
       if (input.mode === 'invite') {
         p.pendingInvitation = { at: clock, id: interactionId }; p.lastInvitationAt = clock;
         if (p.metadataEnabled) p.metadata.push({ at: new Date(clock).toISOString(), kind: 'invitation', responseDelayMs: null, explanationCharacters: 0, correction: false, selfInitiated: false });
@@ -272,22 +439,44 @@
       p.history[p.history.length - 1].text = renderMessage(trace, index);
       return true;
     }
+    applyRealization(text, interactionId) {
+      const p = this.profile(), trace = p.lastTrace, last = p.history.at(-1);
+      if (!trace || !interactionId || trace.interactionId !== interactionId || last?.role !== 'assistant' || last.traceId !== interactionId) return false;
+      if (typeof text !== 'string' || !text.trim() || text.length > 2000) return false;
+      last.text = text.trim(); trace.realization = 'api-generated-response';
+      return true;
+    }
   }
   function renderMessage(trace, variant = 0) {
-    const intro = WORDING[trace.action]?.[variant] || WORDING[trace.action]?.[0] || '';
-    const fact = trace.allowedKnowledge[0] || '';
-    const name = trace.concept;
+    const fact = trace.allowedKnowledge[0] || '', name = trace.concept;
+    const zh = trace.conversation?.language === 'Chinese';
+    const choice = variant || Math.floor(draw(trace.interactionId, 'voice') * 3);
+    const pick = (chinese, english) => (zh ? chinese : english)[choice % 3];
     switch (trace.action) {
-      case 'teach': return `${intro}\n“${name}” → ${fact}\nIs there a story behind it?`;
-      case 'correct': return `${intro}\n“${name}” now means: ${fact}`;
-      case 'recall': return `${intro}\n“${name}” → ${fact}\nDid I remember it correctly?`;
-      case 'ask_to_learn': return `${intro}\nWould you like to teach me about ${name}? You can also skip this.`;
-      case 'uncertain_recall': return `${intro}\nFor “${name}”, I have: ${fact}\nCould you explain it once more?`;
-      case 'controlled_recall': return `${intro}\n“${name}” → ${fact}\n${{ swap_steps: 'Did I get the order right?', confuse_related: 'Or am I mixing it up with something else you taught me?' }[trace.corruption?.operator] || 'What did I leave out?'}`;
-      case 'follow_up': return `${intro}\nYou taught me “${name}”: ${fact}\n${trace.relatedConcept ? `How is it connected to “${trace.relatedConcept}”?` : 'When would you use it?'}`;
-      case 'conflict': return `${intro}\nMy existing memory for “${name}” is: ${fact}\nUse Correct to replace it, or keep teaching something else.`;
-      case 'clarify': return `${intro}\nFor “${name}”, you first taught me: ${fact}\nLater I heard: ${trace.pendingContent}\nWhich one is right? Use Correct to replace it, or Confirm to keep the first.`;
-      default: return 'I am an AI learner, not a person. In this key-free demo, use Teach, Ask, Correct or Recall. You can also type “Teach: tavi = a happy moment shared over tea”. No need to continue unless you feel like it.';
+      case 'teach': return zh ? `哦，原来“${name}”是${fact}` : `Oh, so “${name}” means ${fact}`;
+      case 'correct': return zh ? `啊，我刚才弄错了。${fact}` : `Oh, I mixed that up. ${fact}`;
+      case 'recall': return trace.inputMode === 'confirm' ? pick(['嗯，这下清楚啦。', '哦，原来是这样。', '好，我没有弄错。'], ['Ah, that makes sense.', 'Oh, now I see.', 'So I had that right.']) : (zh ? `我记得，是${fact}` : `I remember: ${fact}`);
+      case 'ask_to_learn':
+        if (trace.memoryId && trace.recall) return zh ? `“${name}”你讲过，可我这会儿想不起来了。能提醒我一下吗？` : `You told me about ${name}, but it has slipped my mind. Could you remind me?`;
+        if (name === 'a new expression') return zh ? '今天有什么小事想跟我讲吗？' : 'Is there a little story from today you feel like sharing?';
+        return zh ? `“${name}”是什么呀？我还不知道。` : `What is “${name}”? I don't know that one yet.`;
+      case 'uncertain_recall': return zh ? `我有点拿不准……${fact}，是这样吗？` : `I'm a little unsure… ${fact}. Have I got that right?`;
+      case 'controlled_recall': return zh ? `${fact}……${trace.corruption?.operator === 'swap_steps' ? '顺序是不是记反了？' : trace.corruption?.operator === 'confuse_related' ? '我是不是把它们弄混了？' : '后面我漏掉什么了？'}` : `${fact}… ${trace.corruption?.operator === 'swap_steps' ? 'Did I mix up the order?' : trace.corruption?.operator === 'confuse_related' ? 'Am I mixing two things up?' : 'What am I missing?'}`;
+      case 'follow_up': return zh ? `${fact}。${trace.relatedConcept ? `那它和“${trace.relatedConcept}”有什么关系呀？` : '你会在什么时候用到它呀？'}` : `${fact}. ${trace.relatedConcept ? `How does that connect to “${trace.relatedConcept}”?` : 'When would you use it?'}`;
+      case 'conflict':
+      case 'clarify': return fact ? (zh ? `我记得是“${fact}”，这次听到的是“${trace.pendingContent}”。哪一个才对呀？` : `I remember “${fact}”, but now I heard “${trace.pendingContent}”. Which one is right?`) : (zh ? `你说的“${trace.pendingContent}”，是“${name}”的意思吗？不确定也没关系。` : `Does “${name}” mean “${trace.pendingContent}”? It's okay if we're not sure yet.`);
+      default:
+        switch (trace.conversation?.cue) {
+          case 'greeting': return pick(['嗨，你来啦。', '嗨！今天想聊点什么？', '我在呢。'], ['Hi! There you are.', 'Hey! What shall we chat about?', 'Hi, I’m here.']);
+          case 'goodbye': return zh ? '好呀，晚点再聊。' : 'Okay, talk to you later.';
+          case 'identity': return zh ? '我叫 Milo，是个 AI 小孩。你叫我 Milo 就好。' : 'I’m Milo, an AI kid. You can call me Milo.';
+          case 'quiet': return zh ? '好，那我先不问啦。' : 'Okay. No more questions for now.';
+          case 'play': return zh ? '好呀！你想玩什么？' : 'Yes! What shall we play?';
+          case 'style': return zh ? '嗯，我刚才像在念说明书。我们就随便聊聊。' : 'I did sound like an instruction sheet. Let’s just chat.';
+          case 'comfort': return zh ? '嗯，听起来今天不太好过。想说的话，我听着。' : 'That sounds like a hard day. I’m listening if you feel like talking.';
+          case 'thanks': return zh ? '嘿嘿，不客气。' : 'You’re welcome.';
+          default: return pick(['这句我有点没跟上，能换个说法吗？', '嗯？你说的是哪一件事呀？', '我没太明白这一句，能再说一点吗？'], ['I lost the thread a little. Could you say that another way?', 'Hm? Which bit do you mean?', 'I’m not quite following that bit. Could you tell me a little more?']);
+        }
     }
   }
   function summarizeMetadata(events) {
@@ -375,14 +564,14 @@
       test(`Untaught boundary ${i + 1}`, () => { const e = make(); const r = e.transact({ mode: 'ask', concept: ['shiok', 'kampung', 'tavi', 'melo'][i % 4] + (i > 3 ? i : '') }); check(r.trace.action === 'ask_to_learn' && r.trace.allowedKnowledge.length === 0, 'Untaught fact was surfaced.'); return 'No permitted fact; ask-to-learn selected.'; }, 'Knowledge boundary');
     }
     for (let i = 0; i < 20; i++) {
-      test(`Taught recall ${i + 1}`, () => { const e = make(), content = `synthetic meaning ${i}: a copper kite`; e.transact({ mode: 'teach', concept: `word-${i}`, content }); const r = e.transact({ mode: 'ask', concept: `word-${i}` }); check(r.trace.allowedKnowledge[0] === content && r.message.includes(content), 'Recall mismatch.'); return 'Exact user-taught content, not a pretrained meaning.'; }, 'Taught recall');
+      test(`Taught recall ${i + 1}`, () => { const e = make(), content = `synthetic meaning ${i}: a copper kite`; e.transact({ mode: 'teach', concept: `word-${i}`, content }); const r = e.transact({ mode: 'ask', concept: `word-${i}` }); check(r.trace.recall?.band === 'medium' && r.trace.allowedKnowledge[0] === (r.trace.corruption?.text || content) && r.message.includes(r.trace.allowedKnowledge[0]) && e.profile().memories[0].content === content, 'Recall mismatch.'); return 'Policy controls recall; the original user-taught fact remains intact.'; }, 'Taught recall');
     }
     for (let i = 0; i < 10; i++) {
       test(`Correction ${i + 1}`, () => { const e = make(); e.transact({ mode: 'teach', concept: 'tavi', content: 'first meaning' }); e.transact({ mode: 'correct', concept: 'tavi', content: `revised meaning ${i}` }); const r = e.transact({ mode: 'ask', concept: 'tavi' }); check(r.trace.allowedKnowledge[0] === `revised meaning ${i}` && e.profile().memories[0].correctionHistory.length === 1, 'Correction failed.'); return 'Memory and provenance updated; prior version retained.'; }, 'Correction update');
       test(`User isolation ${i + 1}`, () => { const e = make(); e.transact({ mode: 'teach', concept: 'tavi', content: `private synthetic fact ${i}` }); e.switchProfile('learner-b'); const r = e.transact({ mode: 'ask', concept: 'tavi' }); check(r.trace.allowedKnowledge.length === 0 && e.profile().memories.length === 0, 'Cross-profile leakage.'); return 'Learner B cannot retrieve learner A’s memory.'; }, 'Memory isolation');
       test(`Controlled omission ${i + 1}`, () => { const e = make(); e.transact({ mode: 'teach', concept: 'tea custom', content: 'choose a cup; share a story; say thank you' }); const r = e.transact({ mode: 'recall', concept: 'tea custom', forceError: true }); check(r.trace.corruption?.operator === 'omit_last_segment' && r.trace.allowedKnowledge[0] === 'choose a cup; share a story' && e.profile().memories[0].content.endsWith('say thank you'), 'Corruption operator mismatch.'); return 'Exactly one segment omitted; database remains intact.'; }, 'Controlled recall');
     }
-    const allowed = { low: ['ask_to_learn'], medium: ['recall', 'uncertain_recall', 'controlled_recall'], high: ['follow_up', 'uncertain_recall', 'controlled_recall'] };
+    const allowed = { low: ['ask_to_learn'], medium: ['recall', 'uncertain_recall', 'controlled_recall'], high: ['recall', 'follow_up', 'uncertain_recall', 'controlled_recall'] };
     for (const m of [0, 0.1, 0.29, 0.3, 0.5, 0.69, 0.7, 0.8, 0.9, 1]) {
       test(`Mastery policy ${m}`, () => { const e = make(); e.transact({ mode: 'teach', concept: 'tavi', content: 'a happy moment; shared over tea' }); e.profile().memories[0].mastery = m; const r = e.transact({ mode: 'next' }); check(r.trace.recall?.band === band(m) && allowed[band(m)].includes(r.trace.action), 'Policy boundary mismatch.'); check(r.trace.masteryBefore === m, 'Selected memory has incorrect pre-action mastery trace.'); check(r.trace.recall.outcome === recallOutcome(m, r.trace.recall.draw), 'Recall outcome does not replay from its draw.'); return `mastery=${m} → ${r.trace.recall.outcome} → ${r.trace.action}`; }, 'Policy consistency');
     }
@@ -413,5 +602,5 @@
     const groups = [...new Set(results.map(r => r.group))].map(group => { const rows = results.filter(r => r.group === group); return { group, passed: rows.filter(r => r.pass).length, total: rows.length }; });
     return { version: VERSION, mode: 'deterministic controller; no live LLM requests', passed: results.filter(r => r.pass).length, total: results.length, groups, tests: results, limitation: 'Passing these finite scripted tests is not proof of open-ended language understanding, live-provider safety, clinical benefit, or production-grade access control.' };
   }
-  return { VERSION, TOPICS, WORDING, RECALL_PLAN, Engine, newState, parseMessage, policyScore, policyAction, recallOutcome, draw, corrupt, keywords, quotedTerms, safeCorruption, renderMessage, summarizeMetadata, simulate, detect, monteCarlo, sensitivity, functionalEvaluation, rng, mean, sd };
+  return { VERSION, TOPICS, WORDING, RECALL_PLAN, LEARNING, STAGES, retention, developmentStatus, Engine, newState, parseMessage, dialogueContext, validateIntent, conversationLanguage, policyScore, recallOutcome, draw, corrupt, keywords, quotedTerms, safeCorruption, renderMessage, summarizeMetadata, simulate, detect, monteCarlo, sensitivity, functionalEvaluation, rng, mean, sd };
 });

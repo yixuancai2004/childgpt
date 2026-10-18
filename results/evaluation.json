@@ -1,11 +1,11 @@
 {
   "project": "ChildGPT GP8001 Group 6",
-  "version": "1.1.0",
-  "generatedAt": "2026-10-14T12:03:25.519Z",
-  "runtime": "v24.15.0",
+  "version": "1.2.2",
+  "generatedAt": "2026-10-18T13:08:03.304Z",
+  "runtime": "v24.19.0",
   "evidence": "Executed deterministic controller tests and synthetic simulations. No live model calls; no recruited participants; no clinical or wellbeing claims.",
   "functional": {
-    "version": "1.1.0",
+    "version": "1.2.2",
     "mode": "deterministic controller; no live LLM requests",
     "passed": 96,
     "total": 96,
@@ -181,121 +181,121 @@
         "name": "Taught recall 1",
         "group": "Taught recall",
         "pass": true,
-        "detail": "Exact user-taught content, not a pretrained meaning."
+        "detail": "Policy controls recall; the original user-taught fact remains intact."
       },
       {
         "name": "Taught recall 2",
         "group": "Taught recall",
         "pass": true,
-        "detail": "Exact user-taught content, not a pretrained meaning."
+        "detail": "Policy controls recall; the original user-taught fact remains intact."
       },
       {
         "name": "Taught recall 3",
         "group": "Taught recall",
         "pass": true,
-        "detail": "Exact user-taught content, not a pretrained meaning."
+        "detail": "Policy controls recall; the original user-taught fact remains intact."
       },
       {
         "name": "Taught recall 4",
         "group": "Taught recall",
         "pass": true,
-        "detail": "Exact user-taught content, not a pretrained meaning."
+        "detail": "Policy controls recall; the original user-taught fact remains intact."
       },
       {
         "name": "Taught recall 5",
         "group": "Taught recall",
         "pass": true,
-        "detail": "Exact user-taught content, not a pretrained meaning."
+        "detail": "Policy controls recall; the original user-taught fact remains intact."
       },
       {
         "name": "Taught recall 6",
         "group": "Taught recall",
         "pass": true,
-        "detail": "Exact user-taught content, not a pretrained meaning."
+        "detail": "Policy controls recall; the original user-taught fact remains intact."
       },
       {
         "name": "Taught recall 7",
         "group": "Taught recall",
         "pass": true,
-        "detail": "Exact user-taught content, not a pretrained meaning."
+        "detail": "Policy controls recall; the original user-taught fact remains intact."
       },
       {
         "name": "Taught recall 8",
         "group": "Taught recall",
         "pass": true,
-        "detail": "Exact user-taught content, not a pretrained meaning."
+        "detail": "Policy controls recall; the original user-taught fact remains intact."
       },
       {
         "name": "Taught recall 9",
         "group": "Taught recall",
         "pass": true,
-        "detail": "Exact user-taught content, not a pretrained meaning."
+        "detail": "Policy controls recall; the original user-taught fact remains intact."
       },
       {
         "name": "Taught recall 10",
         "group": "Taught recall",
         "pass": true,
-        "detail": "Exact user-taught content, not a pretrained meaning."
+        "detail": "Policy controls recall; the original user-taught fact remains intact."
       },
       {
         "name": "Taught recall 11",
         "group": "Taught recall",
         "pass": true,
-        "detail": "Exact user-taught content, not a pretrained meaning."
+        "detail": "Policy controls recall; the original user-taught fact remains intact."
       },
       {
         "name": "Taught recall 12",
         "group": "Taught recall",
         "pass": true,
-        "detail": "Exact user-taught content, not a pretrained meaning."
+        "detail": "Policy controls recall; the original user-taught fact remains intact."
       },
       {
         "name": "Taught recall 13",
         "group": "Taught recall",
         "pass": true,
-        "detail": "Exact user-taught content, not a pretrained meaning."
+        "detail": "Policy controls recall; the original user-taught fact remains intact."
       },
       {
         "name": "Taught recall 14",
         "group": "Taught recall",
         "pass": true,
-        "detail": "Exact user-taught content, not a pretrained meaning."
+        "detail": "Policy controls recall; the original user-taught fact remains intact."
       },
       {
         "name": "Taught recall 15",
         "group": "Taught recall",
         "pass": true,
-        "detail": "Exact user-taught content, not a pretrained meaning."
+        "detail": "Policy controls recall; the original user-taught fact remains intact."
       },
       {
         "name": "Taught recall 16",
         "group": "Taught recall",
         "pass": true,
-        "detail": "Exact user-taught content, not a pretrained meaning."
+        "detail": "Policy controls recall; the original user-taught fact remains intact."
       },
       {
         "name": "Taught recall 17",
         "group": "Taught recall",
         "pass": true,
-        "detail": "Exact user-taught content, not a pretrained meaning."
+        "detail": "Policy controls recall; the original user-taught fact remains intact."
       },
       {
         "name": "Taught recall 18",
         "group": "Taught recall",
         "pass": true,
-        "detail": "Exact user-taught content, not a pretrained meaning."
+        "detail": "Policy controls recall; the original user-taught fact remains intact."
       },
       {
         "name": "Taught recall 19",
         "group": "Taught recall",
         "pass": true,
-        "detail": "Exact user-taught content, not a pretrained meaning."
+        "detail": "Policy controls recall; the original user-taught fact remains intact."
       },
       {
         "name": "Taught recall 20",
         "group": "Taught recall",
         "pass": true,
-        "detail": "Exact user-taught content, not a pretrained meaning."
+        "detail": "Policy controls recall; the original user-taught fact remains intact."
       },
       {
         "name": "Correction 1",
@@ -517,25 +517,25 @@
         "name": "Mastery policy 0.7",
         "group": "Policy consistency",
         "pass": true,
-        "detail": "mastery=0.7 → correct → follow_up"
+        "detail": "mastery=0.7 → correct → recall"
       },
       {
         "name": "Mastery policy 0.8",
         "group": "Policy consistency",
         "pass": true,
-        "detail": "mastery=0.8 → correct → follow_up"
+        "detail": "mastery=0.8 → correct → recall"
       },
       {
         "name": "Mastery policy 0.9",
         "group": "Policy consistency",
         "pass": true,
-        "detail": "mastery=0.9 → correct → follow_up"
+        "detail": "mastery=0.9 → correct → recall"
       },
       {
         "name": "Mastery policy 1",
         "group": "Policy consistency",
         "pass": true,
-        "detail": "mastery=1 → correct → follow_up"
+        "detail": "mastery=1 → correct → recall"
       },
       {
         "name": "Low mastery never recalls",

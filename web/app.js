@@ -7,7 +7,23 @@
   let remember = storage.get('childgpt.remember') === 'yes';
   let engine;
   try { engine = new C.Engine(remember ? JSON.parse(storage.get('childgpt.state') || 'null') : null); } catch { engine = new C.Engine(); }
-  let mode = 'teach', busy = false, demoRunning = false, remote = null, functional = null, simulation = null, monte = null, sweep = null, providerTrace = null, toastTimer;
+  let mode = 'chat', busy = false, demoRunning = false, remote = null, functional = null, simulation = null, monte = null, sweep = null, providerTrace = null, toastTimer;
+  let initializing = true, normalSession = null, activeDemo = null, stopDemo = false, connectionFailure = '';
+  const demoNames = { conversation: '一起开一家小咖啡馆', learning: '教 Milo 学会月铃礼' };
+  const demoSteps = {
+    conversation: [
+      { label: '打个招呼', input: { mode: 'chat', text: 'Hi, Milo.' } },
+      { label: '接住日常聊天', input: { mode: 'chat', text: 'I can tell you how to cook' } },
+      { label: '一起玩想象游戏', input: { mode: 'chat', text: "Let's pretend we are opening a tiny café. You choose its name." } }
+    ],
+    learning: [
+      { label: '第一次听说', input: { mode: 'chat', text: '月铃礼是什么？' } },
+      { label: '用自然语言教他', input: { mode: 'chat', text: '月铃礼就是先系蓝绳；再敲三下铜铃。' } },
+      { label: '受控漏记（演示按钮指定，非随机）', input: { mode: 'recall', concept: '月铃礼', forceError: true } },
+      { label: '自然语言纠正', input: { mode: 'chat', text: '不对，月铃礼应该是先系红绳；再敲三下铜铃。' } },
+      { label: '再次回忆（按当前掌握度抽样）', input: { mode: 'chat', text: '月铃礼是什么？' } }
+    ]
+  };
   const names = { studio: 'Learning studio', algorithms: 'Algorithm trace', evaluation: 'Evaluation lab', settings: 'Connect & privacy' };
   const pct = (value, places = 0) => value == null ? '—' : `${(value * 100).toFixed(places)}%`;
   function toast(text) { clearTimeout(toastTimer); $('toast').textContent = text; $('toast').hidden = false; toastTimer = setTimeout(() => { $('toast').hidden = true; }, 5500); }
@@ -15,7 +31,7 @@
     const url = URL.createObjectURL(new Blob([content], { type })), a = document.createElement('a'); a.href = url; a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   const jsonDownload = (name, data) => download(name, JSON.stringify(data, null, 2));
-  function persist() { if (!remote && remember) storage.set('childgpt.state', JSON.stringify(engine.export())); }
+  function persist() { if (!remote && !activeDemo && remember) storage.set('childgpt.state', JSON.stringify(engine.export())); }
   function navigate(page) {
     if (!names[page]) page = 'studio';
     document.querySelectorAll('.page').forEach(el => el.classList.toggle('active', el.id === `page-${page}`));
@@ -26,7 +42,12 @@
   }
   function setBusy(value) {
     busy = value;
-    for (const id of ['send-button', 'next-question', 'guided-demo', 'profile-select', 'delete-profile', 'invite-button']) $(id).disabled = value || demoRunning;
+    const locked = value || demoRunning || initializing;
+    for (const id of ['send-button', 'next-question', 'profile-select', 'delete-profile', 'invite-button', 'metadata-toggle', 'invitation-toggle', 'text-input', 'retry-reply']) $(id).disabled = locked || Boolean(activeDemo);
+    for (const id of ['guided-demo', 'conversation-demo', 'disconnect']) $(id).disabled = locked;
+    document.querySelectorAll('[data-recording], #connect-form button, [data-memory]').forEach(el => { el.disabled = locked || (Boolean(activeDemo) && el.hasAttribute('data-memory')); });
+    $('demo-return').disabled = value || demoRunning;
+    $('demo-export').disabled = value || demoRunning || !activeDemo;
     $('send-button').textContent = value ? 'Thinking…' : ({ teach: 'Teach Milo ↗', correct: 'Update memory ↗', ask: 'Ask Milo ↗', recall: 'Recall together ↗', chat: 'Send message ↗' }[mode]);
   }
   function selectMode(next) {
@@ -34,18 +55,18 @@
     document.querySelectorAll('[data-action]').forEach(el => el.classList.toggle('selected', el.dataset.action === mode));
     $('structured-fields').hidden = mode === 'chat'; $('free-text-field').hidden = mode !== 'chat';
     $('content-field').hidden = !['teach', 'correct'].includes(mode);
-    $('composer-note').textContent = mode === 'chat' ? 'Offline grammar: “Teach: concept = explanation”, “Correct: concept = explanation”, “What is concept?” or “Ask me”. Connected API mode also extracts exact spans from free text.' : 'No built-in factual answers. Memory starts empty. Synthetic examples only.';
+    $('composer-note').textContent = activeDemo ? '这是独立演示。点击“回到我的聊天”继续你自己的对话。' : mode !== 'chat' ? 'Advanced controls select an action explicitly. Close this panel to return to chat.' : remote?.apiEnabled ? 'We can just chat, share a story, or play. You don’t have to teach me something every time.' : '本地模式 · 当前是简单规则回复，还没有使用语言模型。';
     setBusy(busy);
   }
   async function request(route, method = 'GET', data, connection = remote) {
     const headers = { ...(data ? { 'Content-Type': 'application/json' } : {}), ...(connection?.token ? { Authorization: `Bearer ${connection.token}` } : {}) };
     const res = await fetch(`${connection?.base || ''}${route}`, { method, headers, ...(data ? { body: JSON.stringify(data) } : {}), credentials: 'omit', signal: AbortSignal.timeout(45000) });
     let value; try { value = await res.json(); } catch { throw new Error('Backend returned a non-JSON response. Check the backend URL.'); }
-    if (!res.ok) throw new Error(value.error || `Backend HTTP ${res.status}`);
+    if (!res.ok) { const error = new Error(value.error || `Backend HTTP ${res.status}`); error.status = res.status; throw error; }
     return value;
   }
   async function perform(input, internal = false) {
-    if (busy || (demoRunning && !internal)) return;
+    if (busy || initializing || (activeDemo && !internal)) return;
     setBusy(true);
     try {
       let result;
@@ -53,32 +74,54 @@
       else { result = engine.transact(input); providerTrace = null; }
       persist(); render();
       if (result.skipped && result.message) toast(result.message);
-      if (result.provider?.wording?.includes('fallback') || result.provider?.extraction?.includes('fallback')) toast('Provider unavailable or output rejected. Deterministic fallback is active.');
+      if (result.provider?.wording?.includes('fallback')) toast(`本次回复未由模型生成：${failureLabel(result.provider.error)}。可重试这条回复。`);
       return result;
     } catch (e) { toast(e.message || 'Unable to complete this action.'); }
     finally { setBusy(false); }
   }
+  function failureLabel(error) { return ({ 'rate-limited': '服务限流', 'credentials-rejected': '密钥被拒绝', timeout: '请求超时', 'invalid-output': '模型输出未通过检查', unavailable: '服务暂不可用' })[error?.code] || (error?.code ? '模型请求失败' : '未连接模型'); }
+  function generationLabel(message) {
+    const g = message.generation;
+    if (g?.source === 'llm') return `${g.service} · ${g.model} · 模型生成`;
+    if (g?.source === 'fallback') return `本地规则回复 · ${failureLabel(g.error)}`;
+    return remote || activeDemo?.recorded ? '历史回复 · 来源未记录' : '本地规则回复 · 未连接模型';
+  }
   function render() {
-    const p = engine.profile();
-    $('profile-select').value = p.id; $('memory-count').textContent = p.memories.length; $('memory-pill').textContent = `${p.memories.length} item${p.memories.length === 1 ? '' : 's'}`;
-    $('mastery-value').textContent = p.memories.length ? pct(C.mean(p.memories.map(m => m.mastery))) : '—';
-    $('mode-badge').textContent = remote ? (remote.apiEnabled ? '● CONNECTED API' : '● SERVER DEMO · NO API') : '● KEY-FREE DEMO';
+    const p = engine.profile(), clock = activeDemo?.recorded ? Date.parse(p.history.at(-1)?.at || activeDemo.createdAt) : Date.now(), growth = C.developmentStatus(p);
+    document.body.classList.toggle('viewing-demo', Boolean(activeDemo));
+    $('growth-stage').textContent = growth.label;
+    $('growth-progress').textContent = growth.next ? `${growth.known}/${growth.next.known} concepts · ${growth.reinforced}/${growth.next.reinforced} reinforced · ${growth.lessons}/${growth.next.lessons} lessons → ${growth.next.label}` : `${growth.known} concepts · ${growth.lessons} lessons together`;
+    const learned = p.memories.filter(m => m.content);
+    $('profile-select').value = p.id; $('memory-count').textContent = learned.length; $('memory-pill').textContent = `${p.memories.length} item${p.memories.length === 1 ? '' : 's'}`;
+    $('mastery-value').textContent = learned.length ? pct(C.mean(learned.map(m => C.retention(m, clock).effectiveMastery))) : '—';
+    $('mode-badge').textContent = initializing ? '◌ CONNECTING' : activeDemo?.recorded ? '◷ 实测回放' : remote ? (remote.apiEnabled ? `● ${remote.service || 'LLM'} · ${remote.model || 'CONNECTED API'}` : '● SERVER DEMO · NO API') : '● KEY-FREE DEMO';
+    $('live-dot').classList.toggle('offline', !remote?.apiEnabled || Boolean(activeDemo?.recorded));
+    $('chat-subtitle').textContent = activeDemo?.recorded ? '已保存的实测对话 · 不是本次实时生成' : remote?.apiEnabled ? 'Curious, and ready to talk with you.' : 'Local mode · simple rule-based replies';
+    const notice = $('connection-notice');
+    notice.textContent = initializing ? '正在连接本地模型服务…' : activeDemo?.recorded ? `实测记录 · ${new Date(activeDemo.createdAt).toLocaleString()} · 点击“现场演示”可重新调用模型。` : remote?.apiEnabled ? `已连接 ${remote.service || 'LLM'} / ${remote.model}。每条回复下方显示实际生成来源。演示使用独立记忆，不影响你的聊天。` : connectionFailure || '当前没有连接 LLM。这里的聊天是本地规则回复；现场演示需要连接模型。';
+    notice.classList.toggle('warning', !initializing && !remote?.apiEnabled && !activeDemo?.recorded);
+    $('demo-panel').hidden = !activeDemo;
+    if (activeDemo) { $('demo-title').textContent = demoNames[activeDemo.kind]; $('demo-status').textContent = activeDemo.status; }
+    $('demo-stop').hidden = !demoRunning;
+    $('retry-reply').hidden = !remote?.apiEnabled || p.history.at(-1)?.generation?.source !== 'fallback' || Boolean(activeDemo);
+    selectMode(mode);
     $('remember-toggle').checked = remember; $('metadata-toggle').checked = p.metadataEnabled; $('invitation-toggle').checked = p.invitationsEnabled;
     $('invitation-bar').hidden = !p.pendingInvitation;
     const history = $('chat-history');
-    if (!p.history.length) history.innerHTML = '<div class="welcome"><div class="welcome-avatar">✳</div><h3>I don’t know your stories yet.</h3><p>I’m Milo, an AI learner. Teach me a word, a tradition, or a memory that matters to you.<br>It’s always okay to skip.</p><div class="example">Try an invented word:<br><strong>“tavi” = a happy moment shared over tea</strong></div></div>';
-    else history.innerHTML = p.history.map(m => `<div class="message ${m.role === 'user' ? 'user' : 'assistant'}"><span class="message-label">${m.role === 'user' ? escape(p.label) + ' · you' : 'Milo · AI learner'}</span><div class="bubble">${escape(m.text)}</div>${m.action ? `<span class="action-tag">${escape(m.action.replaceAll('_', ' '))}</span>` : ''}</div>`).join('');
+    if (!p.history.length) history.innerHTML = '<div class="welcome"><div class="welcome-avatar">✳</div><h3>Hi, I’m Milo.</h3><p>We can talk about your day, make up a game, or just say hello.</p><div class="example">Start anywhere:<br><strong>“嗨，Milo，今天想玩什么？”</strong></div></div>';
+    else history.innerHTML = p.history.map(m => `<div class="message ${m.role === 'user' ? 'user' : 'assistant'}"><span class="message-label">${m.role === 'user' ? escape(p.label) + ' · you' : 'Milo · AI learner'}</span><div class="bubble">${escape(m.text)}</div>${m.role === 'assistant' ? `<span class="reply-source ${m.generation?.source === 'llm' ? 'generated' : 'fallback'}">${escape(generationLabel(m))}</span>` : ''}${m.action ? `<span class="action-tag">${escape(m.action.replaceAll('_', ' '))}</span>` : ''}</div>`).join('');
     history.scrollTop = history.scrollHeight;
     $('memory-list').innerHTML = p.memories.length ? p.memories.slice(-6).map(m => {
-      const index = p.memories.indexOf(m);
-      return `<div class="memory-item"><div class="memory-title"><span>${escape(m.concept)}</span><small>${pct(m.mastery)} mastery</small></div><p>${escape(m.content)}</p><div class="progress-track" aria-label="Mastery ${pct(m.mastery)}"><div class="progress-fill" style="width:${Math.round(m.mastery * 100)}%"></div></div><div class="memory-provenance">${escape(m.topic)} · ${escape(m.sourceInteraction)}<br>${m.correctionHistory.length} corrections · ${m.related.length} related concepts${m.pendingContent ? '<br>⚠ Conflicting teaching awaits explicit correction' : ''}</div><div class="memory-actions"><button class="text-button" data-memory="${index}" data-memory-action="recall">Recall</button><button class="text-button" data-memory="${index}" data-memory-action="error">Scripted omission</button><button class="text-button" data-memory="${index}" data-memory-action="confirm">Confirm</button></div></div>`;
+      const index = p.memories.indexOf(m), retention = C.retention(m, clock), mastery = retention.effectiveMastery;
+      return `<div class="memory-item"><div class="memory-title"><span>${escape(m.concept)}</span><small>${pct(mastery)} current mastery</small></div><p>${escape(m.content || m.pendingContent)}</p><div class="progress-track" aria-label="Current mastery ${pct(mastery)}"><div class="progress-fill" style="width:${Math.round(mastery * 100)}%"></div></div><div class="memory-provenance">${escape(m.topic)} · ${escape(m.sourceInteraction)}<br>${m.learningCount || 0} lessons · ${m.correctionHistory.length} corrections · ${m.related.length} related concepts${m.pendingContent ? '<br>⚠ Pending explanation awaits clarification' : ''}</div><div class="memory-actions"><button class="text-button" data-memory="${index}" data-memory-action="recall">Recall</button><button class="text-button" data-memory="${index}" data-memory-action="error">Scripted omission</button><button class="text-button" data-memory="${index}" data-memory-action="confirm">Confirm</button></div></div>`;
     }).join('') + (p.memories.length > 6 ? '<p class="subtle">Showing the latest 6 memories. Export the profile for the full store.</p>' : '') : '<div class="empty-memory"><span>▤</span><p>A blank page, for now.<br>The first lesson begins with you.</p></div>';
-    $('trace-summary').innerHTML = p.lastTrace ? `<span class="trace-action">${escape(p.lastTrace.action)}</span><br>${escape(p.lastTrace.reason)}<br><small>${p.lastTrace.allowedKnowledge.length} permitted fact · ${escape(p.lastTrace.realization)}</small>` : 'No hidden factual knowledge is available here. Teach a concept to see how the next decision is made.';
+    $('trace-summary').innerHTML = p.lastTrace ? `<span class="trace-action">${escape(p.lastTrace.action)}</span><br>${escape(p.lastTrace.reason)}<br><small>${p.lastTrace.allowedKnowledge.length} permitted fact · ${escape(p.lastTrace.realization)}</small>` : 'Teach a concept to inspect the memory and action that guide the next reply.';
     renderAlgorithms();
+    setBusy(busy);
   }
   function renderAlgorithms() {
     const p = engine.profile(), t = p.lastTrace;
-    const pairs = t ? [['Action', t.action], ['Concept', t.concept], ['Knowledge boundary', t.knowledgeBoundary], ['Allowed fact', t.allowedKnowledge.join('\n') || 'None — ask to learn'], ['Source interaction', t.sourceInteraction || 'None'], ['Memory item', t.memoryId || 'None'], ['Mastery', `${t.masteryBefore ?? 'not stored'} → ${t.masteryAfter ?? 'not stored'}`], ['Decision rule', t.reason], ['Recall decision', t.recall ? `${t.recall.band} mastery · draw ${t.recall.draw} → ${t.recall.outcome}` : 'Not a policy-selected recall'], ['Controlled error', t.corruption ? `${t.corruption.operator}: ${t.corruption.detail}` : 'None'], ['Realization', t.realization], ['Provider status', providerTrace ? JSON.stringify(providerTrace) : 'No provider request'], ['Ranked candidates', t.candidates.map(c => `${c.concept}: ${c.score}`).join('; ') || 'No candidates']] : [];
+    const pairs = t ? [['Interpreted intent', t.inputMode], ['Action', t.action], ['Concept', t.concept], ['Knowledge boundary', t.knowledgeBoundary], ['Allowed fact', t.allowedKnowledge.join('\n') || 'None — ask to learn'], ['Source interaction', t.sourceInteraction || 'None'], ['Memory item', t.memoryId || 'None'], ['Mastery', `${t.masteryBefore ?? 'not stored'} → ${t.masteryAfter ?? 'not stored'}`], ['Learning stage', t.development ? `${t.development.label} · ${t.development.lessons} lessons` : 'Legacy trace'], ['Retention', t.retention ? `Strength ${t.retention.strength} · ${t.retention.elapsedDays} days since reinforcement · half-life ${t.retention.stabilityDays.toFixed(2)} days` : 'No selected memory'], ['Decision rule', t.reason], ['Recall decision', t.recall ? `${t.recall.band} mastery · draw ${t.recall.draw} → ${t.recall.outcome}` : 'Teaching, clarification or exploration'], ['Controlled error', t.corruption ? `${t.corruption.operator}: ${t.corruption.detail}` : 'None'], ['Realization', t.realization], ['Provider status', providerTrace ? JSON.stringify(providerTrace) : 'No provider request'], ['Ranked candidates', t.candidates.map(c => `${c.concept}: ${c.score}`).join('; ') || 'No candidates']] : [];
     $('live-trace').innerHTML = t ? `<dl class="trace-table">${pairs.map(([k, v]) => `<dt>${escape(k)}</dt><dd>${escape(v)}</dd>`).join('')}</dl>` : '<div class="trace-empty">Interact in the Learning studio to inspect a real decision.</div>';
     $('topic-graph').innerHTML = p.memories.length ? C.TOPICS.map(topic => { const rows = p.memories.filter(m => m.topic === topic); return rows.length ? `<div class="graph-group"><strong>${escape(topic)}</strong><p>${rows.map(m => escape(m.concept)).join(' ↔ ')}</p><small>${rows.length} nodes · ${rows.reduce((a, m) => a + m.related.length, 0) / 2} keyword edges</small></div>` : ''; }).join('') + (p.memories.some(m => m.mentions?.length) ? `<div class="graph-group"><strong>Curiosity queue</strong><p>${[...new Set(p.memories.flatMap(m => m.mentions || []))].map(escape).join(' · ')}</p><small>Quoted terms mentioned while teaching</small></div>` : '') : '<div class="trace-empty">Topic links appear after you teach two related concepts.</div>';
     const metadata = C.summarizeMetadata(p.metadata);
@@ -136,18 +179,96 @@
     const keys = ['day','invitations','responses','responseRate','responseDelayMinutes','explanationCharacters','corrections','selfInitiated','changed','z','cusum','calibration','alarm'];
     download('childgpt-synthetic-trace.csv', keys.join(',') + '\n' + simulation.rows.map(row => keys.map(k => row[k] == null ? '' : row[k]).join(',')).join('\n'), 'text/csv;charset=utf-8');
   }
-  async function guidedDemo() {
-    if (busy || demoRunning) return;
-    if (engine.profile().memories.length && !confirm('Run the guided demo? This replaces the CURRENT synthetic profile. The other profile is unchanged.')) return;
-    demoRunning = true; setBusy(true);
+  function saveNormalSession() {
+    if (!normalSession) normalSession = { remote, state: engine.export(), providerTrace };
+  }
+  function leaveDemo() {
+    if (busy || demoRunning || !normalSession) return;
+    ({ remote, providerTrace } = normalSession); engine = new C.Engine(normalSession.state);
+    normalSession = null; activeDemo = null; render();
+  }
+  function demoStatus(text) { if (activeDemo) { activeDemo.status = text; $('demo-status').textContent = text; } }
+  async function retryReply(internal = false) {
+    if (busy || !remote || (activeDemo && !internal)) return;
+    setBusy(true);
     try {
-      if (remote) { const r = await request('/api/profile', 'POST', { profile: engine.state.activeProfile, reset: true }); engine = new C.Engine(r.state); } else engine.resetProfile();
-      render(); navigate('studio');
-      const steps = [{ mode: 'ask', concept: 'tavi' }, { mode: 'teach', concept: 'tavi', content: 'a happy moment shared over tea', topic: C.TOPICS[0] }, { mode: 'ask', concept: 'tavi' }, { mode: 'recall', concept: 'tavi', forceError: true }, { mode: 'correct', concept: 'tavi', content: 'a happy moment shared over warm tea' }, { mode: 'ask', concept: 'tavi' }];
-      for (let i = 0; i < steps.length; i++) { setBusy(false); const result = await perform(steps[i], true); if (!result) break; toast(`Guided demo · step ${i+1}/${steps.length}: ${steps[i].mode}`); await new Promise(r => setTimeout(r, 420)); }
-      $('concept-input').value = 'tavi'; $('content-input').value = 'a happy moment shared over warm tea';
-      toast('Teaching → memory → scripted omission → correction → recall complete. Switch to Learner B to test isolation.');
-    } catch (e) { toast(e.message); } finally { demoRunning = false; setBusy(false); persist(); }
+      const result = await request('/api/reply/retry', 'POST', { interactionId: engine.profile().lastTrace?.interactionId });
+      engine = new C.Engine(result.state); providerTrace = result.provider; render(); return result;
+    } catch (error) { toast(error.message); }
+    finally { setBusy(false); }
+  }
+  async function waitForRetry(ms) {
+    const end = Date.now() + ms;
+    while (Date.now() < end && !stopDemo) {
+      demoStatus(`模型服务限流，${Math.ceil((end - Date.now()) / 1000)} 秒后重试当前回复；已学内容不会重复写入。`);
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+  }
+  function demoEvidence() {
+    return { schema: 'childgpt.frontend-demo.v1', kind: activeDemo.kind, createdAt: activeDemo.createdAt,
+      evidenceType: 'Actual frontend session; per-reply provider provenance; synthetic conversation only',
+      status: activeDemo.status, completed: activeDemo.completed, steps: activeDemo.steps, state: engine.export() };
+  }
+  function checkDemo(kind) {
+    const p = engine.profile(), actions = activeDemo.steps.map(step => step.trace?.action);
+    if (kind === 'conversation') return p.memories.length === 0 && actions.every(a => a === 'help');
+    return actions[0] === 'ask_to_learn' && actions[2] === 'controlled_recall' &&
+      p.memories.length === 1 && p.memories[0].content.includes('先系红绳') && p.memories[0].content.includes('再敲三下铜铃') && p.memories[0].correctionHistory.length === 1;
+  }
+  async function runDemo(kind) {
+    if (busy || demoRunning || initializing) return;
+    const connection = normalSession?.remote || remote;
+    if (!connection?.apiEnabled) return toast('现场演示需要模型连接。可先查看保存的实测记录，或在 Connect & privacy 连接服务。');
+    demoRunning = true; stopDemo = false; setBusy(true);
+    try {
+      const result = await request('/api/demo-session', 'POST', { kind }, connection);
+      saveNormalSession();
+      remote = { ...connection, token: result.sessionToken };
+      engine = new C.Engine(result.state); providerTrace = null;
+      activeDemo = { kind, createdAt: new Date().toISOString(), status: '准备开始…', steps: [], completed: false };
+      navigate('studio'); render();
+      for (const [i, step] of demoSteps[kind].entries()) {
+        if (stopDemo) break;
+        demoStatus(`${i + 1}/${demoSteps[kind].length} · ${step.label}`);
+        setBusy(false); let turn = await perform(step.input, true);
+        if (!turn) throw new Error('请求未完成，演示暂停。已完成的步骤仍可查看。');
+        for (let attempt = 0; turn.provider?.wording !== 'api-generated-response' && attempt < 2 && !stopDemo; attempt++) {
+          if (turn.provider?.error?.code === 'rate-limited') await waitForRetry(turn.provider.error.retryAfterMs || 60000);
+          else if (turn.provider?.error?.code !== 'invalid-output') break;
+          if (!stopDemo) turn = await retryReply(true) || turn;
+        }
+        activeDemo.steps.push({ label: step.label, input: step.input, message: turn.message, trace: turn.trace, provider: turn.provider,
+          memoryAfter: JSON.parse(JSON.stringify(engine.profile().memories)) });
+        if (turn.provider?.wording !== 'api-generated-response') throw new Error(`演示暂停：${failureLabel(turn.provider?.error)}。这一步保留了本地回复，未计为模型演示成功。`);
+      }
+      if (stopDemo) demoStatus('已停止。已完成的对话和记忆保留在这里。');
+      else {
+        if (!checkDemo(kind)) throw new Error('模型已回复，但学习行为未通过演示检查；请查看右侧记忆与算法记录。');
+        activeDemo.completed = true;
+        demoStatus(`已完成 · ${activeDemo.steps.length}/${demoSteps[kind].length} 条回复均由 ${remote.service} / ${remote.model} 生成。${kind === 'learning' ? '漏记为受控演示；真实记忆已纠正为红绳，回忆不增加掌握度。' : '普通聊天没有写成知识记忆。'}`);
+      }
+    } catch (error) { demoStatus(error.message); toast(error.message); }
+    finally { demoRunning = false; setBusy(false); render(); }
+  }
+  async function showRecording(kind) {
+    if (busy || demoRunning || initializing) return;
+    setBusy(true);
+    try {
+      const embedded = document.getElementById(`recording-${kind}`);
+      let data;
+      if (embedded) data = JSON.parse(embedded.textContent);
+      else {
+        const response = await fetch(`results/demos/${kind}.json`);
+        if (!response.ok) throw new Error('还没有这组实测记录。请连接模型后运行现场演示。');
+        data = await response.json();
+      }
+      if (data.schema !== 'childgpt.frontend-demo.v1' || data.kind !== kind) throw new Error('无法读取这组演示记录。');
+      const restoredEngine = new C.Engine(data.state);
+      saveNormalSession(); remote = null; engine = restoredEngine;
+      activeDemo = { ...data, recorded: true, status: `实测回放 · ${data.status}` };
+      providerTrace = engine.profile().lastTrace?.provider || null; navigate('studio'); render();
+    } catch (error) { toast(error.message); }
+    finally { setBusy(false); }
   }
   async function connect(event) {
     event.preventDefault();
@@ -161,15 +282,16 @@
       $('connection-status').textContent = 'Connecting…';
       const config = await request('/api/config', 'GET', undefined, { base });
       const result = await request('/api/session', 'POST', { accessToken: $('backend-token').value }, { base });
-      remote = { base, token: result.sessionToken, apiEnabled: config.apiEnabled }; engine = new C.Engine(result.state); providerTrace = null;
+      activeDemo = null; normalSession = null; connectionFailure = '';
+      remote = { base, token: result.sessionToken, apiEnabled: config.apiEnabled, model: config.model, service: config.service }; engine = new C.Engine(result.state); providerTrace = null;
       try { sessionStorage.setItem('childgpt.backend', JSON.stringify(remote)); } catch {}
       storage.set('childgpt.backend-url', base); $('backend-token').value = '';
-      $('connection-status').textContent = config.apiEnabled ? 'Connected. Model extraction and approved wording are enabled. Backend memory is separate from the local demo.' : 'Connected to server demo. LLM fields are still empty; replies remain deterministic.';
+      $('connection-status').textContent = config.apiEnabled ? 'Connected. The model understands your messages and writes natural replies guided by the learning policy. Backend memory is separate from the local demo.' : 'Connected to server demo. LLM fields are still empty; replies remain deterministic.';
       render(); toast('Backend connected. A separate isolated session is active.');
     } catch (e) { $('connection-status').textContent = e.message; toast(e.message); }
   }
   function disconnect() {
-    remote = null; providerTrace = null;
+    remote = null; providerTrace = null; activeDemo = null; normalSession = null; connectionFailure = '';
     try { sessionStorage.removeItem('childgpt.backend'); } catch {}
     try { engine = new C.Engine(remember ? JSON.parse(storage.get('childgpt.state') || 'null') : null); } catch { engine = new C.Engine(); }
     $('connection-status').textContent = 'Local demo active. The disconnected server session expires automatically within seven days.'; render();
@@ -177,11 +299,18 @@
   document.querySelectorAll('[data-page]').forEach(el => el.addEventListener('click', () => navigate(el.dataset.page)));
   document.querySelectorAll('[data-action]').forEach(el => el.addEventListener('click', () => selectMode(el.dataset.action)));
   window.addEventListener('hashchange', () => navigate(location.hash.slice(1)));
-  $('conversation-form').addEventListener('submit', async event => { event.preventDefault(); const input = mode === 'chat' ? { mode, text: $('text-input').value.trim() } : { mode, concept: $('concept-input').value.trim(), topic: $('topic-input').value, ...(['teach','correct'].includes(mode) ? { content: $('content-input').value.trim() } : {}) }; if (mode === 'chat' && !input.text) return toast('Enter a message first.'); await perform(input); });
+    $('conversation-form').addEventListener('submit', async event => { event.preventDefault(); const input = mode === 'chat' ? { mode, text: $('text-input').value.trim() } : { mode, concept: $('concept-input').value.trim(), topic: $('topic-input').value, ...(['teach','correct'].includes(mode) ? { content: $('content-input').value.trim() } : {}) }; if (mode === 'chat' && !input.text) return toast('Enter a message first.'); const result = await perform(input); if (result && input.mode === 'chat' && $('text-input').value.trim() === input.text) $('text-input').value = ''; });
+    $('debug-controls').addEventListener('toggle', () => { document.body.classList.toggle('show-action-tags', $('debug-controls').open); if (!$('debug-controls').open) selectMode('chat'); });
   $('next-question').addEventListener('click', () => perform({ mode: 'next', topic: $('topic-input').value }));
   $('skip-invitation').addEventListener('click', () => perform({ mode: 'skip' }));
-  $('guided-demo').addEventListener('click', guidedDemo);
-  $('profile-select').addEventListener('change', async event => { if (busy || demoRunning) return; try { if (remote) { const r = await request('/api/profile','POST',{profile:event.target.value}); engine = new C.Engine(r.state); } else engine.switchProfile(event.target.value); providerTrace = null; persist(); render(); } catch(e) { toast(e.message); render(); } });
+  $('guided-demo').addEventListener('click', () => runDemo('learning'));
+  $('conversation-demo').addEventListener('click', () => runDemo('conversation'));
+  document.querySelectorAll('[data-recording]').forEach(button => button.addEventListener('click', () => showRecording(button.dataset.recording)));
+  $('demo-return').addEventListener('click', leaveDemo);
+  $('demo-stop').addEventListener('click', () => { stopDemo = true; demoStatus('正在停止；当前请求结束后保留已完成步骤。'); });
+  $('demo-export').addEventListener('click', () => activeDemo && jsonDownload(`${activeDemo.kind}.json`, demoEvidence()));
+  $('retry-reply').addEventListener('click', () => retryReply());
+  $('profile-select').addEventListener('change', async event => { if (busy || demoRunning || activeDemo || initializing) return; try { if (remote) { const r = await request('/api/profile','POST',{profile:event.target.value}); engine = new C.Engine(r.state); } else engine.switchProfile(event.target.value); providerTrace = null; persist(); render(); } catch(e) { toast(e.message); render(); } });
   $('memory-list').addEventListener('click', event => { const b = event.target.closest('[data-memory]'); if (!b) return; const memory = engine.profile().memories[Number(b.dataset.memory)]; if (!memory) return; $('concept-input').value = memory.concept; perform({ mode: b.dataset.memoryAction === 'confirm' ? 'confirm' : 'recall', concept: memory.concept, forceError: b.dataset.memoryAction === 'error' }); });
   $('export-trace').addEventListener('click', () => engine.profile().lastTrace ? jsonDownload('childgpt-algorithm-trace.json', { trace: engine.profile().lastTrace, provider: providerTrace }) : toast('Interact with the learner first.'));
   $('export-metadata').addEventListener('click', () => jsonDownload('childgpt-metadata-only.json', { profile: engine.profile().id, summary: C.summarizeMetadata(engine.profile().metadata), events: engine.profile().metadata }));
@@ -194,8 +323,40 @@
   $('invite-button').addEventListener('click', async () => { if (!engine.profile().invitationsEnabled) return toast('Enable optional invitations first.'); const result = await perform({ mode: 'invite' }); if (result?.skipped) toast('No extra invitation sent. One may already be waiting, or the cooldown is active.'); else navigate('studio'); });
   $('export-memory').addEventListener('click', () => jsonDownload('childgpt-profile-private.json', { warning: 'Contains this profile’s taught content and history. Do not publish real personal data.', profile: engine.profile() }));
   $('delete-profile').addEventListener('click', async () => { if (!confirm('Delete this profile’s memory, conversation and metadata? The other profile is unchanged.')) return; try { if (remote) { const r = await request('/api/profile', 'POST', { profile: engine.state.activeProfile, reset: true }); engine = new C.Engine(r.state); } else engine.resetProfile(); providerTrace = null; persist(); render(); toast('Current profile deleted.'); } catch(e) { toast(e.message); } });
-  setInterval(() => { if (!busy && !demoRunning && engine.profile().invitationsEnabled && !engine.profile().pendingInvitation) perform({ mode: 'invite' }); }, 60000);
+  setInterval(() => { if (!busy && !demoRunning && !activeDemo && !initializing && engine.profile().invitationsEnabled && !engine.profile().pendingInvitation) perform({ mode: 'invite' }); }, 60000);
   $('backend-url').value = storage.get('childgpt.backend-url') || '';
-  $('check-count').textContent = C.functionalEvaluation().total; selectMode('teach'); render(); runSimulation(); navigate(location.hash.slice(1) || 'studio');
-  (async () => { let saved; try { saved = JSON.parse(sessionStorage.getItem('childgpt.backend') || 'null'); } catch {} if (!saved?.base || !saved?.token) return; try { const result = await request('/api/state','GET',undefined,saved); remote = { ...saved, apiEnabled: result.apiEnabled }; engine = new C.Engine(result.state); $('connection-status').textContent = 'Previous backend session restored in this browser tab.'; render(); } catch { try { sessionStorage.removeItem('childgpt.backend'); } catch {} toast('Previous backend session unavailable. Local demo remains active.'); } })();
+  $('check-count').textContent = C.functionalEvaluation().total; selectMode('chat'); render(); runSimulation(); navigate(location.hash.slice(1) || 'studio');
+  (async () => {
+    let saved;
+    try { saved = JSON.parse(sessionStorage.getItem('childgpt.backend') || 'null'); } catch {}
+    try {
+      if (saved?.base && saved?.token) {
+        try {
+          const result = await request('/api/state', 'GET', undefined, saved);
+          remote = { ...saved, apiEnabled: result.apiEnabled, model: result.model, service: result.service };
+          engine = new C.Engine(result.state); providerTrace = engine.profile().lastTrace?.provider || null;
+          $('connection-status').textContent = 'Previous backend session restored in this browser tab.';
+          return;
+        } catch (error) {
+          // A transient outage must not silently replace an existing learner with a blank one.
+          if (error.status !== 401) throw error;
+          try { sessionStorage.removeItem('childgpt.backend'); } catch {}
+        }
+      }
+      const localKey = document.querySelector('meta[name="childgpt-local-key"]')?.content;
+      if (!localKey) return;
+      const result = await request('/api/local-session', 'POST', { localKey }, { base: location.origin });
+      remote = { base: location.origin, token: result.sessionToken, apiEnabled: result.apiEnabled, model: result.model, service: result.service };
+      engine = new C.Engine(result.state);
+      try { sessionStorage.setItem('childgpt.backend', JSON.stringify(remote)); } catch {}
+      $('connection-status').textContent = 'Local model connection is ready. Provider credentials stay on the server.';
+    } catch (error) {
+      connectionFailure = `模型连接失败：${error.message} 当前仅可使用本地规则回复。刷新页面可重试。`;
+      toast(connectionFailure);
+    } finally {
+      initializing = false; render();
+      const demo = new URLSearchParams(location.search).get('demo');
+      if (Object.hasOwn(demoNames, demo)) await showRecording(demo);
+    }
+  })();
 })();
